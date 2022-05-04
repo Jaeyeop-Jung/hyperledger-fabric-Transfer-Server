@@ -1,11 +1,15 @@
 package com.capstone.hyperledgerfabrictransferserver.filter;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
+import com.capstone.hyperledgerfabrictransferserver.domain.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +22,9 @@ public class JwtTokenProvider {
 
     @Value("${jwt.secret}")
     private String secretKey;
+    private final Long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 1000L;
 
     private final UserDetailsService userDetailsService;
-
-    private final Long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 1000L;
 
     /**
      * methodName : generateJwtToken
@@ -89,5 +92,10 @@ public class JwtTokenProvider {
             log.error("JWT RefreshToken is empty");
         }
         return false;
+    }
+
+    public Authentication getAuthentication(String token){
+        UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(this.findUserIdByJwt(token)));
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 }
