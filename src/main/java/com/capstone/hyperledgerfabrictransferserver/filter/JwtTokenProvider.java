@@ -94,6 +94,14 @@ public class JwtTokenProvider {
         return false;
     }
 
+    /**
+     * methodName : getAuthentication
+     * author : Jaeyeop Jung
+     * description : SecurityContextHolder에 담을 Authentication 객체를 가져옴
+     *
+     * @param token the token
+     * @return the authentication
+     */
     public Authentication getAuthentication(String token){
         UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(this.findUserIdByJwt(token)));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());

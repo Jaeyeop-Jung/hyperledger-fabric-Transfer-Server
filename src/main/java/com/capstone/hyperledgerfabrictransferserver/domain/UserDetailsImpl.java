@@ -15,6 +15,8 @@ import java.util.Collection;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserDetailsImpl implements UserDetails {
 
+    private Long id;
+
     private Long studentId;
 
     private String password;
@@ -22,6 +24,18 @@ public class UserDetailsImpl implements UserDetails {
     private UserRole userRole;
 
     private String name;
+
+    private UserDetailsImpl(Long id, Long studentId, String password, UserRole userRole, String name) {
+        this.id = id;
+        this.studentId = studentId;
+        this.password = password;
+        this.userRole = userRole;
+        this.name = name;
+    }
+
+    public static UserDetailsImpl of(Long id, Long studentId, String password, UserRole userRole, String name){
+        return new UserDetailsImpl(id, studentId, password, userRole, name);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -38,7 +52,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return String.valueOf(studentId);
+        return String.valueOf(id);
     }
 
     @Override
