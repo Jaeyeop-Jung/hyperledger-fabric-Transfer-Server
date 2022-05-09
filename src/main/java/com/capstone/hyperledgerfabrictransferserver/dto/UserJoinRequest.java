@@ -20,17 +20,13 @@ public class UserJoinRequest {
 
     @ApiParam(required = true)
     @NotNull
-    private UserRole userRole;
-
-    @ApiParam(required = true)
-    @NotNull
     private String name;
 
     @Builder
-    public UserJoinRequest(Long studentId, String password, UserRole userRole, String name) {
+    public UserJoinRequest(Long studentId, String password, String name) {
         this.studentId = studentId;
         this.password = password;
-        this.userRole = userRole;
         this.name = name;
     }
+
 }

@@ -18,7 +18,7 @@ import java.util.Map;
 @Slf4j
 public class LoggingAspect {
 
-    @Pointcut("execution(* com.capstone.hyperledgerfabrictransferserver.*.*(..))")
+    @Pointcut("execution(* com.capstone.hyperledgerfabrictransferserver..*.*(..))")
     private static void advicePoint(){}
 
     @Before("advicePoint()")

@@ -1,6 +1,7 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
+import com.capstone.hyperledgerfabrictransferserver.domain.UserRole;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserJoinRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
@@ -33,8 +34,8 @@ public class UserServiceImpl implements UserService{
 
         User savedUser = User.of(
                 userJoinRequest.getStudentId(),
-                userJoinRequest.getPassword(),
-                userJoinRequest.getUserRole(),
+                bCryptPasswordEncoder.encode(userJoinRequest.getPassword()),
+                UserRole.ROLE_USER,
                 userJoinRequest.getName()
         );
 

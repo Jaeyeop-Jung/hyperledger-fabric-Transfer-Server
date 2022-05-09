@@ -6,9 +6,7 @@ import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
 import com.capstone.hyperledgerfabrictransferserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,7 +17,8 @@ public class UserApiControllerImpl implements UserApiController{
     private final UserService userService;
 
     @Override
-    public ResponseEntity<UserLoginResponse> join(UserJoinRequest userJoinRequest) {
+    @PostMapping("/user")
+    public ResponseEntity<UserLoginResponse> join(@RequestBody UserJoinRequest userJoinRequest) {
         return ResponseEntity.ok(userService.join(userJoinRequest));
     }
 
