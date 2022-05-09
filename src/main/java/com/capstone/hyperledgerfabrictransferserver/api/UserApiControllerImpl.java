@@ -32,5 +32,12 @@ public class UserApiControllerImpl implements UserApiController{
         return ResponseEntity.ok(userService.login(httpServletRequest, userLoginRequest));
     }
 
+    @Override
+    public ResponseEntity.BodyBuilder changePassword(HttpServletRequest httpServletRequest, String newPassword) {
+
+        userService.changePassword(httpServletRequest, newPassword);
+        return ResponseEntity.ok();
+    }
+
 
 }

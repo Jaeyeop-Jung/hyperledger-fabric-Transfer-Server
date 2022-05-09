@@ -22,6 +22,23 @@ public class UserServiceImpl implements UserService{
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
 
+
+    @Override
+    public User findUserByJwtToken(HttpServletRequest httpServletRequest) {
+
+        String token = null;
+        if(httpServletRequest.getHeader("Authorization") != null && httpServletRequest.getHeader("Authorization").startsWith("Bearer ")){
+            token = httpServletRequest.getHeader("Authorization").split(" ")[1];
+        }
+
+        if(token == null || !jwtTokenProvider.validateToken(token)){
+            // 에외처리
+        }
+
+        return userRepository.findById(jwtTokenProvider.findUserIdByJwt(token))
+                .orElseThrow();
+    }
+
     @Override
     public UserLoginResponse join(UserJoinRequest userJoinRequest) {
 
@@ -42,7 +59,7 @@ public class UserServiceImpl implements UserService{
         userRepository.save(savedUser);
 
         return UserLoginResponse.builder()
-                .accessToken(jwtTokenProvider.generateJwtToken(savedUser))
+                .accessToken("Bearer " + jwtTokenProvider.generateJwtToken(savedUser))
                 .build();
     }
 
@@ -57,7 +74,15 @@ public class UserServiceImpl implements UserService{
         }
 
         return UserLoginResponse.builder()
-                .accessToken(jwtTokenProvider.generateJwtToken(findUser))
+                .accessToken("Bearer " + jwtTokenProvider.generateJwtToken(findUser))
                 .build();
+    }
+
+    @Override
+    public void changePassword(HttpServletRequest httpServletRequest, String newPassword) {
+
+        User findUser = findUserByJwtToken(httpServletRequest);
+
+        findUser.changePassword(bCryptPasswordEncoder.encode(newPassword));
     }
 }

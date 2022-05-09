@@ -43,4 +43,8 @@ public class User extends BaseEntity{
     public static User of(Long studentId, String password, UserRole userRole, String name){
         return new User(studentId, password, userRole, name);
     }
+
+    public void changePassword(String password){
+        this.password = password;
+    }
 }
