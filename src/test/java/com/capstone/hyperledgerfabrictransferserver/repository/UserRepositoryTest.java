@@ -1,5 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.repository;
 
+import com.capstone.hyperledgerfabrictransferserver.aop.customException.DeletedUserException;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.UserRole;
 import org.assertj.core.api.Assertions;
@@ -39,16 +40,59 @@ class UserRepositoryTest {
     }
 
     @Test
-    void existsByStudentId_을_테스트한다() {
+    @DisplayName("회원 찾기 테스트")
+    public void findById_를_테스트한다() throws Exception {
+        //given
+        User user = User.of(20170000L, "test", UserRole.ROLE_USER, "test");
+        User savedUser = userRepository.save(user);
 
+        //when
+        User findUser = userRepository.findById(savedUser.getId())
+                .orElseThrow(() -> new DeletedUserException(""));
+
+        //then
+        assertThat(user).isEqualTo(findUser);
     }
 
     @Test
-    void existsByName() {
+    @DisplayName("StudentId로 회원 존재 테스트")
+    void existsByStudentId_을_테스트한다() {
+        //given
+        User user = User.of(20170000L, "test", UserRole.ROLE_USER, "test");
+        userRepository.save(user);
 
+        //when
+        boolean response = userRepository.existsByStudentId(20170000L);
+
+        //then
+        assertThat(response).isTrue();
+    }
+
+    @Test
+    @DisplayName("Name으로 회원 존재 테스트")
+    void existsByName_을_테스트한다() {
+        //given
+        User user = User.of(20170000L, "test", UserRole.ROLE_USER, "test");
+        userRepository.save(user);
+
+        //when
+        boolean response = userRepository.existsByName("test");
+
+        //then
+        assertThat(response).isTrue();
     }
 
     @Test
     void findByStudentId() {
+        //given
+        User user = User.of(20170000L, "test", UserRole.ROLE_USER, "test");
+        userRepository.save(user);
+
+        //when
+        User findUser = userRepository.findByStudentId(20170000L)
+                .orElseThrow(() -> new DeletedUserException(""));
+
+        //then
+        assertThat(user).isEqualTo(findUser);
     }
 }
