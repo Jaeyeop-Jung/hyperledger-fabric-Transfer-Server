@@ -46,6 +46,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	testImplementation 'com.h2database:h2:1.4.200'
 }
 
 tasks.named('test') {

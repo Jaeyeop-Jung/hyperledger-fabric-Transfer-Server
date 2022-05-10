@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
+    @Transactional
     public User findUserByJwtToken(HttpServletRequest httpServletRequest) {
 
         String token = null;
@@ -45,6 +47,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public UserLoginResponse join(UserJoinRequest userJoinRequest) {
 
         if(userRepository.existsByStudentId(userJoinRequest.getStudentId())){
@@ -66,6 +69,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public UserLoginResponse login(HttpServletRequest httpServletRequest, UserLoginRequest userLoginRequest) {
 
         User findUser = userRepository.findByStudentId(userLoginRequest.getStudentId())
@@ -81,6 +85,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public void changePassword(HttpServletRequest httpServletRequest, String newPassword) {
 
         User findUser = findUserByJwtToken(httpServletRequest);
