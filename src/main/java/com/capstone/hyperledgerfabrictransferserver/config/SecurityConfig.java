@@ -1,8 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.config;
 
-import com.capstone.hyperledgerfabrictransferserver.filter.JwtAuthenticationFilter;
-import com.capstone.hyperledgerfabrictransferserver.filter.JwtExceptionFilter;
-import com.capstone.hyperledgerfabrictransferserver.filter.JwtTokenProvider;
+import com.capstone.hyperledgerfabrictransferserver.filter.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +19,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
+    private final CustomEntryPoint customEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -35,7 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .formLogin().disable()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtExceptionFilter(objectMapper), JwtAuthenticationFilter.class);
+                .addFilterBefore(new JwtExceptionFilter(objectMapper), JwtAuthenticationFilter.class)
+                .exceptionHandling().authenticationEntryPoint(customEntryPoint).accessDeniedHandler(customAccessDeniedHandler);
     }
 
     @Bean
