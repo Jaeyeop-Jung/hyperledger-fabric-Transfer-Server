@@ -33,7 +33,7 @@ public class User extends BaseEntity{
     @NotNull
     private String name;
 
-    public User(Long studentId, String password, UserRole userRole, String name) {
+    private User(Long studentId, String password, UserRole userRole, String name) {
         this.studentId = studentId;
         this.password = password;
         this.userRole = userRole;
