@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService{
 
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final CustomFabricGateway customFabricGateway;
     private final UserRepository userRepository;
 
 
@@ -85,8 +86,13 @@ public class UserServiceImpl implements UserService{
 
         byte[] fabricResponse;
         try {
-            Contract contract = CustomFabricGateway.getContract();
+            Gateway connect = customFabricGateway.connect();
+            Network network = connect.getNetwork("mychannel");
+            Contract contract = network.getContract("basic");
+
             fabricResponse = contract.submitTransaction("CreateAsset", "asset" + savedUser.getId(), userJoinRequest.getName());
+
+
         } catch (Exception e){
             throw new IncorrectContractException("CreateAsset 체인코드 실행 중 오류가 발생했습니다");
         }

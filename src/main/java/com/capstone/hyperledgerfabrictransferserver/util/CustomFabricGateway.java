@@ -3,17 +3,19 @@ package com.capstone.hyperledgerfabrictransferserver.util;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectFabricConnectException;
 import com.fasterxml.jackson.core.exc.InputCoercionException;
 import org.hyperledger.fabric.gateway.*;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+@Component
 public class CustomFabricGateway {
     static {
         System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true");
     }
 
-    public static Gateway connect() {
+    public Gateway connect() {
         try {
             // Load a file system based wallet for managing identities.
             Path walletPath = Paths.get("wallet");
@@ -30,9 +32,4 @@ public class CustomFabricGateway {
         }
     }
 
-    public static Contract getContract(){
-        Gateway gateway = connect();
-        Network network = gateway.getNetwork("mychannel");
-        return network.getContract("basic");
-    }
 }
