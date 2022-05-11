@@ -36,4 +36,14 @@ public class UserTrade extends BaseEntity{
     @NotNull
     private Long amount;
 
+    public UserTrade of(User sender, User receiver, Coin coin, Long amount){
+        return new UserTrade(sender, receiver, coin, amount);
+    }
+
+    private UserTrade(User sender, User receiver, Coin coin, Long amount) {
+        this.sender = sender;
+        this.receiver = receiver;
+        this.coin = coin;
+        this.amount = amount;
+    }
 }

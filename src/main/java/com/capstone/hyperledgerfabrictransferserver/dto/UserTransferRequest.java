@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class TransferRequest {
+public class UserTransferRequest {
 
     @ApiParam(required = true)
     @NotNull
@@ -23,7 +23,7 @@ public class TransferRequest {
     private Long amount;
 
     @Builder
-    public TransferRequest(Long studentId, Coin coin, Long amount) {
+    public UserTransferRequest(Long studentId, Coin coin, Long amount) {
         this.studentId = studentId;
         this.coin = coin;
         this.amount = amount;
