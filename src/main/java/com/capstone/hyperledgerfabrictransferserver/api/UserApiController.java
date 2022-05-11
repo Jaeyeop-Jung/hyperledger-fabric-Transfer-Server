@@ -13,6 +13,7 @@ public interface UserApiController {
 
     public ResponseEntity<UserLoginResponse> login(HttpServletRequest httpServletRequest, UserLoginRequest userLoginRequest);
 
-    public ResponseEntity.BodyBuilder changePassword(HttpServletRequest httpServletRequest, String newPassword);
+    public ResponseEntity<Void> changePassword(HttpServletRequest httpServletRequest, String newPassword);
 
+    public ResponseEntity<Void> delete(HttpServletRequest httpServletRequest);
 }

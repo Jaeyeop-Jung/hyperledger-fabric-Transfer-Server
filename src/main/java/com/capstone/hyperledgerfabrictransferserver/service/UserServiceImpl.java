@@ -9,7 +9,6 @@ import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
 import com.capstone.hyperledgerfabrictransferserver.filter.JwtTokenProvider;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,9 +24,17 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
 
 
+    /**
+     * methodName : getUserByJwtToken
+     * author : Jaeyeop Jung
+     * description : HttpServletRequest에서 User 엔티티를 가져오는 메서드
+     *
+     * @param httpServletRequest the http servlet request
+     * @return the user by jwt token
+     */
     @Override
     @Transactional
-    public User findUserByJwtToken(HttpServletRequest httpServletRequest) {
+    public User getUserByJwtToken(HttpServletRequest httpServletRequest) {
 
         String token = null;
         if(httpServletRequest.getHeader("Authorization") != null && httpServletRequest.getHeader("Authorization").startsWith("Bearer ")){
@@ -46,6 +53,14 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(() -> new DeletedUserException("삭제되거나 존재하지 않는 유저입니다"));
     }
 
+    /**
+     * methodName : join
+     * author : Jaeyeop Jung
+     * description : User 엔티티를 저장하는 메서드
+     *
+     * @param userJoinRequest the user join request
+     * @return the
+     */
     @Override
     @Transactional
     public UserLoginResponse join(UserJoinRequest userJoinRequest) {
@@ -68,6 +83,15 @@ public class UserServiceImpl implements UserService{
                 .build();
     }
 
+    /**
+     * methodName : login
+     * author : Jaeyeop Jung
+     * description : User를 통해 Jwt 토큰을 발행하여 로그인 기능을 담당하는 메서드
+     *
+     * @param httpServletRequest the http servlet request
+     * @param userLoginRequest   the user login request
+     * @return the
+     */
     @Override
     @Transactional
     public UserLoginResponse login(HttpServletRequest httpServletRequest, UserLoginRequest userLoginRequest) {
@@ -84,12 +108,36 @@ public class UserServiceImpl implements UserService{
                 .build();
     }
 
+    /**
+     * methodName : changePassword
+     * author : Jaeyeop Jung
+     * description : User 엔티티의 password를 변경하는 메서드
+     *
+     * @param httpServletRequest the http servlet request
+     * @param newPassword        the new password
+     */
     @Override
     @Transactional
     public void changePassword(HttpServletRequest httpServletRequest, String newPassword) {
 
-        User findUser = findUserByJwtToken(httpServletRequest);
+        User findUser = getUserByJwtToken(httpServletRequest);
 
         findUser.changePassword(bCryptPasswordEncoder.encode(newPassword));
+    }
+
+    /**
+     * methodName : delete
+     * author : Jaeyeop Jung
+     * description : User 엔티티를 삭제하는 메서드
+     *
+     * @param httpServletRequest the http servlet request
+     */
+    @Override
+    @Transactional
+    public void delete(HttpServletRequest httpServletRequest) {
+
+        User findUser = getUserByJwtToken(httpServletRequest);
+
+        userRepository.delete(findUser);
     }
 }

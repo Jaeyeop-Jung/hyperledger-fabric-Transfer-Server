@@ -7,15 +7,11 @@ import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
 import com.capstone.hyperledgerfabrictransferserver.filter.JwtTokenProvider;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
-import io.jsonwebtoken.Jwt;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -23,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +51,7 @@ class UserServiceImplTest {
                 .thenReturn(Optional.of(user));
 
         //when
-        User findUser = userService.findUserByJwtToken(httpServletRequest);
+        User findUser = userService.getUserByJwtToken(httpServletRequest);
 
         //then
         verify(httpServletRequest, times(3)).getHeader(any());

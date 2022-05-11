@@ -1,5 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
+import com.capstone.hyperledgerfabrictransferserver.aop.customException.DeletedUserException;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.UserDetailsImpl;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
@@ -31,15 +32,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
 
         User findUser = userRepository.findById(Long.parseLong(id))
-                .orElseThrow(() -> new NullPointerException()); // 예외처리 추가하기
+                .orElseThrow(() -> new DeletedUserException("삭제되거나 존재하지 않는 유저입니다"));
 
-        return UserDetailsImpl.of(
-                findUser.getId(),
-                findUser.getStudentId(),
-                findUser.getPassword(),
-                findUser.getUserRole(),
-                findUser.getName()
-        );
+        if(findUser != null) {
+            return UserDetailsImpl.of(
+                    findUser.getId(),
+                    findUser.getStudentId(),
+                    findUser.getPassword(),
+                    findUser.getUserRole(),
+                    findUser.getName()
+            );
+        }
+
+        return null;
     }
-
 }
