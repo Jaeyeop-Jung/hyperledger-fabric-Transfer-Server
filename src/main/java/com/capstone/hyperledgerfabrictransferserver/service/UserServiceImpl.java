@@ -8,12 +8,17 @@ import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
 import com.capstone.hyperledgerfabrictransferserver.filter.JwtTokenProvider;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
+import com.capstone.hyperledgerfabrictransferserver.util.CustomFabricGateway;
 import lombok.RequiredArgsConstructor;
+import org.hyperledger.fabric.gateway.Contract;
+import org.hyperledger.fabric.gateway.Gateway;
+import org.hyperledger.fabric.gateway.Network;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
@@ -69,14 +74,24 @@ public class UserServiceImpl implements UserService{
             throw new AlreadyExistUserException("학번 : " + userJoinRequest.getStudentId() + " 는 이미 가입된 학번입니다");
         }
 
-        User savedUser = User.of(
-                userJoinRequest.getStudentId(),
-                bCryptPasswordEncoder.encode(userJoinRequest.getPassword()),
-                UserRole.ROLE_USER,
-                userJoinRequest.getName()
+        User savedUser = userRepository.save(
+                User.of(
+                        userJoinRequest.getStudentId(),
+                        bCryptPasswordEncoder.encode(userJoinRequest.getPassword()),
+                        UserRole.ROLE_USER,
+                        userJoinRequest.getName()
+                )
         );
 
-        userRepository.save(savedUser);
+        byte[] fabricResponse;
+        try {
+            Contract contract = CustomFabricGateway.getContract();
+            fabricResponse = contract.submitTransaction("CreateAsset", "asset" + savedUser.getId(), userJoinRequest.getName());
+        } catch (Exception e){
+            throw new IncorrectContractException("CreateAsset 체인코드 실행 중 오류가 발생했습니다");
+        }
+
+        System.out.println(new String(fabricResponse, StandardCharsets.UTF_8));
 
         return UserLoginResponse.builder()
                 .accessToken("Bearer " + jwtTokenProvider.generateJwtToken(savedUser))
