@@ -115,7 +115,8 @@ class UserServiceImplTest {
     }
 
     @Test
-    void changePassword() {
+    @DisplayName("유저 비밀번호 변경 테스트")
+    void changePassword_을_테스트한다() {
 
         //given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
@@ -139,4 +140,5 @@ class UserServiceImplTest {
         assertThat(user.getPassword()).isEqualTo("newTest");
 
     }
+
 }
