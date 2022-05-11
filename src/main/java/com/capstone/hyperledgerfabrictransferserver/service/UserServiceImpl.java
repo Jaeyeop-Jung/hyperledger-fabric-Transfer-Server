@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService{
      * @return the user by jwt token
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public User getUserByJwtToken(HttpServletRequest httpServletRequest) {
 
         String token = null;
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService{
      * @return the
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserLoginResponse login(HttpServletRequest httpServletRequest, UserLoginRequest userLoginRequest) {
 
         User findUser = userRepository.findByStudentId(userLoginRequest.getStudentId())
