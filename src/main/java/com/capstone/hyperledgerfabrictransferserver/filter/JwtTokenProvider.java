@@ -22,6 +22,7 @@ public class JwtTokenProvider {
 
     @Value("${jwt.secret}")
     private String secretKey;
+
     private final Long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 1000L;
 
     private final UserDetailsService userDetailsService;
