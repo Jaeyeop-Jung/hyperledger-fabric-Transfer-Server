@@ -158,7 +158,10 @@ public class UserServiceImpl implements UserService{
         userRepository.delete(findUser);
         try {
             Gateway gateway = fabricService.getGateway();
-            fabricService.submitTransaction(gateway, "DeleteAsset", "asset" + findUser.getId());
+            boolean response = (boolean)fabricService.submitTransaction(gateway, "DeleteAsset", "asset" + findUser.getId());
+            if(!response){
+                throw new IncorrectContractException("");
+            }
             fabricService.close(gateway);
         } catch (Exception e){
             throw new IncorrectContractException("DeleteAsset 체인코드 실행 중 오류가 발생했습니다");
