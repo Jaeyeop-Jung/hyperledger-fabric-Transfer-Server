@@ -7,6 +7,10 @@ import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
 import com.capstone.hyperledgerfabrictransferserver.filter.JwtTokenProvider;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
+import com.capstone.hyperledgerfabrictransferserver.util.CustomFabricGateway;
+import org.hyperledger.fabric.gateway.ContractException;
+import org.hyperledger.fabric.gateway.Gateway;
+import org.hyperledger.fabric.gateway.Network;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -26,6 +31,9 @@ class UserServiceImplTest {
 
     @InjectMocks
     UserServiceImpl userService;
+
+    @Mock
+    FabricServiceImpl fabricService;
 
     @Mock
     UserRepository userRepository;
@@ -62,13 +70,14 @@ class UserServiceImplTest {
 
     @Test
     @DisplayName("유저 회원가입 테스트")
-    void join_을_테스트한다() {
+    void join_을_테스트한다() throws Exception {
         //given
         UserJoinRequest userJoinRequest = UserJoinRequest.builder()
                 .studentId(20170000L)
                 .password("test")
                 .name("test")
                 .build();
+        Gateway gateway = mock(Gateway.class);
 
         when(userRepository.existsByStudentId(userJoinRequest.getStudentId()))
                 .thenReturn(false);
@@ -76,6 +85,12 @@ class UserServiceImplTest {
                 .thenReturn("test");
         when(jwtTokenProvider.generateJwtToken(any()))
                 .thenReturn("test");
+        when(userRepository.save(any()))
+                .thenReturn(User.of(20170000L, "test", UserRole.ROLE_USER, "test"));
+        when(fabricService.getGateway())
+                .thenReturn(gateway);
+        when(fabricService.submitTransaction(any(), any(), any()))
+                .thenReturn(null);
 
         //when
         UserLoginResponse response = userService.join(userJoinRequest);
@@ -84,6 +99,8 @@ class UserServiceImplTest {
         verify(userRepository).save(any());
         verify(bCryptPasswordEncoder).encode(any());
         verify(jwtTokenProvider).generateJwtToken(any());
+        verify(fabricService).getGateway();
+        verify(fabricService).submitTransaction(any(), any(), any());
         assertThat(response.getAccessToken()).isEqualTo("Bearer test");
     }
 
@@ -141,4 +158,33 @@ class UserServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("유저 삭제 테스트")
+    public void delete_를_테스트한다() throws Exception {
+        //given
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        User user = User.of(20170000L, "test", UserRole.ROLE_USER, "test");
+        Gateway gateway = mock(Gateway.class);
+
+        when(httpServletRequest.getHeader(any()))
+                .thenReturn("Bearer test");
+        when(jwtTokenProvider.validateToken(any()))
+                .thenReturn(true);
+        when(userRepository.findById(any()))
+                .thenReturn(Optional.of(user));
+        when(fabricService.getGateway())
+                .thenReturn(gateway);
+        when(fabricService.submitTransaction(any(), any(), any()))
+                .thenReturn(true);
+
+        //when
+        userService.delete(httpServletRequest);
+
+        //then
+        verify(httpServletRequest, times(3)).getHeader(any());
+        verify(jwtTokenProvider).validateToken(any());
+        verify(userRepository).findById(any());
+        verify(fabricService).getGateway();
+        verify(fabricService).submitTransaction(any(), any(), any());
+    }
 }
