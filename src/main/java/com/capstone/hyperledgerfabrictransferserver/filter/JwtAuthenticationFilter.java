@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         }
 
         if( token != null && jwtTokenProvider.validateToken(token) ) {
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            Authentication authentication = jwtTokenProvider.getAuthentication(token); // 만약 null이 리턴되면 role 확인을 못하니까 EntryPoint로 넘어간다. role 확인이되면 deniedhandler로 간다.
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 

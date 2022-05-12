@@ -29,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String id) {
 
         User findUser = userRepository.findById(Long.parseLong(id))
                 .orElseThrow(() -> new DeletedUserException("삭제되거나 존재하지 않는 유저입니다"));
