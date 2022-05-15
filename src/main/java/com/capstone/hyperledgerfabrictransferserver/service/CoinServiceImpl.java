@@ -33,7 +33,7 @@ public class CoinServiceImpl implements CoinService{
             fabricService.submitTransaction(gateway, "CreateCoin", coinName);
             fabricService.close(gateway);
         } catch (Exception e){
-            throw new IncorrectContractException("CreateCoin ");
+            throw new IncorrectContractException("CreateCoin 체인코드 실행 중 오류가 발생했습니다");
         }
     }
 
