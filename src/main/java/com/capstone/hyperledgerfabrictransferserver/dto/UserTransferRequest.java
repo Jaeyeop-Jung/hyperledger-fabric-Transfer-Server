@@ -16,16 +16,16 @@ public class UserTransferRequest {
 
     @ApiParam(required = true)
     @NotNull
-    private Coin coin;
+    private String coinName;
 
     @ApiParam(required = true)
     @NotNull
     private Long amount;
 
     @Builder
-    public UserTransferRequest(Long studentId, Coin coin, Long amount) {
+    public UserTransferRequest(Long studentId, String coinName, Long amount) {
         this.studentId = studentId;
-        this.coin = coin;
+        this.coinName = coinName;
         this.amount = amount;
     }
 }
