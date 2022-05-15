@@ -1,7 +1,7 @@
 package com.capstone.hyperledgerfabrictransferserver.aop;
 
-import com.capstone.hyperledgerfabrictransferserver.aop.customException.AlreadyExistUserException;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.AlreadyExistsCoinException;
+import com.capstone.hyperledgerfabrictransferserver.aop.customException.NotExistsCoinException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +23,22 @@ public class CoinExceptionHandler {
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
         log.info("Advice : AlreadyExistUserExceptionHandler");
+
+        Map<String, String> map = new HashMap<>();
+        map.put("error type", httpStatus.getReasonPhrase());
+        map.put("code", "400");
+        map.put("message", e.getMessage());
+
+        return new ResponseEntity<>(map, responseHeader, httpStatus);
+    }
+
+    @ExceptionHandler(NotExistsCoinException.class)
+    public ResponseEntity<Map<String, String>> NotExistsCoinExceptionHandler(Exception e){
+
+        HttpHeaders responseHeader = new HttpHeaders();
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+        log.info("Advice : NotExistsCoinExceptionHandler");
 
         Map<String, String> map = new HashMap<>();
         map.put("error type", httpStatus.getReasonPhrase());
