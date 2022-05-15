@@ -24,12 +24,17 @@ public class Coin {
     @Column(name = "DELETED")
     private boolean deleted;
 
-    public static Coin of(String name){
-        return new Coin(name, false);
+    public static Coin of(String coinName){
+        return new Coin(coinName, false);
     }
 
     private Coin(String name, boolean deleted) {
         this.name = name;
         this.deleted = deleted;
+    }
+
+    public void setDeleted(){
+        this.name = name + id;
+        this.deleted = true;
     }
 }
