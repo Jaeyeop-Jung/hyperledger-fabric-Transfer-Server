@@ -8,29 +8,20 @@ import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
 import com.capstone.hyperledgerfabrictransferserver.filter.JwtTokenProvider;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
-import com.capstone.hyperledgerfabrictransferserver.util.CustomFabricGateway;
-import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.hyperledger.fabric.gateway.Contract;
-import org.hyperledger.fabric.gateway.Gateway;
-import org.hyperledger.fabric.gateway.Network;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UserServiceImpl implements UserService{
 
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
-    private final FabricServiceImpl fabricService;
 
 
     /**
@@ -78,22 +69,14 @@ public class UserServiceImpl implements UserService{
             throw new AlreadyExistUserException("학번 : " + userJoinRequest.getStudentId() + " 는 이미 가입된 학번입니다");
         }
 
-        User savedUser = userRepository.save(
-                User.of(
-                        userJoinRequest.getStudentId(),
-                        bCryptPasswordEncoder.encode(userJoinRequest.getPassword()),
-                        UserRole.ROLE_USER,
-                        userJoinRequest.getName()
-                )
+        User savedUser = User.of(
+                userJoinRequest.getStudentId(),
+                bCryptPasswordEncoder.encode(userJoinRequest.getPassword()),
+                UserRole.ROLE_USER,
+                userJoinRequest.getName()
         );
 
-        try {
-            Gateway gateway = fabricService.getGateway();
-            fabricService.submitTransaction(gateway, "CreateAsset", "asset" + savedUser.getId(), userJoinRequest.getName());
-            fabricService.close(gateway);
-        } catch (Exception e){
-            throw new IncorrectContractException("CreateAsset 체인코드 실행 중 오류가 발생했습니다");
-        }
+        userRepository.save(savedUser);
 
         return UserLoginResponse.builder()
                 .accessToken("Bearer " + jwtTokenProvider.generateJwtToken(savedUser))
@@ -156,15 +139,5 @@ public class UserServiceImpl implements UserService{
         User findUser = getUserByJwtToken(httpServletRequest);
 
         userRepository.delete(findUser);
-        try {
-            Gateway gateway = fabricService.getGateway();
-            boolean response = (boolean)fabricService.submitTransaction(gateway, "DeleteAsset", "asset" + findUser.getId());
-            if(!response){
-                throw new IncorrectContractException("");
-            }
-            fabricService.close(gateway);
-        } catch (Exception e){
-            throw new IncorrectContractException("DeleteAsset 체인코드 실행 중 오류가 발생했습니다");
-        }
     }
 }

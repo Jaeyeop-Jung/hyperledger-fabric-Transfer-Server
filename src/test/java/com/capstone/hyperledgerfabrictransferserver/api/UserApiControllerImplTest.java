@@ -1,5 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
+import com.capstone.hyperledgerfabrictransferserver.util.RestAssuredCRUD;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

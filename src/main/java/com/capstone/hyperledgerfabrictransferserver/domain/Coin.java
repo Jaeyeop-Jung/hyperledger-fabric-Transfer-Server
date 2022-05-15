@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class Coin {
 
     @Id
@@ -24,4 +25,12 @@ public class Coin {
     @Column(name = "DELETED")
     private boolean deleted;
 
+    public static Coin of(String name){
+        return new Coin(name, false);
+    }
+
+    private Coin(String name, boolean deleted) {
+        this.name = name;
+        this.deleted = deleted;
+    }
 }

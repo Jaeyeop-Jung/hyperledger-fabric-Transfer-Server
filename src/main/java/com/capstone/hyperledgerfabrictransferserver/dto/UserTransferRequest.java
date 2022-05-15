@@ -12,20 +12,20 @@ public class UserTransferRequest {
 
     @ApiParam(required = true)
     @NotNull
-    private Long studentId;
+    private Long receiverStudentId;
 
     @ApiParam(required = true)
     @NotNull
-    private Coin coin;
+    private String coinName;
 
     @ApiParam(required = true)
     @NotNull
     private Long amount;
 
     @Builder
-    public UserTransferRequest(Long studentId, Coin coin, Long amount) {
-        this.studentId = studentId;
-        this.coin = coin;
+    public UserTransferRequest(Long receiverStudentId, String coinName, Long amount) {
+        this.receiverStudentId = receiverStudentId;
+        this.coinName = coinName;
         this.amount = amount;
     }
 }

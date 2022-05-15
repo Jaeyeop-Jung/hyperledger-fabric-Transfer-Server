@@ -36,7 +36,7 @@ public class UserTrade extends BaseEntity{
     @NotNull
     private Long amount;
 
-    public UserTrade of(User sender, User receiver, Coin coin, Long amount){
+    public static UserTrade of(User sender, User receiver, Coin coin, Long amount){
         return new UserTrade(sender, receiver, coin, amount);
     }
 
