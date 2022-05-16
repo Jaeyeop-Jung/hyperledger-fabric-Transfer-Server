@@ -13,5 +13,4 @@ public interface UserTradeService {
     public void transfer(HttpServletRequest httpServletRequest, UserTransferRequest transferRequest);
 
     public List<UserTradeTransactionResponse> transaction(HttpServletRequest httpServletRequest);
-
 }

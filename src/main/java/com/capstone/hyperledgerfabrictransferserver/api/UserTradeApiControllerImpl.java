@@ -20,7 +20,7 @@ public class UserTradeApiControllerImpl implements UserTradeApiController{
     private final UserTradeService userTradeService;
 
     @Override
-    @PostMapping("/usertrade")
+    @GetMapping("/usertrade")
     public ResponseEntity<Void> transfer(HttpServletRequest httpServletRequest, UserTransferRequest transferRequest) {
 
         userTradeService.transfer(httpServletRequest, transferRequest);

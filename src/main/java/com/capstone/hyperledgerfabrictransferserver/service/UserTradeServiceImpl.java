@@ -46,14 +46,11 @@ public class UserTradeServiceImpl implements UserTradeService {
 
     @Transactional
     public List<UserTradeTransactionResponse> transaction(HttpServletRequest httpServletRequest) {
-//
-//        UserTrade findUser = userTradeRepository.findBySender(userService.getUserByJwtToken(httpServletRequest))
-//                .orElseThrow(() -> new IncorrectStudentIdException("가입하지 않거나 잘못된 학번입니다")); // 예외처리
 
         LocalDateTime localDateTime = LocalDateTime.now();
 
         List<UserTrade> findUser = userTradeRepository.findAll(Sort.by(Sort.Direction.ASC, "dateCreated"));
-//        List<UserTrade> findUser = userTradeRepository.findAll(userService.getUserByJwtToken(httpServletRequest));
+
         List<UserTradeTransactionResponse> responses = new ArrayList<>();
         for (UserTrade userTrade : findUser) {
             responses.add(
@@ -66,19 +63,5 @@ public class UserTradeServiceImpl implements UserTradeService {
             );
         }
         return responses;
-
-//        if (findUser != null) {
-//            UserTrade user = UserTrade.of(
-//                    findUser.getSender(),
-//                    findUser.getReceiver(),
-//                    findUser.getCoin(),
-//                    findUser.getAmount()
-//            );
-
-//            return UserTradeTransactionResponse.builder()
-//                    .sender(user.getSender().getId())
-//                    .build();
-//        }
-//        return null;
     }
 }
