@@ -5,6 +5,7 @@ import com.capstone.hyperledgerfabrictransferserver.service.UserTradeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +18,12 @@ public class UserTradeApiControllerImpl implements UserTradeApiController{
 
     @Override
     @PostMapping("/usertrade")
-    public ResponseEntity<Void> transfer(HttpServletRequest httpServletRequest, UserTransferRequest transferRequest) {
+    public ResponseEntity<Void> transfer
+    (
+            HttpServletRequest httpServletRequest,
+            @RequestBody UserTransferRequest transferRequest
+    )
+    {
 
         userTradeService.transfer(httpServletRequest, transferRequest);
 

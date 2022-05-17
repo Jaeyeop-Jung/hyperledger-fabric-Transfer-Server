@@ -6,11 +6,11 @@ import com.capstone.hyperledgerfabrictransferserver.aop.customException.NotExist
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.UserTrade;
+import com.capstone.hyperledgerfabrictransferserver.dto.AssetDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserTransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.repository.CoinRepository;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserTradeRepository;
-import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import org.hyperledger.fabric.gateway.Gateway;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class UserTradeServiceImpl implements UserTradeService{
 
     @Override
     @Transactional
-    public void transfer(HttpServletRequest httpServletRequest, UserTransferRequest userTransferRequest) {
+    public AssetDto transfer(HttpServletRequest httpServletRequest, UserTransferRequest userTransferRequest) {
 
         Coin coin = coinRepository.findByName(userTransferRequest.getCoinName())
                 .orElseThrow(() -> new NotExistsCoinException("존재하지 않은 코인입니다"));
@@ -49,7 +49,7 @@ public class UserTradeServiceImpl implements UserTradeService{
 
         try {
             Gateway gateway = fabricService.getGateway();
-            JsonObject response = (JsonObject) fabricService.submitTransaction(
+            AssetDto responseAsset = (AssetDto) fabricService.submitTransaction(
                     gateway,
                     "TransferCoin",
                     "asset" + sender.getId(),
@@ -57,6 +57,8 @@ public class UserTradeServiceImpl implements UserTradeService{
                     coin.getName(),
                     String.valueOf(userTransferRequest.getAmount()));
             fabricService.close(gateway);
+
+            return responseAsset;
         } catch (Exception e){
             throw new IncorrectContractException("TransferCoin 체인코드 실행 중 오류가 발생했습니다");
         }
