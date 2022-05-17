@@ -48,7 +48,7 @@ class CoinServiceImplTest {
         when(fabricService.getGateway())
                 .thenReturn(gateway);
         when(fabricService.submitTransaction(any(), any(), any()))
-                .thenReturn(true);
+                .thenReturn(String.valueOf("true"));
 
         //when
         coinService.create(coinCreateRequest);
@@ -74,7 +74,7 @@ class CoinServiceImplTest {
         when(fabricService.getGateway())
                 .thenReturn(gateway);
         when(fabricService.submitTransaction(any(), any(), any()))
-                .thenReturn(true);
+                .thenReturn(String.valueOf("true"));
 
         //when
         coinService.delete(coinModifyRequest);

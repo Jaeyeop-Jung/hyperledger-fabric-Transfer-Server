@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService{
 
         try {
             Gateway gateway = fabricService.getGateway();
-            fabricService.submitTransaction(gateway, "CreateAsset", "asset" + savedUser.getId(), userJoinRequest.getName());
+            fabricService.submitTransaction(gateway, "CreateAsset", "asset" + savedUser.getId(), String.valueOf(savedUser.getStudentId()), userJoinRequest.getName());
             fabricService.close(gateway);
         } catch (Exception e){
             throw new IncorrectContractException("CreateAsset 체인코드 실행 중 오류가 발생했습니다");
@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService{
         userRepository.delete(findUser);
         try {
             Gateway gateway = fabricService.getGateway();
-            boolean response = (boolean)fabricService.submitTransaction(gateway, "DeleteAsset", "asset" + findUser.getId());
+            boolean response = Boolean.valueOf(fabricService.submitTransaction(gateway, "DeleteAsset", "asset" + findUser.getId()));
             if(!response){
                 throw new IncorrectContractException("");
             }

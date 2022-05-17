@@ -175,7 +175,7 @@ class UserServiceImplTest {
         when(fabricService.getGateway())
                 .thenReturn(gateway);
         when(fabricService.submitTransaction(any(), any(), any()))
-                .thenReturn(true);
+                .thenReturn("true");
 
         //when
         userService.delete(httpServletRequest);

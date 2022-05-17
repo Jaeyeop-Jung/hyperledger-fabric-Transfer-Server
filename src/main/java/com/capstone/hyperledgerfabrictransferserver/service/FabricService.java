@@ -10,7 +10,7 @@ public interface FabricService {
 
     public Gateway getGateway();
 
-    public Object submitTransaction(Gateway connect, String name, String ... args) throws ContractException, InterruptedException, TimeoutException, JsonProcessingException;
+    public String submitTransaction(Gateway connect, String name, String ... args) throws ContractException, InterruptedException, TimeoutException, JsonProcessingException;
 
     public void close(Gateway connect);
 }

@@ -1,6 +1,7 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.UserTrade;
+import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserTradeTransactionResponse;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserTransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.service.UserTradeService;
@@ -21,16 +22,13 @@ public class UserTradeApiControllerImpl implements UserTradeApiController{
     private final UserTradeService userTradeService;
 
     @PostMapping("/usertrade")
-    public ResponseEntity<Void> transfer
+    public ResponseEntity<TransferResponse> transfer
     (
             HttpServletRequest httpServletRequest,
             @RequestBody UserTransferRequest transferRequest
     )
     {
-
-        userTradeService.transfer(httpServletRequest, transferRequest);
-
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(userTradeService.transfer(httpServletRequest, transferRequest));
     }
 
 

@@ -9,7 +9,7 @@ import java.util.HashMap;
 @ToString
 public class AssetDto {
 
-    private String assetId;
+    private Long studentId;
 
     private String owner;
 
@@ -19,11 +19,11 @@ public class AssetDto {
 
     private String receiver;
 
-    private String amount;
+    private Long amount;
 
     @Builder
-    public AssetDto(String assetId, String owner, HashMap<String, String> coin, String sender, String receiver, String amount) {
-        this.assetId = assetId;
+    public AssetDto(Long studentId, String owner, HashMap<String, String> coin, String sender, String receiver, Long amount) {
+        this.studentId = studentId;
         this.owner = owner;
         this.coin = coin;
         this.sender = sender;

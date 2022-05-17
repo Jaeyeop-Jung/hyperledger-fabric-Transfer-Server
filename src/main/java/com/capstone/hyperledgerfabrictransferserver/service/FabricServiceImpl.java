@@ -16,6 +16,7 @@ import org.hyperledger.fabric.gateway.Gateway;
 import org.hyperledger.fabric.gateway.Network;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
@@ -29,6 +30,7 @@ public class FabricServiceImpl implements FabricService{
     private final ObjectMapper objectMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public Gateway getGateway(){
         return customFabricGateway.connect();
     }
@@ -47,21 +49,14 @@ public class FabricServiceImpl implements FabricService{
      * @throws TimeoutException     the timeout exception
      */
     @Override
-    public Object submitTransaction(Gateway connect, String name, String ... args) throws ContractException, InterruptedException, TimeoutException, JsonProcessingException {
+    @Transactional
+    public String submitTransaction(Gateway connect, String name, String ... args) throws ContractException, InterruptedException, TimeoutException, JsonProcessingException {
         Network network = connect.getNetwork("mychannel");
         Contract contract = network.getContract("basic");
 
         byte[] fabricResponse = contract.submitTransaction(name, args);
 
-        String response = new String(fabricResponse, StandardCharsets.UTF_8);
-        if(response.equals("true") || response.equals("false")){
-
-            return Boolean.valueOf(response);
-
-        } else {
-
-            return objectMapper.readValue(response, AssetDto.class);
-        }
+        return new String(fabricResponse, StandardCharsets.UTF_8);
     }
 
     @Override
