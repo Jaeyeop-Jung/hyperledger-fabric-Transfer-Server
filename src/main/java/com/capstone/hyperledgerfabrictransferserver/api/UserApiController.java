@@ -1,5 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
+import com.capstone.hyperledgerfabrictransferserver.dto.AssetDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserJoinRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
@@ -16,4 +17,6 @@ public interface UserApiController {
     public ResponseEntity<Void> changePassword(HttpServletRequest httpServletRequest, String newPassword);
 
     public ResponseEntity<Void> delete(HttpServletRequest httpServletRequest);
+
+    public ResponseEntity<String> checkAsset(HttpServletRequest httpServletRequest);
 }

@@ -8,7 +8,6 @@ import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.UserTrade;
 import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserTradeTransactionResponse;
-import com.capstone.hyperledgerfabrictransferserver.dto.AssetDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserTransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.repository.CoinRepository;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
@@ -76,7 +75,8 @@ public class UserTradeServiceImpl implements UserTradeService {
     @Transactional
     public List<UserTradeTransactionResponse> enquireUserTrade(HttpServletRequest httpServletRequest) {
 
-        List<UserTrade> findUser = userTradeRepository.findAll(Sort.by(Sort.Direction.ASC, "dateCreated"));
+        Long UserId = userService.getUserByJwtToken(httpServletRequest).getId();
+        List<UserTrade> findUser = userTradeRepository.findAllById(UserId ,Sort.by(Sort.Direction.ASC, "dateCreated"));
 
         List<UserTradeTransactionResponse> responses = new ArrayList<>();
         for (UserTrade userTrade : findUser) {

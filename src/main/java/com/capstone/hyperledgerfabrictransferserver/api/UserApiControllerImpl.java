@@ -1,5 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
+import com.capstone.hyperledgerfabrictransferserver.dto.AssetDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserJoinRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
@@ -84,5 +85,14 @@ public class UserApiControllerImpl implements UserApiController{
         userService.delete(httpServletRequest);
 
         return ResponseEntity.ok(null);
+    }
+
+    @Override
+    @GetMapping("/userasset")
+    public ResponseEntity<String> checkAsset(HttpServletRequest httpServletRequest) {
+
+        String response = userService.checkAsset(httpServletRequest);
+
+        return ResponseEntity.ok(response);
     }
 }
