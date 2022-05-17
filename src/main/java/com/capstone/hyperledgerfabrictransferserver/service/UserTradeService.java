@@ -13,5 +13,5 @@ public interface UserTradeService {
 
     public AssetDto transfer(HttpServletRequest httpServletRequest, UserTransferRequest transferRequest);
 
-    public List<UserTradeTransactionResponse> transaction(HttpServletRequest httpServletRequest);
+    public List<UserTradeTransactionResponse> enquireUserTrade(HttpServletRequest httpServletRequest);
 }

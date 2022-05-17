@@ -7,13 +7,10 @@ import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.UserTrade;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserTradeTransactionResponse;
-import com.capstone.hyperledgerfabrictransferserver.domain.UserTrade;
 import com.capstone.hyperledgerfabrictransferserver.dto.AssetDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserTransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.repository.CoinRepository;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
-import com.capstone.hyperledgerfabrictransferserver.repository.UserTradeRepository;
-import jdk.jshell.execution.LoaderDelegate;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserTradeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -21,15 +18,9 @@ import org.hyperledger.fabric.gateway.Gateway;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.json.Json;
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import static org.springframework.data.domain.Sort.Order.desc;
 
 @RequiredArgsConstructor
 @Service
@@ -39,8 +30,6 @@ public class UserTradeServiceImpl implements UserTradeService {
     private final FabricService fabricService;
     private final UserRepository userRepository;
     private final CoinRepository coinRepository;
-    private final UserTradeRepository userTradeRepository;
-
     private final UserTradeRepository userTradeRepository;
 
     @Override
@@ -72,16 +61,16 @@ public class UserTradeServiceImpl implements UserTradeService {
                     coin.getName(),
                     String.valueOf(userTransferRequest.getAmount()));
             fabricService.close(gateway);
-    }
 
             return responseAsset;
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new IncorrectContractException("TransferCoin 체인코드 실행 중 오류가 발생했습니다");
         }
-    @Transactional
-    public List<UserTradeTransactionResponse> transaction(HttpServletRequest httpServletRequest) {
+    }
 
-        LocalDateTime localDateTime = LocalDateTime.now();
+    @Override
+    @Transactional
+    public List<UserTradeTransactionResponse> enquireUserTrade(HttpServletRequest httpServletRequest) {
 
         List<UserTrade> findUser = userTradeRepository.findAll(Sort.by(Sort.Direction.ASC, "dateCreated"));
 
@@ -98,4 +87,5 @@ public class UserTradeServiceImpl implements UserTradeService {
         }
         return responses;
     }
+
 }

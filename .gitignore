@@ -37,3 +37,7 @@ out/
 .vscode/
 
 *.yml
+/wallet/*
+/src/main/java/com/capstone/hyperledgerfabrictransferserver/util/CustomFabricGateway.java
+/src/main/java/com/capstone/hyperledgerfabrictransferserver/util/EnrollAdmin.java
+/src/main/java/com/capstone/hyperledgerfabrictransferserver/util/RegisterUser.java

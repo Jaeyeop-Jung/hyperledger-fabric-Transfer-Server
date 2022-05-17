@@ -13,6 +13,6 @@ public interface UserTradeApiController {
 
     ResponseEntity<Void> transfer(HttpServletRequest httpServletRequest, UserTransferRequest transferRequest);
 
-    ResponseEntity<List<UserTradeTransactionResponse>> transaction(HttpServletRequest httpServletRequest);
+    ResponseEntity<List<UserTradeTransactionResponse>> enquireUserTrade(HttpServletRequest httpServletRequest);
 
 }

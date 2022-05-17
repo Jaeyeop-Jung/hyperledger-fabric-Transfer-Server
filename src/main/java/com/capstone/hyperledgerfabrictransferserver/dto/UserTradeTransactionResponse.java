@@ -10,23 +10,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class UserTradeTransactionResponse {
-    @ApiParam(required = true)
+
     @NotNull
     private Long sender;
 
-    @ApiParam(required = true)
     @NotNull
     private Long receiver;
 
-    @ApiParam(required = true)
     @NotNull
     private String coinName;
 
-    @ApiParam(required = true)
     @NotNull
     private Long amount;
 
-    @ApiParam(required = true)
     @NotNull
     private LocalDateTime dateCreated;
 

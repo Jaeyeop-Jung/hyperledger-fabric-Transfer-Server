@@ -35,8 +35,8 @@ public class UserTradeApiControllerImpl implements UserTradeApiController{
 
 
     @Override
-    @GetMapping("/userTransaction")
-    public ResponseEntity<List<UserTradeTransactionResponse>> transaction(HttpServletRequest httpServletRequest){
+    @GetMapping("/usertrade")
+    public ResponseEntity<List<UserTradeTransactionResponse>> enquireUserTrade(HttpServletRequest httpServletRequest){
         List<UserTradeTransactionResponse> resposne = userTradeService.transaction(httpServletRequest);
 
         return ResponseEntity.ok(resposne);
