@@ -1,6 +1,9 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
+import com.capstone.hyperledgerfabrictransferserver.dto.AssetDto;
 import com.capstone.hyperledgerfabrictransferserver.util.CustomFabricGateway;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -23,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 public class FabricServiceImpl implements FabricService{
 
     private final CustomFabricGateway customFabricGateway;
+    private final ObjectMapper objectMapper;
 
     @Override
     public Gateway getGateway(){
@@ -43,7 +47,7 @@ public class FabricServiceImpl implements FabricService{
      * @throws TimeoutException     the timeout exception
      */
     @Override
-    public Object submitTransaction(Gateway connect, String name, String ... args) throws ContractException, InterruptedException, TimeoutException {
+    public Object submitTransaction(Gateway connect, String name, String ... args) throws ContractException, InterruptedException, TimeoutException, JsonProcessingException {
         Network network = connect.getNetwork("mychannel");
         Contract contract = network.getContract("basic");
 
@@ -55,10 +59,8 @@ public class FabricServiceImpl implements FabricService{
             return Boolean.valueOf(response);
 
         } else {
-            JsonParser jsonParser = new JsonParser();
-            JsonElement parse = jsonParser.parse(new String(fabricResponse));
 
-            return parse.getAsJsonObject();
+            return objectMapper.readValue(response, AssetDto.class);
         }
     }
 
