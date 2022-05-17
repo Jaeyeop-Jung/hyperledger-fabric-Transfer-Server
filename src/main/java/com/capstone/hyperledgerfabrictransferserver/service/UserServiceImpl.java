@@ -3,6 +3,7 @@ package com.capstone.hyperledgerfabrictransferserver.service;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.*;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.UserRole;
+import com.capstone.hyperledgerfabrictransferserver.dto.AssetDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserJoinRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
@@ -165,6 +166,27 @@ public class UserServiceImpl implements UserService{
             fabricService.close(gateway);
         } catch (Exception e){
             throw new IncorrectContractException("DeleteAsset 체인코드 실행 중 오류가 발생했습니다");
+        }
+    }
+
+    @Override
+    @Transactional
+    public String checkAsset(HttpServletRequest httpServletRequest) {
+
+        User findUser = getUserByJwtToken(httpServletRequest);
+
+        try {
+            System.out.println("assetid: " + "asset" + findUser.getId());
+            Gateway gateway = fabricService.getGateway();
+            String response = (String)fabricService.submitTransaction(gateway, "GetAsset", "asset" + findUser.getId());
+            System.out.println(response);
+            if(response == null){
+                throw new IncorrectContractException("");
+            }
+            fabricService.close(gateway);
+            return response;
+        } catch (Exception e){
+            throw new IncorrectContractException("GetAsset 체인코드 실행 중 오류가 발생했습니다");
         }
     }
 }
