@@ -22,7 +22,7 @@ public class CustomFabricGateway {
             Wallet wallet = Wallets.newFileSystemWallet(walletPath);
             // load a CCP
 //        Path networkConfigPath = Paths.get("","Users", "jeongjaeyeob", "go", "src", "github.com", "Jaeyeop-Jung", "fabric-samples", "test-network", "organizations", "peerOrganizations", "org1.example.com", "connection-org1.yaml");
-            Path networkConfigPath = Paths.get("/home/hyper/go/src/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.yaml");
+            Path networkConfigPath = Paths.get("/Users/jeongjaeyeob/go/src/github.com/Jaeyeop-Jung/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.yaml");
 
             Gateway.Builder builder = Gateway.createBuilder();
             builder.identity(wallet, "appUser").networkConfig(networkConfigPath).discovery(true);
