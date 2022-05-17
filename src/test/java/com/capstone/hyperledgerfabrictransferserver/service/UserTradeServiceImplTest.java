@@ -80,7 +80,14 @@ class UserTradeServiceImplTest {
         Gateway gateway = mock(Gateway.class);
         HashMap<String, String> coinMap = new HashMap<>();
         coinMap.put("test", "100");
-
+        String submitTransactionResponse = objectMapper.writeValueAsString(
+                TransferResponse.builder()
+                        .senderStudentId(1L)
+                        .receiverStudentId(2L)
+                        .coinName("test")
+                        .amount(100L)
+                        .build()
+        );
 
         when(coinRepository.findByName(any()))
                 .thenReturn(Optional.of(coin));
@@ -91,16 +98,7 @@ class UserTradeServiceImplTest {
         when(fabricService.getGateway())
                 .thenReturn(gateway);
         when(fabricService.submitTransaction(any(), any(), any()))
-                .thenReturn(
-                        objectMapper.writeValueAsString(
-                                TransferResponse.builder()
-                                        .senderStudentId(1L)
-                                        .receiverStudentId(2L)
-                                        .coinName("test")
-                                        .amount(100L)
-                                        .build()
-                        )
-                );
+                .thenReturn(submitTransactionResponse);
 
         //when
         TransferResponse transferResponse = userTradeService.transfer(httpServletRequest, userTransferRequest);
