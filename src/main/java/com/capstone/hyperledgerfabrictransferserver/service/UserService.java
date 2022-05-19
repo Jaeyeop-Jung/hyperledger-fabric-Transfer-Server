@@ -20,5 +20,5 @@ public interface UserService {
 
     public void delete(HttpServletRequest httpServletRequest);
 
-    public String checkAsset(HttpServletRequest httpServletRequest);
+    public AssetDto getAsset(HttpServletRequest httpServletRequest);
 }

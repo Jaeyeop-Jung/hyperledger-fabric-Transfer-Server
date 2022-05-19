@@ -40,6 +40,8 @@ public class UserTrade extends BaseEntity{
         return new UserTrade(sender, receiver, coin, amount);
     }
 
+
+
     private UserTrade(User sender, User receiver, Coin coin, Long amount) {
         this.sender = sender;
         this.receiver = receiver;

@@ -9,19 +9,15 @@ import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
 import com.capstone.hyperledgerfabrictransferserver.filter.JwtTokenProvider;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
-import com.capstone.hyperledgerfabrictransferserver.util.CustomFabricGateway;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.Gateway;
-import org.hyperledger.fabric.gateway.Network;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +28,7 @@ public class UserServiceImpl implements UserService{
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final FabricServiceImpl fabricService;
-
+    private final ObjectMapper objectMapper;
 
     /**
      * methodName : getUserByJwtToken
@@ -170,21 +166,23 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    @Transactional
-    public String checkAsset(HttpServletRequest httpServletRequest) {
+    @Transactional(readOnly = true)
+    public AssetDto getAsset(HttpServletRequest httpServletRequest) {
 
         User findUser = getUserByJwtToken(httpServletRequest);
 
         try {
             System.out.println("assetid: " + "asset" + findUser.getId());
             Gateway gateway = fabricService.getGateway();
-            String response = (String)fabricService.submitTransaction(gateway, "GetAsset", "asset" + findUser.getId());
+            String response = fabricService.submitTransaction(
+                    gateway, "GetAsset", "asset" + findUser.getId()
+            );
             System.out.println(response);
             if(response == null){
                 throw new IncorrectContractException("");
             }
             fabricService.close(gateway);
-            return response;
+            return objectMapper.readValue(response, AssetDto.class);
         } catch (Exception e){
             throw new IncorrectContractException("GetAsset 체인코드 실행 중 오류가 발생했습니다");
         }

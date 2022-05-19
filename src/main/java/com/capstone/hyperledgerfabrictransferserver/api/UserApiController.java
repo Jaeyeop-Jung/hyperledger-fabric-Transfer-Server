@@ -18,5 +18,5 @@ public interface UserApiController {
 
     public ResponseEntity<Void> delete(HttpServletRequest httpServletRequest);
 
-    public ResponseEntity<String> checkAsset(HttpServletRequest httpServletRequest);
+    public ResponseEntity<AssetDto> getAsset(HttpServletRequest httpServletRequest);
 }

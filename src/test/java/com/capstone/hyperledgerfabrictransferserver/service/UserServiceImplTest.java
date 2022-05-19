@@ -2,26 +2,26 @@ package com.capstone.hyperledgerfabrictransferserver.service;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.UserRole;
+import com.capstone.hyperledgerfabrictransferserver.dto.AssetDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserJoinRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
 import com.capstone.hyperledgerfabrictransferserver.filter.JwtTokenProvider;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
-import com.capstone.hyperledgerfabrictransferserver.util.CustomFabricGateway;
-import org.hyperledger.fabric.gateway.ContractException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hyperledger.fabric.gateway.Gateway;
-import org.hyperledger.fabric.gateway.Network;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -43,6 +43,9 @@ class UserServiceImplTest {
 
     @Mock
     BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Spy
+    ObjectMapper objectMapper;
 
     @Test
     @DisplayName("Jwt토큰으로 유저 찾기 테스트")
@@ -187,4 +190,47 @@ class UserServiceImplTest {
         verify(fabricService).getGateway();
         verify(fabricService).submitTransaction(any(), any(), any());
     }
+
+    @Test
+    @DisplayName("개인 자산 조회 테스트")
+    public void getAsset_를_테스트한다() throws Exception {
+        //given
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        User user = User.of(20170000L, "test", UserRole.ROLE_USER, "test");
+        Gateway gateway = mock(Gateway.class);
+
+
+        String test = objectMapper.writeValueAsString(
+                AssetDto.builder()
+                        .studentId(20170000L)
+                        .coin(new HashMap<>())
+                        .owner("test")
+                        .sender(null)
+                        .receiver(null)
+                        .amount(null)
+                        .build()
+        );
+
+        when(httpServletRequest.getHeader(any()))
+                .thenReturn("Bearer test");
+        when(jwtTokenProvider.validateToken(any()))
+                .thenReturn(true);
+        when(userRepository.findById(any()))
+                .thenReturn(Optional.of(user));
+        when(fabricService.getGateway())
+                .thenReturn(gateway);
+        when(fabricService.submitTransaction(any(), any(), any()))
+                .thenReturn(test);
+
+        //when
+        userService.getAsset(httpServletRequest);
+
+        //then
+        verify(httpServletRequest, times(3)).getHeader(any());
+        verify(jwtTokenProvider).validateToken(any());
+        verify(fabricService).getGateway();
+        verify(fabricService).submitTransaction(any(), any(), any());
+        assertThat(user.getStudentId()).isEqualTo(20170000L);
+    }
+
 }

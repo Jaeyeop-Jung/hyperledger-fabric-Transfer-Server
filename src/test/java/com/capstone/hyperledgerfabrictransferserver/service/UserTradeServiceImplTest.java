@@ -3,9 +3,7 @@ package com.capstone.hyperledgerfabrictransferserver.service;
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.UserRole;
-import com.capstone.hyperledgerfabrictransferserver.dto.AssetDto;
-import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;
-import com.capstone.hyperledgerfabrictransferserver.dto.UserTransferRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;import com.capstone.hyperledgerfabrictransferserver.dto.UserTransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.repository.CoinRepository;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserTradeRepository;
@@ -83,7 +81,7 @@ class UserTradeServiceImplTest {
         String submitTransactionResponse = objectMapper.writeValueAsString(
                 TransferResponse.builder()
                         .senderStudentId(1L)
-                        .receiverStudentId(2L)
+                        .receiverStudentIdOrPhoneNumber(2L)
                         .coinName("test")
                         .amount(100L)
                         .build()
