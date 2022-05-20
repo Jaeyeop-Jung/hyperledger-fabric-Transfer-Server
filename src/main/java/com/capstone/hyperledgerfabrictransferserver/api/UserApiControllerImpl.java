@@ -6,8 +6,6 @@ import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
 import com.capstone.hyperledgerfabrictransferserver.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,10 +86,10 @@ public class UserApiControllerImpl implements UserApiController{
     }
 
     @Override
-    @GetMapping("/userasset")
-    public ResponseEntity<String> checkAsset(HttpServletRequest httpServletRequest) {
+    @GetMapping("/user")
+    public ResponseEntity<AssetDto> getAsset(HttpServletRequest httpServletRequest) {
 
-        String response = userService.checkAsset(httpServletRequest);
+        AssetDto response = userService.getAsset(httpServletRequest);
 
         return ResponseEntity.ok(response);
     }
