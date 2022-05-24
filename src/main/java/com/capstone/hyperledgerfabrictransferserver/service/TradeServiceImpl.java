@@ -5,52 +5,54 @@ import com.capstone.hyperledgerfabrictransferserver.aop.customException.Incorrec
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.NotExistsCoinException;
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
-import com.capstone.hyperledgerfabrictransferserver.domain.UserTrade;
+import com.capstone.hyperledgerfabrictransferserver.domain.Trade;
+import com.capstone.hyperledgerfabrictransferserver.dto.TransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;
-import com.capstone.hyperledgerfabrictransferserver.dto.UserTradeTransactionResponse;
-import com.capstone.hyperledgerfabrictransferserver.dto.UserTransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.repository.CoinRepository;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
-import com.capstone.hyperledgerfabrictransferserver.repository.UserTradeRepository;
+import com.capstone.hyperledgerfabrictransferserver.repository.TradeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
+import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Gateway;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
 @Service
-public class UserTradeServiceImpl implements UserTradeService {
+@RequiredArgsConstructor
+@Slf4j
+public class TradeServiceImpl implements TradeService{
 
     private final UserService userService;
     private final FabricService fabricService;
     private final UserRepository userRepository;
     private final CoinRepository coinRepository;
-    private final UserTradeRepository userTradeRepository;
+    private final TradeRepository tradeRepository;
 
     private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
-    public TransferResponse transfer(HttpServletRequest httpServletRequest, UserTransferRequest userTransferRequest) {
+    public TransferResponse transfer(HttpServletRequest httpServletRequest, TransferRequest transferRequest) {
 
-        Coin coin = coinRepository.findByName(userTransferRequest.getCoinName())
+        Coin coin = coinRepository.findByName(transferRequest.getCoinName())
                 .orElseThrow(() -> new NotExistsCoinException("존재하지 않은 코인입니다"));
         User sender = userService.getUserByJwtToken(httpServletRequest);
-        User receiver = userRepository.findByStudentId(userTransferRequest.getStudentId())
+        User receiver = userRepository.findByStudentId(transferRequest.getReceiverStudentIdOrPhoneNumber())
                 .orElseThrow(() -> new IncorrectStudentIdException("가입하지 않거나 잘못된 학번입니다"));
 
-        userTradeRepository.save(
-                UserTrade.of(
+        tradeRepository.save(
+                Trade.of(
                         sender,
                         receiver,
                         coin,
-                        userTransferRequest.getAmount()
+                        transferRequest.getAmount()
                 )
         );
 
@@ -62,7 +64,7 @@ public class UserTradeServiceImpl implements UserTradeService {
                     "asset" + sender.getId(),
                     "asset" + receiver.getId(),
                     coin.getName(),
-                    String.valueOf(userTransferRequest.getAmount()));
+                    String.valueOf(transferRequest.getAmount()));
             fabricService.close(gateway);
 
             return objectMapper.readValue(transferResponse, TransferResponse.class);
@@ -72,24 +74,12 @@ public class UserTradeServiceImpl implements UserTradeService {
     }
 
     @Override
-    @Transactional
-    public List<UserTradeTransactionResponse> enquireUserTrade(HttpServletRequest httpServletRequest) {
+    @Transactional(readOnly = true)
+    public List<TransferResponse> enquireTrade(HttpServletRequest httpServletRequest, int page) {
 
-        Long UserId = userService.getUserByJwtToken(httpServletRequest).getId();
-        List<UserTrade> findUser = userTradeRepository.findAllById(UserId ,Sort.by(Sort.Direction.ASC, "dateCreated"));
-
-        List<UserTradeTransactionResponse> responses = new ArrayList<>();
-        for (UserTrade userTrade : findUser) {
-            responses.add(
-                    UserTradeTransactionResponse.builder()
-                            .sender(userTrade.getSender().getStudentId())
-                            .receiver(userTrade.getReceiver().getStudentId())
-                            .coinName(userTrade.getCoin().getName())
-                            .dateCreated(userTrade.getDateCreated())
-                            .build()
-            );
-        }
-        return responses;
+        User findUser = userService.getUserByJwtToken(httpServletRequest);
+        Page<Trade> findAllUserTrades = tradeRepository.findAllBySender(findUser, PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
+        
+        return TransferResponse.toDto(findAllUserTrades.getContent());
     }
-
 }

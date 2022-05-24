@@ -10,12 +10,12 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "USERTRADE")
-public class UserTrade extends BaseEntity{
+@Table(name = "TRADE")
+public class Trade extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USERTRADE_ID")
+    @Column(name = "TRADE_ID")
     private Long id;
 
     @NotNull
@@ -23,10 +23,13 @@ public class UserTrade extends BaseEntity{
     @JoinColumn(name = "SENDER_ID")
     private User sender;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "RECEIVER_ID")
+    @JoinColumn(name = "RECEIVED_USER_ID")
     private User receiver;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "RECEIVED_SHOP_ID")
+    private Shop shop;
 
     @NotNull
     @OneToOne(fetch = FetchType.LAZY)
@@ -36,16 +39,26 @@ public class UserTrade extends BaseEntity{
     @NotNull
     private Long amount;
 
-    public static UserTrade of(User sender, User receiver, Coin coin, Long amount){
-        return new UserTrade(sender, receiver, coin, amount);
+    public static Trade of(User sender, User receiver, Coin coin, Long amount){
+        return new Trade(sender, receiver, coin, amount);
     }
 
+    public static Trade of(User sender, Shop shop, Coin coin, Long amount){
+        return new Trade(sender, shop, coin, amount);
+    }
 
-
-    private UserTrade(User sender, User receiver, Coin coin, Long amount) {
+    private Trade(User sender, User receiver, Coin coin, Long amount) {
         this.sender = sender;
         this.receiver = receiver;
         this.coin = coin;
         this.amount = amount;
     }
+
+    public Trade(User sender, Shop shop, Coin coin, Long amount) {
+        this.sender = sender;
+        this.shop = shop;
+        this.coin = coin;
+        this.amount = amount;
+    }
+
 }

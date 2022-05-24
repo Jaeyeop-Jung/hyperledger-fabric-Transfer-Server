@@ -1,6 +1,5 @@
 package com.capstone.hyperledgerfabrictransferserver.dto;
 
-import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.sun.istack.NotNull;
 import io.swagger.annotations.ApiParam;
 import lombok.*;
@@ -8,11 +7,11 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class UserTransferRequest {
+public class TransferRequest {
 
     @ApiParam(required = true)
     @NotNull
-    private Long studentId;
+    private Long receiverStudentIdOrPhoneNumber;
 
     @ApiParam(required = true)
     @NotNull
@@ -23,8 +22,8 @@ public class UserTransferRequest {
     private Long amount;
 
     @Builder
-    public UserTransferRequest(Long studentId, String coinName, Long amount) {
-        this.studentId = studentId;
+    public TransferRequest(Long receiverStudentIdOrPhoneNumber, String coinName, Long amount) {
+        this.receiverStudentIdOrPhoneNumber = receiverStudentIdOrPhoneNumber;
         this.coinName = coinName;
         this.amount = amount;
     }

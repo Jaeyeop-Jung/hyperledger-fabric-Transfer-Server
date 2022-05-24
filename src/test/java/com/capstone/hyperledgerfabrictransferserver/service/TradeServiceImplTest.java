@@ -3,10 +3,10 @@ package com.capstone.hyperledgerfabrictransferserver.service;
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.UserRole;
-import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;import com.capstone.hyperledgerfabrictransferserver.dto.UserTransferRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;import com.capstone.hyperledgerfabrictransferserver.dto.TransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.repository.CoinRepository;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
-import com.capstone.hyperledgerfabrictransferserver.repository.UserTradeRepository;
+import com.capstone.hyperledgerfabrictransferserver.repository.TradeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.hyperledger.fabric.gateway.Gateway;
@@ -15,24 +15,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.HashMap;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UserTradeServiceImplTest {
+class TradeServiceImplTest {
 
     @InjectMocks
-    UserTradeServiceImpl userTradeService;
+    TradeServiceImpl tradeService;
 
     @Mock
     UserService userService;
@@ -47,7 +44,7 @@ class UserTradeServiceImplTest {
     CoinRepository coinRepository;
 
     @Mock
-    UserTradeRepository userTradeRepository;
+    TradeRepository tradeRepository;
 
     @Spy
     ObjectMapper objectMapper;
@@ -56,8 +53,8 @@ class UserTradeServiceImplTest {
     @DisplayName("유저간 송금 테스트")
     void transfer_을_테스트한다() throws Exception{
         //given
-        UserTransferRequest userTransferRequest = UserTransferRequest.builder()
-                .studentId(2L)
+        TransferRequest transferRequest = TransferRequest.builder()
+                .receiverStudentIdOrPhoneNumber(2L)
                 .coinName("test")
                 .amount(100L)
                 .build();
@@ -99,7 +96,7 @@ class UserTradeServiceImplTest {
                 .thenReturn(submitTransactionResponse);
 
         //when
-        TransferResponse transferResponse = userTradeService.transfer(httpServletRequest, userTransferRequest);
+        TransferResponse transferResponse = tradeService.transfer(httpServletRequest, transferRequest);
 
         //then
         Assertions.assertThat(transferResponse.getAmount()).isEqualTo(100L);
