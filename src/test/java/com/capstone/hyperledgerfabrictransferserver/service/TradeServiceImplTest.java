@@ -1,6 +1,7 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
+import com.capstone.hyperledgerfabrictransferserver.domain.Trade;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.UserRole;
 import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;import com.capstone.hyperledgerfabrictransferserver.dto.TransferRequest;
@@ -17,12 +18,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -99,7 +106,59 @@ class TradeServiceImplTest {
         TransferResponse transferResponse = tradeService.transfer(httpServletRequest, transferRequest);
 
         //then
-        Assertions.assertThat(transferResponse.getAmount()).isEqualTo(100L);
+        assertThat(transferResponse.getAmount()).isEqualTo(100L);
+
+    }
+
+    @Test
+    public void enquireTrade_를_테스트한다() throws Exception {
+        //given
+        User sender = User.of(
+                1L,
+                "test",
+                UserRole.ROLE_USER,
+                "test1"
+        );
+        User receiver = User.of(
+                2L,
+                "test",
+                UserRole.ROLE_USER,
+                "test2"
+        );
+        Coin coin = Coin.of("test");
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        List<Trade> tradeList = new ArrayList<>();
+        Trade trade = Trade.of(
+                sender,
+                receiver,
+                coin,
+                100L
+        );
+        tradeList.add(trade);
+        List<TransferResponse> transferResponseList = new ArrayList<>();
+        transferResponseList.add(
+                TransferResponse.builder()
+                        .senderStudentId(sender.getStudentId())
+                        .receiverStudentIdOrPhoneNumber(receiver.getStudentId())
+                        .coinName(coin.getName())
+                        .amount(trade.getAmount())
+                        .build()
+        );
+
+        when(userService.getUserByJwtToken(any()))
+                .thenReturn(sender);
+        when(tradeRepository.findAllBySender(any(), any()))
+                .thenReturn(new PageImpl<Trade>(tradeList));
+
+        //when
+        List<TransferResponse> response = tradeService.enquireTrade(httpServletRequest, 1);
+
+        //then
+        verify(userService).getUserByJwtToken(any());
+        verify(tradeRepository).findAllBySender(any(), any());
+        assertThat(response.get(0).getSenderStudentId()).isEqualTo(sender.getStudentId());
+        assertThat(response.get(0).getReceiverStudentIdOrPhoneNumber()).isEqualTo(receiver.getStudentId());
+        assertThat(response.get(0).getCoinName()).isEqualTo(trade.getCoin().getName());
 
     }
 }

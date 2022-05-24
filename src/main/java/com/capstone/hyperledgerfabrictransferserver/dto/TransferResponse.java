@@ -31,7 +31,7 @@ public class TransferResponse {
         this.dateCreated = dateCreated;
     }
 
-    public static List<TransferResponse> toDto(List<Trade> tradeList){
+    public static List<TransferResponse> toDtoList(List<Trade> tradeList){
 
         ArrayList<TransferResponse> transferResponseList = new ArrayList<>();
         for (Trade trade : tradeList) {

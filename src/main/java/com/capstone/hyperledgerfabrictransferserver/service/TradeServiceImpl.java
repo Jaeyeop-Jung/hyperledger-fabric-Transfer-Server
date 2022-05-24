@@ -79,7 +79,7 @@ public class TradeServiceImpl implements TradeService{
 
         User findUser = userService.getUserByJwtToken(httpServletRequest);
         Page<Trade> findAllUserTrades = tradeRepository.findAllBySender(findUser, PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
-        
-        return TransferResponse.toDto(findAllUserTrades.getContent());
+
+        return TransferResponse.toDtoList(findAllUserTrades.getContent());
     }
 }
