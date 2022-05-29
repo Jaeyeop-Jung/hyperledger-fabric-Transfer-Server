@@ -78,7 +78,7 @@ public class TradeServiceImpl implements TradeService{
     public List<TransferResponse> enquireTrade(HttpServletRequest httpServletRequest, int page) {
 
         User findUser = userService.getUserByJwtToken(httpServletRequest);
-        Page<Trade> findAllUserTrades = tradeRepository.findAllBySender(findUser, PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
+        Page<Trade> findAllUserTrades = tradeRepository.findAllBySenderOrReceiver(findUser, findUser, PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
 
         return TransferResponse.toDtoList(findAllUserTrades.getContent());
     }

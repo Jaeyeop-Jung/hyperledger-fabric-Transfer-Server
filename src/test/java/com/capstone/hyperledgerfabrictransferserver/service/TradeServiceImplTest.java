@@ -9,7 +9,6 @@ import com.capstone.hyperledgerfabrictransferserver.repository.CoinRepository;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
 import com.capstone.hyperledgerfabrictransferserver.repository.TradeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assertions;
 import org.hyperledger.fabric.gateway.Gateway;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,9 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -147,7 +144,7 @@ class TradeServiceImplTest {
 
         when(userService.getUserByJwtToken(any()))
                 .thenReturn(sender);
-        when(tradeRepository.findAllBySender(any(), any()))
+        when(tradeRepository.findAllBySenderOrReceiver(any(), any(), any()))
                 .thenReturn(new PageImpl<Trade>(tradeList));
 
         //when
@@ -155,7 +152,7 @@ class TradeServiceImplTest {
 
         //then
         verify(userService).getUserByJwtToken(any());
-        verify(tradeRepository).findAllBySender(any(), any());
+        verify(tradeRepository).findAllBySenderOrReceiver(any(), any(), any());
         assertThat(response.get(0).getSenderStudentId()).isEqualTo(sender.getStudentId());
         assertThat(response.get(0).getReceiverStudentIdOrPhoneNumber()).isEqualTo(receiver.getStudentId());
         assertThat(response.get(0).getCoinName()).isEqualTo(trade.getCoin().getName());
