@@ -47,7 +47,7 @@ public class TradeServiceImpl implements TradeService{
         User receiver = userRepository.findByStudentId(transferRequest.getReceiverStudentIdOrPhoneNumber())
                 .orElseThrow(() -> new IncorrectStudentIdException("가입하지 않거나 잘못된 학번입니다"));
 
-        tradeRepository.save(
+        Trade savedTrade = tradeRepository.save(
                 Trade.of(
                         sender,
                         receiver,
@@ -58,7 +58,7 @@ public class TradeServiceImpl implements TradeService{
 
         try {
             Gateway gateway = fabricService.getGateway();
-            String transferResponse = fabricService.submitTransaction(
+            String fabricResponse = fabricService.submitTransaction(
                     gateway,
                     "TransferCoin",
                     "asset" + sender.getId(),
@@ -67,7 +67,16 @@ public class TradeServiceImpl implements TradeService{
                     String.valueOf(transferRequest.getAmount()));
             fabricService.close(gateway);
 
-            return objectMapper.readValue(transferResponse, TransferResponse.class);
+            TransferResponse transferResponse = objectMapper.readValue(fabricResponse, TransferResponse.class);
+            return TransferResponse.builder()
+                    .senderStudentId(transferResponse.getSenderStudentId())
+                    .senderName(sender.getName())
+                    .receiverStudentIdOrPhoneNumber(transferRequest.getReceiverStudentIdOrPhoneNumber())
+                    .receiverName(receiver.getName())
+                    .coinName(transferRequest.getCoinName())
+                    .amount(transferResponse.getAmount())
+                    .dateCreated(savedTrade.getDateCreated())
+                    .build();
         } catch (Exception e) {
             throw new IncorrectContractException("TransferCoin 체인코드 실행 중 오류가 발생했습니다");
         }

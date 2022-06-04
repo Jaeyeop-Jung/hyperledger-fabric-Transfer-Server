@@ -76,6 +76,12 @@ class TradeServiceImplTest {
                 UserRole.ROLE_USER,
                 "test2"
         );
+        Trade trade = Trade.of(
+                sender,
+                receiver,
+                coin,
+                100L
+        );
         Gateway gateway = mock(Gateway.class);
         HashMap<String, String> coinMap = new HashMap<>();
         coinMap.put("test", "100");
@@ -94,6 +100,8 @@ class TradeServiceImplTest {
                 .thenReturn(sender);
         when(userRepository.findByStudentId(any()))
                 .thenReturn(Optional.of(receiver));
+        when(tradeRepository.save(any()))
+                .thenReturn(trade);
         when(fabricService.getGateway())
                 .thenReturn(gateway);
         when(fabricService.submitTransaction(any(), any(), any()))
@@ -104,7 +112,6 @@ class TradeServiceImplTest {
 
         //then
         assertThat(transferResponse.getAmount()).isEqualTo(100L);
-
     }
 
     @Test

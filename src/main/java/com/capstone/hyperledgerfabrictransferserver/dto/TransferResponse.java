@@ -14,7 +14,11 @@ public class TransferResponse {
 
     private Long senderStudentId;
 
+    private String senderName;
+
     private Long receiverStudentIdOrPhoneNumber;
+
+    private String receiverName;
 
     private String coinName;
 
@@ -23,9 +27,11 @@ public class TransferResponse {
     private LocalDateTime dateCreated;
 
     @Builder
-    public TransferResponse(Long senderStudentId, Long receiverStudentIdOrPhoneNumber, String coinName, Long amount, LocalDateTime dateCreated) {
+    public TransferResponse(Long senderStudentId, String senderName, Long receiverStudentIdOrPhoneNumber, String receiverName, String coinName, Long amount, LocalDateTime dateCreated) {
         this.senderStudentId = senderStudentId;
+        this.senderName = senderName;
         this.receiverStudentIdOrPhoneNumber = receiverStudentIdOrPhoneNumber;
+        this.receiverName = receiverName;
         this.coinName = coinName;
         this.amount = amount;
         this.dateCreated = dateCreated;
@@ -37,6 +43,8 @@ public class TransferResponse {
         for (Trade trade : tradeList) {
             TransferResponse transferResponse = TransferResponse.builder()
                     .senderStudentId(trade.getSender().getStudentId())
+                    .senderName(trade.getSender().getName())
+                    .receiverName(trade.getReceiver().getName())
                     .coinName(trade.getCoin().getName())
                     .amount(trade.getAmount())
                     .dateCreated(trade.getDateCreated())
