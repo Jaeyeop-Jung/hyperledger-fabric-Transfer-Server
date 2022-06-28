@@ -36,18 +36,16 @@ public class UserApiControllerImpl implements UserApiController{
      * author : Jaeyeop Jung
      * description : 사용자(학생) 로그인
      *
-     * @param httpServletRequest the http servlet request
      * @param userLoginRequest   the user login request
      * @return the
      */
     @Override
     @GetMapping("/login")
     public ResponseEntity<UserLoginResponse> login(
-            HttpServletRequest httpServletRequest,
             @ModelAttribute UserLoginRequest userLoginRequest
     )
     {
-        return ResponseEntity.ok(userService.login(httpServletRequest, userLoginRequest));
+        return ResponseEntity.ok(userService.login(userLoginRequest));
     }
 
     /**

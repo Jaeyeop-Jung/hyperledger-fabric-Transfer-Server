@@ -102,13 +102,12 @@ public class UserServiceImpl implements UserService{
      * author : Jaeyeop Jung
      * description : User를 통해 Jwt 토큰을 발행하여 로그인 기능을 담당하는 메서드
      *
-     * @param httpServletRequest the http servlet request
      * @param userLoginRequest   the user login request
      * @return the
      */
     @Override
     @Transactional(readOnly = true)
-    public UserLoginResponse login(HttpServletRequest httpServletRequest, UserLoginRequest userLoginRequest) {
+    public UserLoginResponse login(UserLoginRequest userLoginRequest) {
 
         User findUser = userRepository.findByStudentId(userLoginRequest.getStudentId())
                 .orElseThrow(() -> new IncorrectStudentIdException("가입하지 않거나 잘못된 학번입니다")); // 예외처리

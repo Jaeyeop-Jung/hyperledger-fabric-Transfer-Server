@@ -2,7 +2,6 @@ package com.capstone.hyperledgerfabrictransferserver.api;
 
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
 import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
-import com.capstone.hyperledgerfabrictransferserver.service.AdminServiceImpl;
 import com.capstone.hyperledgerfabrictransferserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin")
 public class AdminApiControllerImpl {
 
-    private final AdminServiceImpl adminService;
+    private final UserService userService;
 
     @GetMapping("/login")
     public ResponseEntity<UserLoginResponse> login(
         @ModelAttribute UserLoginRequest userLoginRequest
     ){
-        return ResponseEntity.ok(adminService.login(userLoginRequest));
+        return ResponseEntity.ok(userService.login(userLoginRequest));
     }
 }

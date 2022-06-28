@@ -14,7 +14,7 @@ public interface UserService {
 
     public UserLoginResponse join(UserJoinRequest userJoinRequest);
 
-    public UserLoginResponse login(HttpServletRequest httpServletRequest, UserLoginRequest userLoginRequest);
+    public UserLoginResponse login(UserLoginRequest userLoginRequest);
 
     public void changePassword(HttpServletRequest httpServletRequest, String newPassword);
 

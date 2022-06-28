@@ -126,7 +126,7 @@ class UserServiceImplTest {
                 .thenReturn("test");
 
         //when
-        UserLoginResponse response = userService.login(httpServletRequest, userLoginRequest);
+        UserLoginResponse response = userService.login(userLoginRequest);
 
         //then
         verify(userRepository).findByStudentId(any());
