@@ -10,7 +10,4 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public interface AdminApiController {
 
     public ResponseEntity<UserLoginResponse> login(UserLoginRequest userLoginRequest);
-    public ResponseEntity<Void> createCoin(CoinCreateRequest coinCreateRequest);
-
-    public ResponseEntity<Void> deleteCoin(CoinModifyRequest coinModifyRequest);
 }

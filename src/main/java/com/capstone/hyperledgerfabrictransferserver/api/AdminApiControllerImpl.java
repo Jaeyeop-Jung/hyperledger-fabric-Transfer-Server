@@ -25,21 +25,5 @@ public class AdminApiControllerImpl implements AdminApiController{
         return ResponseEntity.ok(userService.login(userLoginRequest));
     }
 
-    @Override
-    @PostMapping("/coin")
-    public ResponseEntity<Void> createCoin(@RequestBody CoinCreateRequest coinCreateRequest) {
-
-        coinService.create(coinCreateRequest);
-
-        return ResponseEntity.ok(null);
-    }
-
-    @Override
-    @DeleteMapping("/coin")
-    public ResponseEntity<Void> deleteCoin(@RequestBody CoinModifyRequest coinModifyRequest) {
-        coinService.delete(coinModifyRequest);
-
-        return ResponseEntity.ok(null);
-    }
 
 }

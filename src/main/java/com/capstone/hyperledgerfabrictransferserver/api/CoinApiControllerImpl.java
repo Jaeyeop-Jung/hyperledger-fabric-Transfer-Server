@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/admin")
 public class CoinApiControllerImpl implements CoinApiController{
 
     private final CoinService coinService;
