@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -38,26 +39,20 @@ public class TransferResponse {
     }
 
     public static List<TransferResponse> toDtoList(List<Trade> tradeList){
-
-        ArrayList<TransferResponse> transferResponseList = new ArrayList<>();
-        for (Trade trade : tradeList) {
-            TransferResponse transferResponse = TransferResponse.builder()
-                    .senderStudentId(trade.getSender().getStudentId())
-                    .senderName(trade.getSender().getName())
-                    .receiverName(trade.getReceiver().getName())
-                    .coinName(trade.getCoin().getName())
-                    .amount(trade.getAmount())
-                    .dateCreated(trade.getDateCreated())
-                    .build();
-            if(trade.getReceiver() != null){
-                transferResponse.receiverStudentIdOrPhoneNumber = trade.getReceiver().getStudentId();
-            } else {
-                transferResponse.receiverStudentIdOrPhoneNumber = Long.valueOf(trade.getShop().getPhoneNumber());
-            }
-
-            transferResponseList.add(transferResponse);
-        }
-
-        return transferResponseList;
+        return tradeList.stream()
+                .map(trade -> {
+                    TransferResponse build = TransferResponse.builder()
+                            .senderStudentId(trade.getSender().getStudentId())
+                            .senderName(trade.getSender().getName())
+                            .receiverName(trade.getReceiver().getName())
+                            .coinName(trade.getCoin().getName())
+                            .amount(trade.getAmount())
+                            .dateCreated(trade.getDateCreated())
+                            .build();
+                    build.receiverStudentIdOrPhoneNumber = (trade.getReceiver() != null) ?
+                            trade.getReceiver().getStudentId() : Long.valueOf(trade.getShop().getPhoneNumber());
+                    return build;
+                })
+                .collect(Collectors.toList());
     }
 }
