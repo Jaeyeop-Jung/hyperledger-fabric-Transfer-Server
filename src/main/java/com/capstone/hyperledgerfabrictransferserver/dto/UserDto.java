@@ -37,4 +37,17 @@ public class UserDto {
         this.dateCreated = dateCreated;
         this.lastUpdated = lastUpdated;
     }
+
+    static List<UserDto> toDtoList(List<User> userList) {
+        return userList.stream()
+                .map(
+                        user -> UserDto.builder()
+                                .studentId(user.getStudentId())
+                                .name(user.getName())
+                                .dateCreated(user.getDateCreated())
+                                .lastUpdated(user.getLastUpdated())
+                                .build()
+                )
+                .collect(Collectors.toList());
+    }
 }
