@@ -1,13 +1,14 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
-import com.capstone.hyperledgerfabrictransferserver.dto.CoinCreateRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.CoinModifyRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
+import com.capstone.hyperledgerfabrictransferserver.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
+import java.util.List;
 
 public interface AdminApiController {
 
     public ResponseEntity<UserLoginResponse> login(UserLoginRequest userLoginRequest);
+
+    public ResponseEntity<List<UserDto>> getAllUser(int page);
 }

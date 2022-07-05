@@ -3,21 +3,22 @@ package com.capstone.hyperledgerfabrictransferserver.service;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.*;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.UserRole;
-import com.capstone.hyperledgerfabrictransferserver.dto.AssetDto;
-import com.capstone.hyperledgerfabrictransferserver.dto.UserJoinRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
+import com.capstone.hyperledgerfabrictransferserver.dto.*;
 import com.capstone.hyperledgerfabrictransferserver.filter.JwtTokenProvider;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Gateway;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -171,12 +172,10 @@ public class UserServiceImpl implements UserService{
         User findUser = getUserByJwtToken(httpServletRequest);
 
         try {
-            System.out.println("assetid: " + "asset" + findUser.getId());
             Gateway gateway = fabricService.getGateway();
             String response = fabricService.submitTransaction(
                     gateway, "GetAsset", "asset" + findUser.getId()
             );
-            System.out.println(response);
             if(response == null){
                 throw new IncorrectContractException("");
             }
@@ -185,5 +184,14 @@ public class UserServiceImpl implements UserService{
         } catch (Exception e){
             throw new IncorrectContractException("GetAsset 체인코드 실행 중 오류가 발생했습니다");
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserDto> getAllUser(int page) {
+
+        Page<User> findAllUser = userRepository.findAll(PageRequest.of(page - 1, 10, Sort.Direction.DESC));
+
+        return null;
     }
 }

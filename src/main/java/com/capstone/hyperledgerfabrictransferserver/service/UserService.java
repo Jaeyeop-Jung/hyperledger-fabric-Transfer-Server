@@ -1,12 +1,10 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
-import com.capstone.hyperledgerfabrictransferserver.dto.AssetDto;
-import com.capstone.hyperledgerfabrictransferserver.dto.UserJoinRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
+import com.capstone.hyperledgerfabrictransferserver.dto.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 public interface UserService {
 
@@ -21,4 +19,6 @@ public interface UserService {
     public void delete(HttpServletRequest httpServletRequest);
 
     public AssetDto getAsset(HttpServletRequest httpServletRequest);
+
+    public List<UserDto> getAllUser(int page);
 }
