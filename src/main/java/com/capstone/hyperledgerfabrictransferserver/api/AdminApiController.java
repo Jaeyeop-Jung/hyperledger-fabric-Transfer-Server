@@ -10,5 +10,5 @@ public interface AdminApiController {
 
     public ResponseEntity<UserLoginResponse> login(UserLoginRequest userLoginRequest);
 
-    public ResponseEntity<List<UserDto>> getAllUser(int page);
+    public ResponseEntity<PagingUserDto> getAllUser(int page);
 }

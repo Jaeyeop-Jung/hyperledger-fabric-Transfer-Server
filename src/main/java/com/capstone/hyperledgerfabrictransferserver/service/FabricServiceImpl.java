@@ -1,5 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
+import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectContractException;
 import com.capstone.hyperledgerfabrictransferserver.dto.AssetDto;
 import com.capstone.hyperledgerfabrictransferserver.util.CustomFabricGateway;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,8 +28,6 @@ import java.util.concurrent.TimeoutException;
 public class FabricServiceImpl implements FabricService{
 
     private final CustomFabricGateway customFabricGateway;
-    private final ObjectMapper objectMapper;
-
     @Override
     @Transactional(readOnly = true)
     public Gateway getGateway(){
@@ -50,11 +49,15 @@ public class FabricServiceImpl implements FabricService{
      */
     @Override
     @Transactional
-    public String submitTransaction(Gateway connect, String name, String ... args) throws ContractException, InterruptedException, TimeoutException, JsonProcessingException {
+    public String submitTransaction(Gateway connect, String name, String ... args) throws ContractException, InterruptedException, TimeoutException, IncorrectContractException {
         Network network = connect.getNetwork("mychannel");
         Contract contract = network.getContract("basic");
 
         byte[] fabricResponse = contract.submitTransaction(name, args);
+
+        if (fabricResponse == null) {
+            throw new IncorrectContractException("");
+        }
 
         return new String(fabricResponse, StandardCharsets.UTF_8);
     }

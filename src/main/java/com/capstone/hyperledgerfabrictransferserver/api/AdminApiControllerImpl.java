@@ -26,7 +26,7 @@ public class AdminApiControllerImpl implements AdminApiController{
 
     @Override
     @GetMapping("/users")
-    public ResponseEntity<List<UserDto>> getAllUser(
+    public ResponseEntity<PagingUserDto> getAllUser(
             @RequestParam(required = false, defaultValue = "1") int page
     ) {
         return ResponseEntity.ok(userService.getAllUser(page));

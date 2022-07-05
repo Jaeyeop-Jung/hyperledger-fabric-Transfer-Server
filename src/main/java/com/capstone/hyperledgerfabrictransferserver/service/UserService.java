@@ -20,5 +20,5 @@ public interface UserService {
 
     public AssetDto getAsset(HttpServletRequest httpServletRequest);
 
-    public List<UserDto> getAllUser(int page);
+    public PagingUserDto getAllUser(int page);
 }

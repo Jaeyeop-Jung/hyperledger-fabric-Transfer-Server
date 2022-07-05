@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService{
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
-    private final FabricServiceImpl fabricService;
+    private final FabricService fabricService;
     private final ObjectMapper objectMapper;
 
     /**
@@ -156,9 +156,6 @@ public class UserServiceImpl implements UserService{
         try {
             Gateway gateway = fabricService.getGateway();
             boolean response = Boolean.valueOf(fabricService.submitTransaction(gateway, "DeleteAsset", "asset" + findUser.getId()));
-            if(!response){
-                throw new IncorrectContractException("");
-            }
             fabricService.close(gateway);
         } catch (Exception e){
             throw new IncorrectContractException("DeleteAsset 체인코드 실행 중 오류가 발생했습니다");
@@ -176,9 +173,6 @@ public class UserServiceImpl implements UserService{
             String response = fabricService.submitTransaction(
                     gateway, "GetAsset", "asset" + findUser.getId()
             );
-            if(response == null){
-                throw new IncorrectContractException("");
-            }
             fabricService.close(gateway);
             return objectMapper.readValue(response, AssetDto.class);
         } catch (Exception e){
@@ -188,10 +182,14 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserDto> getAllUser(int page) {
+    public PagingUserDto getAllUser(int page) {
 
-        Page<User> findAllUser = userRepository.findAll(PageRequest.of(page - 1, 10, Sort.Direction.DESC));
+        Page<User> findAllUser = userRepository.findAll(PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
 
-        return null;
+        return PagingUserDto.builder()
+                .userDtoList(findAllUser.getContent())
+                .totalUserNumber(findAllUser.getTotalElements())
+                .totalPage(findAllUser.getTotalPages())
+                .build();
     }
 }
