@@ -15,11 +15,11 @@ public class AssetDto {
 
     private HashMap<String, String> coin;
 
-    private String sender;
+    private String sender; // 필요한가?
 
-    private String receiver;
+    private String receiver; //
 
-    private Long amount;
+    private Long amount; //
 
     @Builder
     public AssetDto(Long studentId, String owner, HashMap<String, String> coin, String sender, String receiver, Long amount) {
