@@ -77,6 +77,7 @@ class TradeServiceImplTest {
                 "test2"
         );
         Trade trade = Trade.of(
+                "test",
                 sender,
                 receiver,
                 coin,
@@ -133,6 +134,7 @@ class TradeServiceImplTest {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         List<Trade> tradeList = new ArrayList<>();
         Trade trade = Trade.of(
+                "test",
                 sender,
                 receiver,
                 coin,

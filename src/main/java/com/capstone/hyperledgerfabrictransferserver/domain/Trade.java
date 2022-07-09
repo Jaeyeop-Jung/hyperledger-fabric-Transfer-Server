@@ -19,6 +19,9 @@ public class Trade extends BaseEntity{
     private Long id;
 
     @NotNull
+    private String transactionId;
+
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SENDER_ID")
     private User sender;
@@ -39,22 +42,24 @@ public class Trade extends BaseEntity{
     @NotNull
     private Long amount;
 
-    public static Trade of(User sender, User receiver, Coin coin, Long amount){
-        return new Trade(sender, receiver, coin, amount);
+    public static Trade of(String transactionId, User sender, User receiver, Coin coin, Long amount){
+        return new Trade(transactionId, sender, receiver, coin, amount);
     }
 
-    public static Trade of(User sender, Shop shop, Coin coin, Long amount){
-        return new Trade(sender, shop, coin, amount);
+    public static Trade of(String transactionId, User sender, Shop shop, Coin coin, Long amount){
+        return new Trade(transactionId, sender, shop, coin, amount);
     }
 
-    private Trade(User sender, User receiver, Coin coin, Long amount) {
+    private Trade(String transactionId, User sender, User receiver, Coin coin, Long amount) {
+        this.transactionId = transactionId;
         this.sender = sender;
         this.receiver = receiver;
         this.coin = coin;
         this.amount = amount;
     }
 
-    public Trade(User sender, Shop shop, Coin coin, Long amount) {
+    public Trade(String transactionId, User sender, Shop shop, Coin coin, Long amount) {
+        this.transactionId = transactionId;
         this.sender = sender;
         this.shop = shop;
         this.coin = coin;

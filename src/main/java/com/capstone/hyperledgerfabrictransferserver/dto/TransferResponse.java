@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @ToString
 public class TransferResponse {
 
+    private String transactionId;
     private Long senderStudentId;
 
     private String senderName;
@@ -28,7 +29,8 @@ public class TransferResponse {
     private LocalDateTime dateCreated;
 
     @Builder
-    public TransferResponse(Long senderStudentId, String senderName, Long receiverStudentIdOrPhoneNumber, String receiverName, String coinName, Long amount, LocalDateTime dateCreated) {
+    public TransferResponse(String transactionId, Long senderStudentId, String senderName, Long receiverStudentIdOrPhoneNumber, String receiverName, String coinName, Long amount, LocalDateTime dateCreated) {
+        this.transactionId = transactionId;
         this.senderStudentId = senderStudentId;
         this.senderName = senderName;
         this.receiverStudentIdOrPhoneNumber = receiverStudentIdOrPhoneNumber;
@@ -42,6 +44,7 @@ public class TransferResponse {
         return tradeList.stream()
                 .map(trade -> {
                     TransferResponse build = TransferResponse.builder()
+                            .transactionId(trade.getTransactionId())
                             .senderStudentId(trade.getSender().getStudentId())
                             .senderName(trade.getSender().getName())
                             .receiverName(trade.getReceiver().getName())
