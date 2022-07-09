@@ -1,5 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
+import com.capstone.hyperledgerfabrictransferserver.dto.AllTransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.PagingTransferResponseDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;
 import com.capstone.hyperledgerfabrictransferserver.dto.TransferRequest;
@@ -15,5 +16,5 @@ public interface TradeService {
 
     public List<TransferResponse> enquireTrade(HttpServletRequest httpServletRequest, int page);
 
-    public PagingTransferResponseDto getAllTradeBy(int page, Long sender, Long receiver, LocalDateTime dateCreated);
+    public PagingTransferResponseDto getAllTradeBy(int page, AllTransferRequest allTransferRequest);
 }

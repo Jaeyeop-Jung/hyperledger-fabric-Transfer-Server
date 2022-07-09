@@ -4,6 +4,7 @@ import com.capstone.hyperledgerfabrictransferserver.dto.*;
 import com.capstone.hyperledgerfabrictransferserver.service.TradeService;
 import com.capstone.hyperledgerfabrictransferserver.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,12 +36,12 @@ public class AdminApiControllerImpl implements AdminApiController{
     }
 
     @Override
+    @GetMapping("/trade")
     public ResponseEntity<PagingTransferResponseDto> getAllTradeBy(
-            int page,
-            Long sender,
-            Long receiver,
-            LocalDateTime dateCreated
+            @RequestParam(defaultValue = "1") int page,
+            @ModelAttribute AllTransferRequest allTransferRequest
     ) {
-        return ResponseEntity.ok(tradeService.getAllTradeBy(page, sender, receiver, dateCreated));
+        System.out.println("allTransferRequest = " + allTransferRequest);
+        return ResponseEntity.ok(tradeService.getAllTradeBy(page, allTransferRequest));
     }
 }

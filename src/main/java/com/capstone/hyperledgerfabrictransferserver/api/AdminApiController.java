@@ -15,5 +15,5 @@ public interface AdminApiController {
 
     public ResponseEntity<PagingUserDto> getAllUser(int page);
 
-    public ResponseEntity<PagingTransferResponseDto> getAllTradeBy(int page, Long sender, Long receiver, LocalDateTime dateCreated);
+    public ResponseEntity<PagingTransferResponseDto> getAllTradeBy(int page, AllTransferRequest allTransferRequest);
 }

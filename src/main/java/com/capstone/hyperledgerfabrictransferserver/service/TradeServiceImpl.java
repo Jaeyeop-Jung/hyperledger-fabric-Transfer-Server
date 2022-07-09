@@ -6,6 +6,7 @@ import com.capstone.hyperledgerfabrictransferserver.aop.customException.NotExist
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.Trade;
+import com.capstone.hyperledgerfabrictransferserver.dto.AllTransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.PagingTransferResponseDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.TransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -102,12 +102,20 @@ public class TradeServiceImpl implements TradeService{
     @Transactional(readOnly = true)
     public PagingTransferResponseDto getAllTradeBy(
             int page,
-            Long sender,
-            Long receiver,
-            LocalDateTime dateCreated
+            AllTransferRequest allTransferRequest
     )  {
+        Page<Trade> findTradeList = tradeRepository.findAllBySenderStudentIdAndReceiverStudentIdIfNullThenAllAndBetween(
+                allTransferRequest.getFromLocalDateTime(),
+                allTransferRequest.getUntilLocalDateTime(),
+                allTransferRequest.getSender(),
+                allTransferRequest.getReceiver(),
+                PageRequest.of(page - 1, 10, Sort.Direction.DESC, "dateCreated")
+        );
 
-
-        return null;
+        return PagingTransferResponseDto.builder()
+                .totalTradeNumber(findTradeList.getTotalElements())
+                .totalPage(findTradeList.getTotalPages())
+                .transferResponseList(TransferResponse.toDtoList(findTradeList.getContent()))
+                .build();
     }
 }
