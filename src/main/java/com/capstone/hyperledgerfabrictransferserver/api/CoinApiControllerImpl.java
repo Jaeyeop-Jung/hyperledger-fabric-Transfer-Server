@@ -2,7 +2,9 @@ package com.capstone.hyperledgerfabrictransferserver.api;
 
 import com.capstone.hyperledgerfabrictransferserver.dto.CoinCreateRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.CoinModifyRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.UpdateAssetCoinRequest;
 import com.capstone.hyperledgerfabrictransferserver.service.CoinService;
+import com.sun.istack.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,4 +35,23 @@ public class CoinApiControllerImpl implements CoinApiController{
         return ResponseEntity.ok(null);
     }
 
+    @Override
+    @PostMapping("/coin/update/all")
+    public ResponseEntity<Void> UpdateAllAssetCoin(
+            @RequestBody UpdateAssetCoinRequest updateAssetCoinRequest
+    )
+    {
+        coinService.updateAllAssetCoin(updateAssetCoinRequest);
+        return ResponseEntity.ok(null);
+    }
+
+    @Override
+    @PostMapping("/coin/update")
+    public ResponseEntity<Void> updateAssetCoin(
+            @RequestBody UpdateAssetCoinRequest updateAssetCoinRequest
+    )
+    {
+        coinService.updateAssetCoin(updateAssetCoinRequest);
+        return ResponseEntity.ok(null);
+    }
 }
