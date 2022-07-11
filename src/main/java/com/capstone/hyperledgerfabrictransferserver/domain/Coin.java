@@ -21,15 +21,19 @@ public class Coin {
     private String name;
 
     @NotNull
+    private Long issuance;
+
+    @NotNull
     @Column(name = "DELETED")
     private boolean deleted;
 
-    public static Coin of(String coinName){
-        return new Coin(coinName, false);
+    public static Coin of(String coinName, Long issuance){
+        return new Coin(coinName,  issuance,false);
     }
 
-    private Coin(String name, boolean deleted) {
+    public Coin(String name, Long issuance, boolean deleted) {
         this.name = name;
+        this.issuance = issuance;
         this.deleted = deleted;
     }
 

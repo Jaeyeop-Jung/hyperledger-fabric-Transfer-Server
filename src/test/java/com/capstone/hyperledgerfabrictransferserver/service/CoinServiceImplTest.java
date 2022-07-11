@@ -40,6 +40,7 @@ class CoinServiceImplTest {
         //given
         CoinCreateRequest coinCreateRequest = CoinCreateRequest.builder()
                 .coinName("test")
+                .issuance(1000L)
                 .build();
         Gateway gateway = mock(Gateway.class);
 
@@ -66,7 +67,7 @@ class CoinServiceImplTest {
         CoinModifyRequest coinModifyRequest = CoinModifyRequest.builder()
                 .coinName("test")
                 .build();
-        Coin coin = Coin.of("test");
+        Coin coin = Coin.of("test", 1000L);
         Gateway gateway = mock(Gateway.class);
 
         when(coinRepository.findByName(any()))

@@ -28,7 +28,13 @@ public class CoinServiceImpl implements CoinService{
         if(coinRepository.existsByName(coinCreateRequest.getCoinName())){
             throw new AlreadyExistsCoinException("이미 존재하는 코인입니다");
         }
-        coinRepository.save(Coin.of(coinCreateRequest.getCoinName()));
+
+        coinRepository.save(
+                Coin.of(
+                        coinCreateRequest.getCoinName(),
+                        coinCreateRequest.getIssuance()
+                )
+        );
 
         try {
             Gateway gateway = fabricService.getGateway();

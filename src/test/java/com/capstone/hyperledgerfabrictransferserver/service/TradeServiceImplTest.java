@@ -63,7 +63,7 @@ class TradeServiceImplTest {
                 .amount(100L)
                 .build();
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        Coin coin = Coin.of("test");
+        Coin coin = Coin.of("test", 1000L);
         User sender = User.of(
                 1L,
                 "test",
@@ -130,7 +130,7 @@ class TradeServiceImplTest {
                 UserRole.ROLE_USER,
                 "test2"
         );
-        Coin coin = Coin.of("test");
+        Coin coin = Coin.of("test", 1000L);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         List<Trade> tradeList = new ArrayList<>();
         Trade trade = Trade.of(
