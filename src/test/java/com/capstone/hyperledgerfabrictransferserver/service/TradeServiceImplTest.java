@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 class TradeServiceImplTest {
 
     @InjectMocks
-    TradeServiceImpl tradeService;
+    TradeService tradeService;
 
     @Mock
     UserService userService;

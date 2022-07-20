@@ -26,10 +26,10 @@ import static org.mockito.Mockito.*;
 class CoinServiceImplTest {
 
     @InjectMocks
-    CoinServiceImpl coinService;
+    CoinService coinService;
 
     @Mock
-    FabricServiceImpl fabricService;
+    FabricService fabricService;
 
     @Mock
     CoinRepository coinRepository;

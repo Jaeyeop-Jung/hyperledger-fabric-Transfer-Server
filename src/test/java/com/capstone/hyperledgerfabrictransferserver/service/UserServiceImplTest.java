@@ -33,10 +33,10 @@ import static org.mockito.Mockito.*;
 class UserServiceImplTest {
 
     @InjectMocks
-    UserServiceImpl userService;
+    UserService userService;
 
     @Mock
-    FabricServiceImpl fabricService;
+    FabricService fabricService;
 
     @Mock
     UserRepository userRepository;
