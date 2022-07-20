@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "STUDENT_ID"))
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User extends BaseEntity{
 
     @Id

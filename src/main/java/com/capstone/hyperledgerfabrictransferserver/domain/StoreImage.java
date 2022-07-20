@@ -10,21 +10,25 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Shop extends BaseEntity{
+@Table(name = "STOREIMAGE")
+public class StoreImage extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "SHOP_ID")
+    @Column(name = "STOREIMAGE_ID")
     private Long id;
+
+    @NotNull
+    @OneToOne
+    @JoinColumn(name = "STORE_ID")
+    private Store store;
 
     @NotNull
     private String name;
 
     @NotNull
-    @Column(name = "PHONE_NUMBER")
-    private String phoneNumber;
+    private Long size;
 
     @NotNull
-    private String address;
-
+    private String extension;
 }

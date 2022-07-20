@@ -53,7 +53,7 @@ public class TransferResponse {
                             .dateCreated(trade.getDateCreated())
                             .build();
                     build.receiverStudentIdOrPhoneNumber = (trade.getReceiver() != null) ?
-                            trade.getReceiver().getStudentId() : Long.valueOf(trade.getShop().getPhoneNumber());
+                            trade.getReceiver().getStudentId() : Long.valueOf(trade.getStore().getPhoneNumber());
                     return build;
                 })
                 .collect(Collectors.toList());
