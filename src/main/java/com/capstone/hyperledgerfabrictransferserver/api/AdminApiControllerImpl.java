@@ -3,6 +3,7 @@ package com.capstone.hyperledgerfabrictransferserver.api;
 import com.capstone.hyperledgerfabrictransferserver.dto.*;
 import com.capstone.hyperledgerfabrictransferserver.service.TradeService;
 import com.capstone.hyperledgerfabrictransferserver.service.UserService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -43,5 +44,11 @@ public class AdminApiControllerImpl implements AdminApiController{
     ) {
         System.out.println("allTransferRequest = " + allTransferRequest);
         return ResponseEntity.ok(tradeService.getAllTradeBy(page, allTransferRequest));
+    }
+
+    @Override
+    @GetMapping("/trade/{transactionId}")
+    public ResponseEntity<TransferResponse> getTradeByTransactionId(@PathVariable @NonNull String transactionId) {
+        return ResponseEntity.ok(tradeService.getTradeByTransactionId(transactionId));
     }
 }

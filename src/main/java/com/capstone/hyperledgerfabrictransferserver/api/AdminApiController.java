@@ -16,4 +16,6 @@ public interface AdminApiController {
     public ResponseEntity<PagingUserDto> getAllUser(int page);
 
     public ResponseEntity<PagingTransferResponseDto> getAllTradeBy(int page, AllTransferRequest allTransferRequest);
+
+    public ResponseEntity<TransferResponse> getTradeByTransactionId(String transactionId);
 }
