@@ -3,18 +3,48 @@ package com.capstone.hyperledgerfabrictransferserver.api;
 import com.capstone.hyperledgerfabrictransferserver.dto.CoinCreateRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.CoinModifyRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.UpdateAssetCoinRequest;
-import org.hibernate.sql.Update;
+import com.capstone.hyperledgerfabrictransferserver.service.CoinService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/admin")
+public class CoinApiController {
 
-public interface CoinApiController {
+    private final CoinService coinService;
 
-    public ResponseEntity<Void> create(CoinCreateRequest coinCreateRequest);
+    @PostMapping("/coin")
+    public ResponseEntity<Void> create(@RequestBody CoinCreateRequest coinCreateRequest) {
 
-    public ResponseEntity<Void> delete(CoinModifyRequest coinModifyRequest);
+        coinService.create(coinCreateRequest);
 
-    public ResponseEntity<Void> UpdateAllAssetCoin(UpdateAssetCoinRequest updateAssetCoinRequest);
+        return ResponseEntity.ok(null);
+    }
 
-    public ResponseEntity<Void> updateAssetCoin(UpdateAssetCoinRequest updateAssetCoinRequest);
+    @DeleteMapping("/coin")
+    public ResponseEntity<Void> delete(@RequestBody CoinModifyRequest coinModifyRequest) {
+        coinService.delete(coinModifyRequest);
+
+        return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/coin/update/all")
+    public ResponseEntity<Void> UpdateAllAssetCoin(
+            @RequestBody UpdateAssetCoinRequest updateAssetCoinRequest
+    )
+    {
+        coinService.updateAllAssetCoin(updateAssetCoinRequest);
+        return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/coin/update")
+    public ResponseEntity<Void> updateAssetCoin(
+            @RequestBody UpdateAssetCoinRequest updateAssetCoinRequest
+    )
+    {
+        coinService.updateAssetCoin(updateAssetCoinRequest);
+        return ResponseEntity.ok(null);
+    }
 }
