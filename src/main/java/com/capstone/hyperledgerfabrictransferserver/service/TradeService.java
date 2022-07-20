@@ -17,4 +17,6 @@ public interface TradeService {
     public List<TransferResponse> enquireTrade(HttpServletRequest httpServletRequest, int page);
 
     public PagingTransferResponseDto getAllTradeBy(int page, AllTransferRequest allTransferRequest);
+
+    public TransferResponse getTradeByTransactionId(String transactionId);
 }

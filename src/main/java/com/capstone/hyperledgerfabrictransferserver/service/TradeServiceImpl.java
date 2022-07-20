@@ -2,6 +2,7 @@ package com.capstone.hyperledgerfabrictransferserver.service;
 
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectContractException;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectStudentIdException;
+import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectTransactionIdException;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.NotExistsCoinException;
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
@@ -117,5 +118,12 @@ public class TradeServiceImpl implements TradeService{
                 .totalPage(findTradeList.getTotalPages())
                 .transferResponseList(TransferResponse.toDtoList(findTradeList.getContent()))
                 .build();
+    }
+
+    @Override
+    public TransferResponse getTradeByTransactionId(String transactionId) {
+        Trade findTrade = tradeRepository.findByTransactionId(transactionId)
+                .orElseThrow(() -> new IncorrectTransactionIdException("조회하려고 하는 TransactionID가 없거나 잘못되었습니다"));
+        return null;
     }
 }
