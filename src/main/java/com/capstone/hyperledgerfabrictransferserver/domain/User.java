@@ -29,6 +29,12 @@ public class User extends BaseEntity{
     @NotNull
     private String name;
 
+    protected User(String password, UserRole userRole, String name) {
+        this.password = password;
+        this.userRole = userRole;
+        this.name = name;
+    }
+
     public void changePassword(String password){
         this.password = password;
     }
