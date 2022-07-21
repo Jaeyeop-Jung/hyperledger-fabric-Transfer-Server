@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class TradeApiController {
 
     @GetMapping("/trade")
     public ResponseEntity<PagingTransferResponseDto> enquireTrade(HttpServletRequest httpServletRequest, int page) {
-        return ResponseEntity.ok(tradeService.enquireTrade(httpServletRequest, page));
+        return ResponseEntity.ok(tradeService.getTradeRelatedToUniqueNumber(httpServletRequest, page));
     }
 
 }
