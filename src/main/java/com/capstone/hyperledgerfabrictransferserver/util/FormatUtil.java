@@ -9,4 +9,11 @@ public class FormatUtil {
         return false;
     }
 
+    public static boolean isPhoneNumber(String uniqueNumber) {
+        if (uniqueNumber.startsWith("010") && (uniqueNumber.length() == 11 || uniqueNumber.length() == 10)) {
+            return true;
+        }
+        return false;
+    }
+
 }
