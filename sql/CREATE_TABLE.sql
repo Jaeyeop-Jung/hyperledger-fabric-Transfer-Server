@@ -63,16 +63,14 @@ CREATE TABLE trade(
                       trade_id BIGINT NOT NULL AUTO_INCREMENT,
                       TRANSACTION_ID VARCHAR(255) NOT NULL ,
                       sender_id BIGINT NOT NULL,
-                      received_user_id BIGINT,
-                      received_shop_id BIGINT,
+                      receiver_id BIGINT NOT NULL ,
                       coin_id BIGINT NOT NULL,
                       amount BIGINT NOT NULL,
                       date_created datetime not null,
                       last_updated datetime not null,
                       PRIMARY KEY(trade_id),
                       FOREIGN KEY(sender_id) REFERENCES user(user_id),
-                      FOREIGN KEY(received_user_id) REFERENCES user(user_id),
-                      FOREIGN KEY(received_shop_id) REFERENCES shop(shop_id),
+                      FOREIGN KEY(receiver_id) REFERENCES user(user_id),
                       FOREIGN KEY(coin_id) REFERENCES coin(coin_id)
 );
 

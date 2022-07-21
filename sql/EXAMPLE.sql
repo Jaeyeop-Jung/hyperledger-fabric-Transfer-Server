@@ -95,3 +95,22 @@ select t.trade_id ,t.date_created
 from trade t
 where date_created between '2022-07-09 16:34:00' and '2022-07-09 16:35:00'
 and t.trade_id = 2;
+
+select
+    t1.TRANSACTION_ID as transactionId,
+    case when u1.role = 'USER_ROLE' then (select student.student_number from STUDENT student where STUDENT.user_id = u1.user_id)
+         when u1.role = 'STOREMANAGER_ROLE' then (select storemanager.PHONE_NUMBER from STOREMANGER storemanager where storemanager.user_id = u1.user_id)
+         when u1.role = 'ADMIN_ROLE' then (select admin.user_id from ADMIN admin where admin.user_id = u1.user_id)
+        end as senderUniqueNumber,
+    u1.name as senderName,
+    case when u1.role = 'USER_ROLE' then (select student.student_number from STUDENT student where STUDENT.user_id = u1.user_id)
+         when u1.role = 'STOREMANAGER_ROLE' then (select storemanager.PHONE_NUMBER from STOREMANGER storemanager where storemanager.user_id = u1.user_id)
+         when u1.role = 'ADMIN_ROLE' then (select admin.user_id from ADMIN admin where admin.user_id = u1.user_id)
+        end as receiverUniqueNumber,
+    u2.name as receiverName,
+    (select c.name from coin c where c.coin_id = t1.coin_id) as coinName,
+    t1.amount as amount,
+    t1.date_created as dateCreated
+from trade t1
+         inner join user u1 on t1.sender_id = u1.user_id
+         inner join user u2 on t1.receiver_id = u1.user_id
