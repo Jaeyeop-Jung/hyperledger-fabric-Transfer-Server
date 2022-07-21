@@ -15,4 +15,11 @@ public class Student extends User{
     @NotNull
     private String studentNumber;
 
+    private Student(String studentNumber, String password, UserRole userRole, String name) {
+        super(password, userRole, name);
+        this.studentNumber = studentNumber;
+    }
+    public static Student of(String studentNumber, String password, UserRole userRole, String name) {
+        return new Student(studentNumber, password, userRole, name);
+    }
 }
