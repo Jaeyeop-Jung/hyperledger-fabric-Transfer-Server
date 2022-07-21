@@ -34,10 +34,10 @@ public class AdminApiController {
     @GetMapping("/trade")
     public ResponseEntity<PagingTransferResponseDto> getAllTradeBy(
             @RequestParam(defaultValue = "1") int page,
-            @ModelAttribute AllTransferRequest allTransferRequest
+            @ModelAttribute RequestForGetTradeByDetails requestForGetTradeByDetails
     ) {
-        System.out.println("allTransferRequest = " + allTransferRequest);
-        return ResponseEntity.ok(tradeService.getAllTradeBy(page, allTransferRequest));
+        System.out.println("requestForGetTradeByDetails = " + requestForGetTradeByDetails);
+        return ResponseEntity.ok(tradeService.getAllTradeBy(page, requestForGetTradeByDetails));
     }
 
     @GetMapping("/trade/{transactionId}")

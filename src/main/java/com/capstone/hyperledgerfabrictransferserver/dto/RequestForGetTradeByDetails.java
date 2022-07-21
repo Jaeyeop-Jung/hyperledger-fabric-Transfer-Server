@@ -1,21 +1,18 @@
 package com.capstone.hyperledgerfabrictransferserver.dto;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.DateTimeRange;
-import com.sun.istack.NotNull;
 import lombok.*;
-import org.apache.tomcat.jni.Local;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class AllTransferRequest {
+public class RequestForGetTradeByDetails {
     @Getter
-    private Long sender;
+    private String senderUniqueNumber;
 
     @Getter
-    private Long receiver;
+    private String receiverUniqueNumber;
 
     @Getter
     private DateTimeRange dateTimeRange;
@@ -39,9 +36,9 @@ public class AllTransferRequest {
     private LocalDateTime untilLocalDateTime;
 
     @Builder
-    public AllTransferRequest(Long sender, Long receiver, DateTimeRange dateTimeRange, Integer year, Integer month, Integer day, Integer hour, Integer minute, Integer second) {
-        this.sender = sender;
-        this.receiver = receiver;
+    public RequestForGetTradeByDetails(String senderUniqueNumber, String receiverUniqueNumber, DateTimeRange dateTimeRange, Integer year, Integer month, Integer day, Integer hour, Integer minute, Integer second) {
+        this.senderUniqueNumber = senderUniqueNumber;
+        this.receiverUniqueNumber = receiverUniqueNumber;
         this.dateTimeRange = dateTimeRange;
         this.year = year;
         this.month = month;
