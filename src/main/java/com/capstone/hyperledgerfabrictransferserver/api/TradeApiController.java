@@ -1,5 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
+import com.capstone.hyperledgerfabrictransferserver.dto.PagingTransferResponseDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.TransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;
 import com.capstone.hyperledgerfabrictransferserver.service.TradeService;
@@ -30,7 +31,7 @@ public class TradeApiController {
     }
 
     @GetMapping("/trade")
-    public ResponseEntity<List<TransferResponse>> enquireTrade(HttpServletRequest httpServletRequest, int page) {
+    public ResponseEntity<PagingTransferResponseDto> enquireTrade(HttpServletRequest httpServletRequest, int page) {
         return ResponseEntity.ok(tradeService.enquireTrade(httpServletRequest, page));
     }
 
