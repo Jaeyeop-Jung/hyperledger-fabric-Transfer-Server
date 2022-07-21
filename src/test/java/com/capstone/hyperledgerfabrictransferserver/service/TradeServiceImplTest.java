@@ -1,9 +1,7 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
-import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
-import com.capstone.hyperledgerfabrictransferserver.domain.Trade;
-import com.capstone.hyperledgerfabrictransferserver.domain.User;
-import com.capstone.hyperledgerfabrictransferserver.domain.UserRole;
+import com.capstone.hyperledgerfabrictransferserver.domain.*;
+import com.capstone.hyperledgerfabrictransferserver.dto.PagingTransferResponseDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;import com.capstone.hyperledgerfabrictransferserver.dto.TransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.repository.CoinRepository;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
@@ -58,20 +56,20 @@ class TradeServiceImplTest {
     void transfer_을_테스트한다() throws Exception{
         //given
         TransferRequest transferRequest = TransferRequest.builder()
-                .receiverStudentIdOrPhoneNumber(2L)
+                .receiverUniqueNumber("2")
                 .coinName("test")
                 .amount(100L)
                 .build();
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         Coin coin = Coin.of("test", 1000L);
-        User sender = User.of(
-                1L,
+        User sender = Student.of(
+                "1",
                 "test",
                 UserRole.ROLE_USER,
-                "test"
+                "test1"
         );
-        User receiver = User.of(
-                2L,
+        User receiver = StoreManager.of(
+                "2",
                 "test",
                 UserRole.ROLE_USER,
                 "test2"
@@ -88,8 +86,11 @@ class TradeServiceImplTest {
         coinMap.put("test", "100");
         String submitTransactionResponse = objectMapper.writeValueAsString(
                 TransferResponse.builder()
-                        .senderStudentId(1L)
-                        .receiverStudentIdOrPhoneNumber(2L)
+                        .transactionId("test")
+                        .senderUniqueNumber("1")
+                        .senderName("test1")
+                        .receiverUniqueNumber("2")
+                        .receiverName("test2")
                         .coinName("test")
                         .amount(100L)
                         .build()
@@ -118,21 +119,20 @@ class TradeServiceImplTest {
     @Test
     public void enquireTrade_를_테스트한다() throws Exception {
         //given
-        User sender = User.of(
-                1L,
+        User sender = Student.of(
+                "1",
                 "test",
                 UserRole.ROLE_USER,
                 "test1"
         );
-        User receiver = User.of(
-                2L,
+        User receiver = StoreManager.of(
+                "2",
                 "test",
                 UserRole.ROLE_USER,
                 "test2"
         );
         Coin coin = Coin.of("test", 1000L);
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        List<Trade> tradeList = new ArrayList<>();
         Trade trade = Trade.of(
                 "test",
                 sender,
@@ -140,31 +140,33 @@ class TradeServiceImplTest {
                 coin,
                 100L
         );
-        tradeList.add(trade);
         List<TransferResponse> transferResponseList = new ArrayList<>();
         transferResponseList.add(
                 TransferResponse.builder()
-                        .senderStudentId(sender.getStudentId())
-                        .receiverStudentIdOrPhoneNumber(receiver.getStudentId())
-                        .coinName(coin.getName())
-                        .amount(trade.getAmount())
+                        .transactionId("test")
+                        .senderUniqueNumber("1")
+                        .senderName("test1")
+                        .receiverUniqueNumber("2")
+                        .receiverName("test2")
+                        .coinName("test")
+                        .amount(100L)
                         .build()
         );
 
         when(userService.getUserByJwtToken(any()))
                 .thenReturn(sender);
         when(tradeRepository.findAllBySenderOrReceiver(any(), any(), any()))
-                .thenReturn(new PageImpl<Trade>(tradeList));
+                .thenReturn(new PageImpl<>(transferResponseList));
 
         //when
-        List<TransferResponse> response = tradeService.enquireTrade(httpServletRequest, 1);
+        PagingTransferResponseDto response = tradeService.getTradeRelatedToUniqueNumber(httpServletRequest, 1);
 
         //then
         verify(userService).getUserByJwtToken(any());
         verify(tradeRepository).findAllBySenderOrReceiver(any(), any(), any());
-        assertThat(response.get(0).getSenderStudentId()).isEqualTo(sender.getStudentId());
-        assertThat(response.get(0).getReceiverStudentIdOrPhoneNumber()).isEqualTo(receiver.getStudentId());
-        assertThat(response.get(0).getCoinName()).isEqualTo(trade.getCoin().getName());
+        assertThat(response.getTransferResponseList().get(0).getSenderName()).isEqualTo(sender.getName());
+        assertThat(response.getTransferResponseList().get(0).getReceiverName()).isEqualTo(receiver.getName());
+        assertThat(response.getTransferResponseList().get(0).getCoinName()).isEqualTo(trade.getCoin().getName());
 
     }
 }

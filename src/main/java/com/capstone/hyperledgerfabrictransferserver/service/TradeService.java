@@ -1,13 +1,12 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectContractException;
-import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectStudentIdException;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectTransactionIdException;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.NotExistsCoinException;
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.Trade;
-import com.capstone.hyperledgerfabrictransferserver.dto.AllTransferRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.RequestForGetTradeByDetails;
 import com.capstone.hyperledgerfabrictransferserver.dto.PagingTransferResponseDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.TransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,8 +44,7 @@ public class TradeService {
         Coin requestedCoin = coinRepository.findByName(transferRequest.getCoinName())
                 .orElseThrow(() -> new NotExistsCoinException("존재하지 않은 코인입니다"));
         User sender = userService.getUserByJwtToken(httpServletRequest);
-        User receiver = userRepository.findByStudentId(transferRequest.getReceiverStudentIdOrPhoneNumber())
-                .orElseThrow(() -> new IncorrectStudentIdException("가입하지 않거나 잘못된 학번입니다"));
+        User receiver = userService.getUserByUniqueNumber(transferRequest.getReceiverUniqueNumber());
 
         String fabricResponse;
         TransferResponse transferResponse;
@@ -67,7 +64,7 @@ public class TradeService {
             throw new IncorrectContractException("TransferCoin 체인코드 실행 중 오류가 발생했습니다");
         }
 
-        Trade savedTrade = tradeRepository.save(
+        Trade save = tradeRepository.save(
                 Trade.of(
                         transferResponse.getTransactionId(),
                         sender,
@@ -77,43 +74,42 @@ public class TradeService {
                 )
         );
 
-        return TransferResponse.builder()
-                .senderStudentId(transferResponse.getSenderStudentId())
-                .senderName(sender.getName())
-                .receiverStudentIdOrPhoneNumber(transferRequest.getReceiverStudentIdOrPhoneNumber())
-                .receiverName(receiver.getName())
-                .coinName(transferRequest.getCoinName())
-                .amount(transferResponse.getAmount())
-                .dateCreated(savedTrade.getDateCreated())
-                .build();
+        return tradeRepository.findTradeById(save.getId());
     }
 
     @Transactional(readOnly = true)
-    public List<TransferResponse> enquireTrade(HttpServletRequest httpServletRequest, int page) {
+    public PagingTransferResponseDto getTradeRelatedToUniqueNumber(HttpServletRequest httpServletRequest, int page) {
 
-        User findUser = userService.getUserByJwtToken(httpServletRequest);
-        Page<Trade> findAllUserTrades = tradeRepository.findAllBySenderOrReceiver(findUser, findUser, PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
+        User findUser = userService.getUserByUniqueNumber(httpServletRequest);
+        Page<TransferResponse> findAllTransferResponse = tradeRepository.findAllBySenderOrReceiver(findUser, findUser, PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
 
-        return TransferResponse.toDtoList(findAllUserTrades.getContent());
+        return PagingTransferResponseDto.builder()
+                .totalTradeNumber(findAllTransferResponse.getTotalElements())
+                .totalPage(findAllTransferResponse.getTotalPages())
+                .transferResponseList(findAllTransferResponse.getContent())
+                .build();
     }
 
     @Transactional(readOnly = true)
     public PagingTransferResponseDto getAllTradeBy(
             int page,
-            AllTransferRequest allTransferRequest
+            RequestForGetTradeByDetails requestForGetTradeByDetails
     )  {
-        Page<Trade> findTradeList = tradeRepository.findAllBySenderStudentIdAndReceiverStudentIdIfNullThenAllAndBetween(
-                allTransferRequest.getFromLocalDateTime(),
-                allTransferRequest.getUntilLocalDateTime(),
-                allTransferRequest.getSender(),
-                allTransferRequest.getReceiver(),
+        User sender = userService.getUserByUniqueNumber(requestForGetTradeByDetails.getSenderUniqueNumber());
+        User receiver = userService.getUserByUniqueNumber(requestForGetTradeByDetails.getReceiverUniqueNumber());
+
+        Page<TransferResponse> findAllTransferResponse = tradeRepository.findAllBySenderOrReceiverBetween(
+                requestForGetTradeByDetails.getFromLocalDateTime(),
+                requestForGetTradeByDetails.getUntilLocalDateTime(),
+                sender,
+                receiver,
                 PageRequest.of(page - 1, 10, Sort.Direction.DESC, "dateCreated")
         );
 
         return PagingTransferResponseDto.builder()
-                .totalTradeNumber(findTradeList.getTotalElements())
-                .totalPage(findTradeList.getTotalPages())
-                .transferResponseList(TransferResponse.toDtoList(findTradeList.getContent()))
+                .totalTradeNumber(findAllTransferResponse.getTotalElements())
+                .totalPage(findAllTransferResponse.getTotalPages())
+                .transferResponseList(findAllTransferResponse.getContent())
                 .build();
     }
 
