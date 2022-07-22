@@ -1,5 +1,7 @@
 package com.capstone.hyperledgerfabrictransferserver.filter;
 
+import com.capstone.hyperledgerfabrictransferserver.aop.customException.EmptyTokenException;
+import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectTokenException;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @RequiredArgsConstructor
@@ -39,7 +42,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setHeaderParam("typ", "ACCESS_TOKEN")
                 .setHeaderParam("alg", "HS256")
-                .setSubject(user.getId().toString())
+                .setSubject(user.getIdentifier())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
                 .claim("role", user.getUserRole().toString())
@@ -52,10 +55,18 @@ public class JwtTokenProvider {
      * author : Jaeyeop Jung
      * description : JWT토큰으로 User 도메인 ID를 찾음
      *
-     * @param token the token
+     * @param httpServletRequest the token
      * @return the user id by jwt
      */
-    public String findUniqueNumberByJwt(String token){
+    public String findIdentifierByHttpServletRequest(HttpServletRequest httpServletRequest){
+        if (httpServletRequest.getHeader("Authorization") == null || !httpServletRequest.getHeader("Authorization").startsWith("Bearer ")) {
+            return null;
+        }
+        String token = httpServletRequest.getHeader("Authorization").split(" ")[1];
+        if (!validateToken(token)){
+            return null;
+        }
+
         Claims claims = Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token)
@@ -97,11 +108,11 @@ public class JwtTokenProvider {
      * author : Jaeyeop Jung
      * description : SecurityContextHolder에 담을 Authentication 객체를 가져옴
      *
-     * @param token the token
+     * @param identifier identifier
      * @return the authentication
      */
-    public Authentication getAuthentication(String token){
-        UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(this.findUniqueNumberByJwt(token)));
+    public Authentication getAuthenticationByIdentifier(String identifier){
+        UserDetails userDetails = userDetailsService.loadUserByUsername(identifier);
 //        if(userDetails != null) {
             return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 //        } else {
