@@ -17,7 +17,7 @@ public class UserDetailsImpl implements UserDetails {
 
     private Long id;
 
-    private Long studentId;
+    private String identifier;
 
     private String password;
 
@@ -25,16 +25,16 @@ public class UserDetailsImpl implements UserDetails {
 
     private String name;
 
-    private UserDetailsImpl(Long id, Long studentId, String password, UserRole userRole, String name) {
+    private UserDetailsImpl(Long id, String identifier, String password, UserRole userRole, String name) {
         this.id = id;
-        this.studentId = studentId;
+        this.identifier = identifier;
         this.password = password;
         this.userRole = userRole;
         this.name = name;
     }
 
-    public static UserDetailsImpl of(Long id, Long studentId, String password, UserRole userRole, String name){
-        return new UserDetailsImpl(id, studentId, password, userRole, name);
+    public static UserDetailsImpl of(Long id, String identifier, String password, UserRole userRole, String name){
+        return new UserDetailsImpl(id, identifier, password, userRole, name);
     }
 
     @Override

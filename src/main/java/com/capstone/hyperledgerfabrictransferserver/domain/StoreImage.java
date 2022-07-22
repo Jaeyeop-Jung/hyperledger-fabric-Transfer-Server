@@ -19,7 +19,7 @@ public class StoreImage extends BaseEntity{
     private Long id;
 
     @NotNull
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STORE_ID")
     private Store store;
 
