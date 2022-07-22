@@ -1,23 +1,20 @@
 package com.capstone.hyperledgerfabrictransferserver.repository;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
+import com.capstone.hyperledgerfabrictransferserver.domain.UserRole;
+import com.capstone.hyperledgerfabrictransferserver.dto.UserJoinRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.Optional;
 
-@NoRepositoryBean
-public interface UserRepository<T extends User> extends JpaRepository<T, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    boolean existsByStudentId(Long studentId);
+    boolean existsByIdentifier(String identifier);
 
     boolean existsByName(String name);
 
-    Optional<User> findByStudentId(Long studentId);
-
-    boolean existsUniqueNumber(String uniqueNumber);
-
-    Optional<T> findByUniqueNumber(String uniqueNumber);
+    Optional<User> findByIdentifier(String identifier);;
 
 }
