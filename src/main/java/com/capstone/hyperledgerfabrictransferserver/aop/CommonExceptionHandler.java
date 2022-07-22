@@ -1,8 +1,7 @@
 package com.capstone.hyperledgerfabrictransferserver.aop;
 
-import com.capstone.hyperledgerfabrictransferserver.aop.customException.AlreadyExistsCoinException;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectIdException;
-import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectUniqueNumberException;
+import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectIdentifierException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,7 +32,7 @@ public class CommonExceptionHandler {
         return new ResponseEntity<>(map, responseHeader, httpStatus);
     }
 
-    @ExceptionHandler(IncorrectUniqueNumberException.class)
+    @ExceptionHandler(IncorrectIdentifierException.class)
     public ResponseEntity<Map<String, String>> IncorrectUniqueNumberExceptionHandler(Exception e){
 
         HttpHeaders responseHeader = new HttpHeaders();

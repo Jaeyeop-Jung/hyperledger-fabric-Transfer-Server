@@ -23,13 +23,19 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        String token = null;
-        if(httpRequest.getHeader("Authorization") != null && httpRequest.getHeader("Authorization").startsWith("Bearer ")){
-            token = httpRequest.getHeader("Authorization").split(" ")[1];
-        }
+//        String token = null;
+//        if(httpRequest.getHeader("Authorization") != null && httpRequest.getHeader("Authorization").startsWith("Bearer ")){
+//            token = httpRequest.getHeader("Authorization").split(" ")[1];
+//        }
+//
+//        if( token != null && jwtTokenProvider.validateToken(token) ) {
+//            Authentication authentication = jwtTokenProvider.getAuthentication(token); // 만약 null이 리턴되면 role 확인을 못하니까 EntryPoint로 넘어간다. role 확인이되면 deniedhandler로 간다.
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//        }
 
-        if( token != null && jwtTokenProvider.validateToken(token) ) {
-            Authentication authentication = jwtTokenProvider.getAuthentication(token); // 만약 null이 리턴되면 role 확인을 못하니까 EntryPoint로 넘어간다. role 확인이되면 deniedhandler로 간다.
+        String findIdentifier = jwtTokenProvider.findIdentifierByHttpServletRequest(httpRequest);
+        if (findIdentifier != null) {
+            Authentication authentication = jwtTokenProvider.getAuthenticationByIdentifier(findIdentifier);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
