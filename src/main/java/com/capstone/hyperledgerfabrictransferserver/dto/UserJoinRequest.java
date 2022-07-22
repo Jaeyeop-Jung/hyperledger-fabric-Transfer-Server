@@ -12,7 +12,7 @@ public class UserJoinRequest {
 
     @ApiParam(required = true)
     @NotNull
-    private Long studentId;
+    private String identifier;
 
     @ApiParam(required = true)
     @NotNull
@@ -20,13 +20,17 @@ public class UserJoinRequest {
 
     @ApiParam(required = true)
     @NotNull
+    private UserRole userRole;
+
+    @ApiParam(required = true)
+    @NotNull
     private String name;
 
     @Builder
-    public UserJoinRequest(Long studentId, String password, String name) {
-        this.studentId = studentId;
+    public UserJoinRequest(String identifier, String password, UserRole userRole, String name) {
+        this.identifier = identifier;
         this.password = password;
+        this.userRole = userRole;
         this.name = name;
     }
-
 }

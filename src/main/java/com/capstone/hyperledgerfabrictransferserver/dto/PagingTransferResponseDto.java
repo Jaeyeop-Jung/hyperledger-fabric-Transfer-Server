@@ -12,12 +12,12 @@ public class PagingTransferResponseDto {
 
     private Long totalTradeNumber;
 
-    private int totalPage;
+    private Long totalPage;
 
     private List<TransferResponse> transferResponseList;
 
     @Builder
-    public PagingTransferResponseDto(Long totalTradeNumber, int totalPage, List<TransferResponse> transferResponseList) {
+    public PagingTransferResponseDto(Long totalTradeNumber, Long totalPage, List<TransferResponse> transferResponseList) {
         this.totalTradeNumber = totalTradeNumber;
         this.totalPage = totalPage;
         this.transferResponseList = transferResponseList;

@@ -9,25 +9,16 @@ import java.util.HashMap;
 @ToString
 public class AssetDto {
 
-    private Long studentId;
+    private String identifier;
 
     private String owner;
 
     private HashMap<String, String> coin;
 
-    private String sender; // 필요한가?
-
-    private String receiver; //
-
-    private Long amount; //
-
     @Builder
-    public AssetDto(Long studentId, String owner, HashMap<String, String> coin, String sender, String receiver, Long amount) {
-        this.studentId = studentId;
+    public AssetDto(String identifier, String owner, HashMap<String, String> coin) {
+        this.identifier = identifier;
         this.owner = owner;
         this.coin = coin;
-        this.sender = sender;
-        this.receiver = receiver;
-        this.amount = amount;
     }
 }

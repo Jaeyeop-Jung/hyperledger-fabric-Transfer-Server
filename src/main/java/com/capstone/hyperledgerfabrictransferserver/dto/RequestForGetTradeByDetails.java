@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 @ToString
 public class RequestForGetTradeByDetails {
     @Getter
-    private String senderUniqueNumber;
+    private String senderIdentifier;
 
     @Getter
-    private String receiverUniqueNumber;
+    private String receiverIdentifier;
 
     @Getter
     private DateTimeRange dateTimeRange;
@@ -36,9 +36,9 @@ public class RequestForGetTradeByDetails {
     private LocalDateTime untilLocalDateTime;
 
     @Builder
-    public RequestForGetTradeByDetails(String senderUniqueNumber, String receiverUniqueNumber, DateTimeRange dateTimeRange, Integer year, Integer month, Integer day, Integer hour, Integer minute, Integer second) {
-        this.senderUniqueNumber = senderUniqueNumber;
-        this.receiverUniqueNumber = receiverUniqueNumber;
+    public RequestForGetTradeByDetails(String senderIdentifier, String receiverIdentifier, DateTimeRange dateTimeRange, Integer year, Integer month, Integer day, Integer hour, Integer minute, Integer second) {
+        this.senderIdentifier = senderIdentifier;
+        this.receiverIdentifier = receiverIdentifier;
         this.dateTimeRange = dateTimeRange;
         this.year = year;
         this.month = month;

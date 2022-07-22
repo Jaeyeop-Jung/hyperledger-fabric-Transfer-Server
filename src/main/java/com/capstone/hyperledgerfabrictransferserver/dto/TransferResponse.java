@@ -4,9 +4,6 @@ import com.capstone.hyperledgerfabrictransferserver.domain.Trade;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -14,11 +11,11 @@ import java.util.stream.Collectors;
 public class TransferResponse {
 
     private String transactionId;
-    private String senderUniqueNumber;
+    private String senderIdentifier;
 
     private String senderName;
 
-    private String receiverUniqueNumber;
+    private String receiverIdentifier;
 
     private String receiverName;
 
@@ -29,14 +26,27 @@ public class TransferResponse {
     private LocalDateTime dateCreated;
 
     @Builder
-    public TransferResponse(String transactionId, String senderUniqueNumber, String senderName, String receiverUniqueNumber, String receiverName, String coinName, Long amount, LocalDateTime dateCreated) {
+    public TransferResponse(String transactionId, String senderIdentifier, String senderName, String receiverIdentifier, String receiverName, String coinName, Long amount, LocalDateTime dateCreated) {
         this.transactionId = transactionId;
-        this.senderUniqueNumber = senderUniqueNumber;
+        this.senderIdentifier = senderIdentifier;
         this.senderName = senderName;
-        this.receiverUniqueNumber = receiverUniqueNumber;
+        this.receiverIdentifier = receiverIdentifier;
         this.receiverName = receiverName;
         this.coinName = coinName;
         this.amount = amount;
         this.dateCreated = dateCreated;
+    }
+
+    public static TransferResponse toDto(Trade trade) {
+        return TransferResponse.builder()
+                .transactionId(trade.getTransactionId())
+                .senderIdentifier(trade.getSender().getIdentifier())
+                .senderName(trade.getSender().getName())
+                .receiverIdentifier(trade.getReceiver().getIdentifier())
+                .receiverName(trade.getReceiver().getName())
+                .coinName(trade.getCoin().getName())
+                .amount(trade.getAmount())
+                .dateCreated(trade.getDateCreated())
+                .build();
     }
 }

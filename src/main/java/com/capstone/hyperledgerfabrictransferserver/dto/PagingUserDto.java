@@ -31,7 +31,7 @@ public class PagingUserDto {
     private List<UserDto> userListToDtoList(List<User> userList) {
         return userList.stream()
                 .map(user -> UserDto.builder()
-                        .studentId(user.getStudentId())
+                        .identifier(user.getIdentifier())
                         .name(user.getName())
                         .dateCreated(user.getDateCreated())
                         .lastUpdated(user.getLastUpdated())

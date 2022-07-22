@@ -11,15 +11,15 @@ public class UserLoginRequest {
 
     @ApiParam(required = true)
     @NotNull
-    private Long studentId;
+    private String identifier;
 
     @ApiParam(required = true)
     @NotNull
     private String password;
 
     @Builder
-    public UserLoginRequest(Long studentId, String password) {
-        this.studentId = studentId;
+    public UserLoginRequest(String identifier, String password) {
+        this.identifier = identifier;
         this.password = password;
     }
 

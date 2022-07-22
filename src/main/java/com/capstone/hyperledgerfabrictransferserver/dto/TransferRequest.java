@@ -11,7 +11,7 @@ public class TransferRequest {
 
     @ApiParam(required = true)
     @NotNull
-    private String receiverUniqueNumber;
+    private String receiverIdentifier;
 
     @ApiParam(required = true)
     @NotNull
@@ -22,8 +22,8 @@ public class TransferRequest {
     private Long amount;
 
     @Builder
-    public TransferRequest(String receiverUniqueNumber, String coinName, Long amount) {
-        this.receiverUniqueNumber = receiverUniqueNumber;
+    public TransferRequest(String receiverIdentifier, String coinName, Long amount) {
+        this.receiverIdentifier = receiverIdentifier;
         this.coinName = coinName;
         this.amount = amount;
     }
