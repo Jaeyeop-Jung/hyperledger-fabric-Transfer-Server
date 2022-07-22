@@ -18,34 +18,22 @@ CREATE TABLE coin(
 
 CREATE TABLE user(
                      user_id BIGINT NOT NULL AUTO_INCREMENT,
+                     identifier VARCHAR(255) NOT NULL ,
                      password VARCHAR(255) NOT NULL,
                      role VARCHAR(255) NOT NULL,
                      name VARCHAR(255) NOT NULL,
                      date_created datetime not null,
                      last_updated datetime not null,
-                     PRIMARY KEY(user_id)
-);
-
-CREATE TABLE STUDENT(
-                    user_id BIGINT NOT NULL ,
-                    student_number VARCHAR(255) NOT NULL,
-                    primary key (user_id),
-                    foreign key (user_id) references user(user_id)
-
-);
-
-CREATE TABLE STOREMANGER(
-                        user_id BIGINT NOT NULL ,
-                        PHONE_NUMBER VARCHAR(255) NOT NULL,
-                        primary key (user_id),
-                        foreign key (user_id) references user(user_id)
-
+                     PRIMARY KEY(user_id),
+                     unique key (identifier)
 );
 
 CREATE TABLE ADMIN(
-                        user_id BIGINT NOT NULL ,
-                        primary key (user_id),
-                        foreign key (user_id) references user(user_id)
+                    admin_id BIGINT NOT NULL AUTO_INCREMENT,
+                    email varchar(255) NOT NULL,
+                    password varchar(255) not null ,
+                    primary key (admin_id),
+                    unique key (email)
 
 );
 
