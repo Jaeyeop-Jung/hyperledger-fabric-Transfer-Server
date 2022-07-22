@@ -29,15 +29,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String id) {
+    public UserDetails loadUserByUsername(String identifier) {
 
-        User findUser = userRepository.findById(Long.parseLong(id))
+        User findUser = userRepository.findByIdentifier(identifier)
                 .orElseThrow(() -> new DeletedUserException("삭제되거나 존재하지 않는 유저입니다"));
 
         if(findUser != null) {
             return UserDetailsImpl.of(
                     findUser.getId(),
-                    findUser.getStudentId(),
+                    findUser.getIdentifier(),
                     findUser.getPassword(),
                     findUser.getUserRole(),
                     findUser.getName()

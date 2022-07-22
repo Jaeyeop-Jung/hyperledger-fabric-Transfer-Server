@@ -1,12 +1,12 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.*;
-import com.capstone.hyperledgerfabrictransferserver.domain.User;
-import com.capstone.hyperledgerfabrictransferserver.domain.UserRole;
+import com.capstone.hyperledgerfabrictransferserver.domain.*;
 import com.capstone.hyperledgerfabrictransferserver.dto.*;
 import com.capstone.hyperledgerfabrictransferserver.filter.JwtTokenProvider;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Gateway;
@@ -30,32 +30,18 @@ public class UserService {
     private final FabricService fabricService;
     private final ObjectMapper objectMapper;
 
-    /**
-     * methodName : getUserByJwtToken
-     * author : Jaeyeop Jung
-     * description : HttpServletRequest에서 User 엔티티를 가져오는 메서드
-     *
-     * @param httpServletRequest the http servlet request
-     * @return the user by jwt token
-     */
     @Transactional(readOnly = true)
-    public User getUserByJwtToken(HttpServletRequest httpServletRequest) {
+    public User getUserByIdentifier(@NonNull String identifier) {
+        return userRepository.findByIdentifier(identifier)
+                .orElseThrow(() -> new IncorrectIdentifierException("잘못된 식별 번호로 요청했습니다"));
+    }
 
-        String token = null;
-        if(httpServletRequest.getHeader("Authorization") != null && httpServletRequest.getHeader("Authorization").startsWith("Bearer ")){
-            token = httpServletRequest.getHeader("Authorization").split(" ")[1];
-        }
+    @Transactional(readOnly = true)
+    public User getUserByHttpServletRequest(HttpServletRequest httpServletRequest) {
+        String identifier = jwtTokenProvider.findIdentifierByHttpServletRequest(httpServletRequest);
 
-        if(token == null){
-            throw new EmptyTokenException("Authorization 헤더가 비어있거나 잘못되었습니다");
-        }
-
-        if(!jwtTokenProvider.validateToken(token)){
-            throw new IncorrectTokenException("잘못된 토큰으로 요청했습니다");
-        }
-
-        return userRepository.findById(jwtTokenProvider.findUserIdByJwt(token))
-                .orElseThrow(() -> new DeletedUserException("삭제되거나 존재하지 않는 유저입니다"));
+        return userRepository.findByIdentifier(identifier)
+                .orElseThrow(() -> new IncorrectIdentifierException("잘못된 식별 번호로 요청했습니다"));
     }
 
     /**
@@ -69,22 +55,22 @@ public class UserService {
     @Transactional
     public UserLoginResponse join(UserJoinRequest userJoinRequest) {
 
-        if(userRepository.existsByStudentId(userJoinRequest.getStudentId())){
-            throw new AlreadyExistUserException("학번 : " + userJoinRequest.getStudentId() + " 는 이미 가입된 학번입니다");
+        if (userRepository.existsByIdentifier(userJoinRequest.getIdentifier())) {
+            throw new AlreadyExistUserException("이미 존재하는 식별 번호입니다");
         }
 
         User savedUser = userRepository.save(
                 User.of(
-                        userJoinRequest.getStudentId(),
+                        userJoinRequest.getIdentifier(),
                         bCryptPasswordEncoder.encode(userJoinRequest.getPassword()),
-                        UserRole.ROLE_USER,
+                        userJoinRequest.getUserRole(),
                         userJoinRequest.getName()
                 )
         );
 
         try {
             Gateway gateway = fabricService.getGateway();
-            fabricService.submitTransaction(gateway, "CreateAsset", "asset" + savedUser.getId(), String.valueOf(savedUser.getStudentId()), userJoinRequest.getName());
+            fabricService.submitTransaction(gateway, "CreateAsset", "asset" + savedUser.getId(), savedUser.getIdentifier(), savedUser.getName());
             fabricService.close(gateway);
         } catch (Exception e){
             throw new IncorrectContractException("CreateAsset 체인코드 실행 중 오류가 발생했습니다");
@@ -106,8 +92,8 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserLoginResponse login(UserLoginRequest userLoginRequest) {
 
-        User findUser = userRepository.findByStudentId(userLoginRequest.getStudentId())
-                .orElseThrow(() -> new IncorrectStudentIdException("가입하지 않거나 잘못된 학번입니다")); // 예외처리
+        User findUser = userRepository.findByIdentifier(userLoginRequest.getIdentifier())
+                .orElseThrow(() -> new IncorrectIdentifierException("가입하지 않거나 잘못된 식별 번호입니다"));
 
         if(!bCryptPasswordEncoder.matches(userLoginRequest.getPassword(), findUser.getPassword())){
             throw new IncorrectPasswordException("잘못된 비밀번호 입니다");
@@ -129,7 +115,7 @@ public class UserService {
     @Transactional
     public void changePassword(HttpServletRequest httpServletRequest, String newPassword) {
 
-        User findUser = getUserByJwtToken(httpServletRequest);
+        User findUser = getUserByHttpServletRequest(httpServletRequest);
 
         findUser.changePassword(bCryptPasswordEncoder.encode(newPassword));
     }
@@ -144,12 +130,12 @@ public class UserService {
     @Transactional
     public void delete(HttpServletRequest httpServletRequest) {
 
-        User findUser = getUserByJwtToken(httpServletRequest);
-
+        User findUser = getUserByHttpServletRequest(httpServletRequest);
         userRepository.delete(findUser);
+
         try {
             Gateway gateway = fabricService.getGateway();
-            boolean response = Boolean.valueOf(fabricService.submitTransaction(gateway, "DeleteAsset", "asset" + findUser.getId()));
+            fabricService.submitTransaction(gateway, "DeleteAsset", "asset" + findUser.getId());
             fabricService.close(gateway);
         } catch (Exception e){
             throw new IncorrectContractException("DeleteAsset 체인코드 실행 중 오류가 발생했습니다");
@@ -159,7 +145,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public AssetDto getAsset(HttpServletRequest httpServletRequest) {
 
-        User findUser = getUserByJwtToken(httpServletRequest);
+        User findUser = getUserByHttpServletRequest(httpServletRequest);
 
         try {
             Gateway gateway = fabricService.getGateway();

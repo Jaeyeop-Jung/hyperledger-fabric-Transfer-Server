@@ -2,7 +2,6 @@ package com.capstone.hyperledgerfabrictransferserver.service;
 
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectContractException;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectTransactionIdException;
-import com.capstone.hyperledgerfabrictransferserver.aop.customException.NotExistsCoinException;
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.Trade;
@@ -10,10 +9,9 @@ import com.capstone.hyperledgerfabrictransferserver.dto.RequestForGetTradeByDeta
 import com.capstone.hyperledgerfabrictransferserver.dto.PagingTransferResponseDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.TransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;
-import com.capstone.hyperledgerfabrictransferserver.repository.CoinRepository;
-import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
 import com.capstone.hyperledgerfabrictransferserver.repository.TradeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Gateway;
@@ -24,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,9 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 public class TradeService {
 
     private final UserService userService;
+    private final CoinService coinService;
     private final FabricService fabricService;
-    private final UserRepository userRepository;
-    private final CoinRepository coinRepository;
     private final TradeRepository tradeRepository;
 
     private final ObjectMapper objectMapper;
@@ -41,10 +39,9 @@ public class TradeService {
     @Transactional
     public TransferResponse transfer(HttpServletRequest httpServletRequest, TransferRequest transferRequest) {
 
-        Coin requestedCoin = coinRepository.findByName(transferRequest.getCoinName())
-                .orElseThrow(() -> new NotExistsCoinException("존재하지 않은 코인입니다"));
-        User sender = userService.getUserByJwtToken(httpServletRequest);
-        User receiver = userService.getUserByUniqueNumber(transferRequest.getReceiverUniqueNumber());
+        Coin requestedCoin = coinService.getByCoinName(transferRequest.getCoinName());
+        User sender = userService.getUserByHttpServletRequest(httpServletRequest);
+        User receiver = userService.getUserByIdentifier(transferRequest.getReceiverIdentifier());
 
         String fabricResponse;
         TransferResponse transferResponse;
@@ -63,8 +60,8 @@ public class TradeService {
         } catch (Exception e) {
             throw new IncorrectContractException("TransferCoin 체인코드 실행 중 오류가 발생했습니다");
         }
-
-        Trade save = tradeRepository.save(
+        System.out.println("transferResponse = " + transferResponse);
+        Trade savedTrade = tradeRepository.save(
                 Trade.of(
                         transferResponse.getTransactionId(),
                         sender,
@@ -74,48 +71,52 @@ public class TradeService {
                 )
         );
 
-        return tradeRepository.findTradeById(save.getId());
+        return TransferResponse.toDto(savedTrade);
     }
 
     @Transactional(readOnly = true)
-    public PagingTransferResponseDto getTradeRelatedToUniqueNumber(HttpServletRequest httpServletRequest, int page) {
+    public PagingTransferResponseDto getAllTradeRelatedToIdentifier(HttpServletRequest httpServletRequest, int page) {
 
-        User findUser = userService.getUserByUniqueNumber(httpServletRequest);
-        Page<TransferResponse> findAllTransferResponse = tradeRepository.findAllBySenderOrReceiver(findUser, findUser, PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
+        User findUser = userService.getUserByHttpServletRequest(httpServletRequest);
+        Page<Trade> findTradeList = tradeRepository.findAllBySenderOrReceiver(findUser, findUser, PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
 
         return PagingTransferResponseDto.builder()
-                .totalTradeNumber(findAllTransferResponse.getTotalElements())
-                .totalPage(findAllTransferResponse.getTotalPages())
-                .transferResponseList(findAllTransferResponse.getContent())
-                .build();
+                .totalTradeNumber(findTradeList.getTotalElements())
+                .totalPage(Long.valueOf(findTradeList.getTotalPages()))
+                .transferResponseList(findTradeList.getContent().stream()
+                        .map(trade -> TransferResponse.toDto(trade))
+                        .collect(Collectors.toList())
+                ).build();
     }
 
     @Transactional(readOnly = true)
-    public PagingTransferResponseDto getAllTradeBy(
+    public PagingTransferResponseDto getAllTradeByDetails(
             int page,
-            RequestForGetTradeByDetails requestForGetTradeByDetails
+            @NonNull RequestForGetTradeByDetails requestForGetTradeByDetails
     )  {
-        User sender = userService.getUserByUniqueNumber(requestForGetTradeByDetails.getSenderUniqueNumber());
-        User receiver = userService.getUserByUniqueNumber(requestForGetTradeByDetails.getReceiverUniqueNumber());
+        User sender = userService.getUserByIdentifier(requestForGetTradeByDetails.getSenderIdentifier());
+        User receiver = userService.getUserByIdentifier(requestForGetTradeByDetails.getReceiverIdentifier());
 
-        Page<TransferResponse> findAllTransferResponse = tradeRepository.findAllBySenderOrReceiverBetween(
-                requestForGetTradeByDetails.getFromLocalDateTime(),
-                requestForGetTradeByDetails.getUntilLocalDateTime(),
+        Page<Trade> findTradeList = tradeRepository.findAllBySenderOrReceiverAndDateCreatedBetween(
                 sender,
                 receiver,
+                requestForGetTradeByDetails.getFromLocalDateTime(),
+                requestForGetTradeByDetails.getUntilLocalDateTime(),
                 PageRequest.of(page - 1, 10, Sort.Direction.DESC, "dateCreated")
         );
 
         return PagingTransferResponseDto.builder()
-                .totalTradeNumber(findAllTransferResponse.getTotalElements())
-                .totalPage(findAllTransferResponse.getTotalPages())
-                .transferResponseList(findAllTransferResponse.getContent())
-                .build();
+                .totalTradeNumber(findTradeList.getTotalElements())
+                .totalPage(Long.valueOf(findTradeList.getTotalPages()))
+                .transferResponseList(findTradeList.getContent().stream()
+                        .map(trade -> TransferResponse.toDto(trade))
+                        .collect(Collectors.toList())
+                ).build();
     }
 
     public TransferResponse getTradeByTransactionId(String transactionId) {
         Trade findTrade = tradeRepository.findByTransactionId(transactionId)
                 .orElseThrow(() -> new IncorrectTransactionIdException("조회하려고 하는 TransactionID가 없거나 잘못되었습니다"));
-        return null;
+        return TransferResponse.toDto(findTrade);
     }
 }

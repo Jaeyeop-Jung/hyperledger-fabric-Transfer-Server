@@ -1,9 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
-import com.capstone.hyperledgerfabrictransferserver.aop.customException.AlreadyExistsCoinException;
-import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectContractException;
-import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectStudentIdException;
-import com.capstone.hyperledgerfabrictransferserver.aop.customException.NotExistsCoinException;
+import com.capstone.hyperledgerfabrictransferserver.aop.customException.*;
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.dto.CoinCreateRequest;
@@ -25,6 +22,12 @@ public class CoinService {
     private final CoinRepository coinRepository;
     private final UserRepository userRepository;
     private final FabricService fabricService;
+
+    @Transactional(readOnly = true)
+    public Coin getByCoinName(String coinName) {
+        return coinRepository.findByName(coinName)
+                .orElseThrow(() -> new NotExistsCoinException("존재하지 않은 코인입니다"));
+    }
 
     @Transactional
     public void create(CoinCreateRequest coinCreateRequest) {
@@ -85,12 +88,12 @@ public class CoinService {
         if (coinRepository.existsByName(updateAssetCoinRequest.getCoinName())) {
             throw new NotExistsCoinException("존재하지 않은 코인입니다.");
         }
-        User findUser = userRepository.findByStudentId(updateAssetCoinRequest.getStudentId())
-                .orElseThrow(() -> new IncorrectStudentIdException("가입하지 않거나 잘못된 학번입니다"));
+        User findUser = userRepository.findByIdentifier(updateAssetCoinRequest.getIdentifier())
+                .orElseThrow(() -> new IncorrectIdentifierException("가입하지 않거나 잘못된 식별 번호입니다"));
 
         try {
             Gateway gateway = fabricService.getGateway();
-            fabricService.submitTransaction(gateway, "UpdateAssetCoin", "asset" + findUser.getStudentId(), updateAssetCoinRequest.getCoinName(), updateAssetCoinRequest.getCoinValue());
+            fabricService.submitTransaction(gateway, "UpdateAssetCoin", "asset" + findUser.getIdentifier(), updateAssetCoinRequest.getCoinName(), updateAssetCoinRequest.getCoinValue());
             fabricService.close(gateway);
         } catch (Exception e) {
             throw new IncorrectContractException("UpdateAssetCoin 체인코드 실행 중 오류가 발생했습니다");
