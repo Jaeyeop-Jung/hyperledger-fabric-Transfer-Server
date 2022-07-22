@@ -31,7 +31,7 @@ public class TradeApiController {
 
     @GetMapping("/trade")
     public ResponseEntity<PagingTransferResponseDto> enquireTrade(HttpServletRequest httpServletRequest, int page) {
-        return ResponseEntity.ok(tradeService.getTradeRelatedToUniqueNumber(httpServletRequest, page));
+        return ResponseEntity.ok(tradeService.getAllTradeRelatedToIdentifier(httpServletRequest, page));
     }
 
 }
