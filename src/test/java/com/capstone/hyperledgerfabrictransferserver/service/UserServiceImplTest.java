@@ -14,15 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -55,22 +49,19 @@ class UserServiceImplTest {
     void findUserByJwtToken_을_테스트한다() {
         //given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        User user = User.of(20170000L, "test", UserRole.ROLE_USER, "test");
+        User user = User.of("20170001", "test", UserRole.ROLE_STUDENT, "test");
 
-        when(httpServletRequest.getHeader(any()))
-                .thenReturn("Bearer test");
-        when(jwtTokenProvider.validateToken(any()))
-                .thenReturn(true);
-        when(userRepository.findById(any()))
+        when(jwtTokenProvider.findIdentifierByHttpServletRequest(any()))
+                .thenReturn("20170001");
+        when(userRepository.findByIdentifier(any()))
                 .thenReturn(Optional.of(user));
 
         //when
-        User findUser = userService.getUserByJwtToken(httpServletRequest);
+        User findUser = userService.getUserByHttpServletRequest(httpServletRequest);
 
         //then
-        verify(httpServletRequest, times(3)).getHeader(any());
-        verify(jwtTokenProvider).validateToken(any());
-        verify(userRepository).findById(any());
+        verify(jwtTokenProvider).findIdentifierByHttpServletRequest(any());
+        verify(userRepository).findByIdentifier(any());
         assertThat(user).isEqualTo(findUser);
     }
 
@@ -79,20 +70,20 @@ class UserServiceImplTest {
     void join_을_테스트한다() throws Exception {
         //given
         UserJoinRequest userJoinRequest = UserJoinRequest.builder()
-                .studentId(20170000L)
+                .identifier("20170001")
                 .password("test")
                 .name("test")
                 .build();
         Gateway gateway = mock(Gateway.class);
 
-        when(userRepository.existsByStudentId(userJoinRequest.getStudentId()))
+        when(userRepository.existsByIdentifier(userJoinRequest.getIdentifier()))
                 .thenReturn(false);
         when(bCryptPasswordEncoder.encode(any()))
                 .thenReturn("test");
         when(jwtTokenProvider.generateJwtToken(any()))
                 .thenReturn("test");
         when(userRepository.save(any()))
-                .thenReturn(User.of(20170000L, "test", UserRole.ROLE_USER, "test"));
+                .thenReturn(User.of("20170001", "test", UserRole.ROLE_STUDENT, "test"));
         when(fabricService.getGateway())
                 .thenReturn(gateway);
         when(fabricService.submitTransaction(any(), any(), any()))
@@ -116,13 +107,13 @@ class UserServiceImplTest {
 
         //given
         UserLoginRequest userLoginRequest = UserLoginRequest.builder()
-                .studentId(20170000L)
+                .identifier("20170001")
                 .password("test")
                 .build();
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 
-        when(userRepository.findByStudentId(any()))
-                .thenReturn(Optional.of(User.of(20170000L, "test", UserRole.ROLE_USER, "test")));
+        when(userRepository.findByIdentifier(any()))
+                .thenReturn(Optional.of(User.of("20170001", "test", UserRole.ROLE_STUDENT, "test")));
         when(bCryptPasswordEncoder.matches(any(), any()))
                 .thenReturn(true);
         when(jwtTokenProvider.generateJwtToken(any()))
@@ -132,7 +123,7 @@ class UserServiceImplTest {
         UserLoginResponse response = userService.login(userLoginRequest);
 
         //then
-        verify(userRepository).findByStudentId(any());
+        verify(userRepository).findByIdentifier(any());
         verify(bCryptPasswordEncoder).matches(any(), any());
         assertThat(response.getAccessToken()).isEqualTo("Bearer test");
     }
@@ -143,12 +134,10 @@ class UserServiceImplTest {
 
         //given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        User user = User.of(20170000L, "test", UserRole.ROLE_USER, "test");
-        when(httpServletRequest.getHeader(any()))
-                .thenReturn("Bearer test");
-        when(jwtTokenProvider.validateToken(any()))
-                .thenReturn(true);
-        when(userRepository.findById(any()))
+        User user = User.of("20170000", "test", UserRole.ROLE_STUDENT, "test");
+        when(jwtTokenProvider.findIdentifierByHttpServletRequest(any()))
+                .thenReturn("test");
+        when(userRepository.findByIdentifier(any()))
                 .thenReturn(Optional.of(user));
         when(bCryptPasswordEncoder.encode(any()))
                 .thenReturn("newTest");
@@ -156,9 +145,8 @@ class UserServiceImplTest {
         userService.changePassword(httpServletRequest, "newTest");
 
         //then
-        verify(httpServletRequest, times(3)).getHeader(any());
-        verify(jwtTokenProvider).validateToken(any());
-        verify(userRepository).findById(any());
+        verify(jwtTokenProvider).findIdentifierByHttpServletRequest(any());
+        verify(userRepository).findByIdentifier(any());
         verify(bCryptPasswordEncoder).encode(any());
         assertThat(user.getPassword()).isEqualTo("newTest");
 
@@ -169,14 +157,12 @@ class UserServiceImplTest {
     public void delete_를_테스트한다() throws Exception {
         //given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        User user = User.of(20170000L, "test", UserRole.ROLE_USER, "test");
+        User user = User.of("20170000", "test", UserRole.ROLE_STUDENT, "test");
         Gateway gateway = mock(Gateway.class);
 
-        when(httpServletRequest.getHeader(any()))
-                .thenReturn("Bearer test");
-        when(jwtTokenProvider.validateToken(any()))
-                .thenReturn(true);
-        when(userRepository.findById(any()))
+        when(jwtTokenProvider.findIdentifierByHttpServletRequest(any()))
+                .thenReturn("20170000");
+        when(userRepository.findByIdentifier(any()))
                 .thenReturn(Optional.of(user));
         when(fabricService.getGateway())
                 .thenReturn(gateway);
@@ -187,9 +173,7 @@ class UserServiceImplTest {
         userService.delete(httpServletRequest);
 
         //then
-        verify(httpServletRequest, times(3)).getHeader(any());
-        verify(jwtTokenProvider).validateToken(any());
-        verify(userRepository).findById(any());
+        verify(userRepository).findByIdentifier(any());
         verify(fabricService).getGateway();
         verify(fabricService).submitTransaction(any(), any(), any());
     }
@@ -199,26 +183,21 @@ class UserServiceImplTest {
     public void getAsset_를_테스트한다() throws Exception {
         //given
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        User user = User.of(20170000L, "test", UserRole.ROLE_USER, "test");
+        User user = User.of("20170000", "test", UserRole.ROLE_STUDENT, "test");
         Gateway gateway = mock(Gateway.class);
 
 
         String test = objectMapper.writeValueAsString(
                 AssetDto.builder()
-                        .studentId(20170000L)
+                        .identifier("20170000")
                         .coin(new HashMap<>())
                         .owner("test")
-                        .sender(null)
-                        .receiver(null)
-                        .amount(null)
                         .build()
         );
 
-        when(httpServletRequest.getHeader(any()))
-                .thenReturn("Bearer test");
-        when(jwtTokenProvider.validateToken(any()))
-                .thenReturn(true);
-        when(userRepository.findById(any()))
+        when(jwtTokenProvider.findIdentifierByHttpServletRequest(any()))
+                .thenReturn("test");
+        when(userRepository.findByIdentifier(any()))
                 .thenReturn(Optional.of(user));
         when(fabricService.getGateway())
                 .thenReturn(gateway);
@@ -229,11 +208,11 @@ class UserServiceImplTest {
         userService.getAsset(httpServletRequest);
 
         //then
-        verify(httpServletRequest, times(3)).getHeader(any());
-        verify(jwtTokenProvider).validateToken(any());
+        verify(jwtTokenProvider).findIdentifierByHttpServletRequest(any());
+        verify(userRepository).findByIdentifier(any());
         verify(fabricService).getGateway();
         verify(fabricService).submitTransaction(any(), any(), any());
-        assertThat(user.getStudentId()).isEqualTo(20170000L);
+        assertThat(user.getIdentifier()).isEqualTo("20170000");
     }
 
 
