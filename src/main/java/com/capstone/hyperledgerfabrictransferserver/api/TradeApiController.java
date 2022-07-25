@@ -25,7 +25,6 @@ public class TradeApiController {
             @RequestBody TransferRequest transferRequest
     )
     {
-        System.out.println("transferRequest = " + transferRequest);
         return ResponseEntity.ok(tradeService.transfer(httpServletRequest, transferRequest));
     }
 
