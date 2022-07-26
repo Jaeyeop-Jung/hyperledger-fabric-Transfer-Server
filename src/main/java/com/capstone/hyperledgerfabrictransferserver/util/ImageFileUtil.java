@@ -31,12 +31,12 @@ public class ImageFileUtil {
     }
 
     public void saveImageFileBy(MultipartFile multipartFile, String uuid) throws IOException {
-        if (!isEnableExtension(multipartFile.getName())) {
+        if (!isEnableExtension(multipartFile.getOriginalFilename())) {
             throw new IncompatibleExtensionException("호환하지 않는 이미지 파일 확장자입니다");
         }
 
         String imageFilePath = System.getenv("IMAGE_FILE_PATH");
-        File writtenFile = new File(imageFilePath + uuid + "." + getFileExtension(multipartFile.getName()));
+        File writtenFile = new File(imageFilePath + uuid + "." + getFileExtension(multipartFile.getOriginalFilename()));
         InputStream inputStream = multipartFile.getInputStream();
         FileOutputStream fileOutputStream = new FileOutputStream(writtenFile);
 
