@@ -39,4 +39,10 @@ public class StoreImageService {
                 )
         );
     }
+
+    @Transactional
+    public void deleteStoreImageBy(StoreImage storeImage) {
+        imageFileUtil.deleteImageFile(storeImage.getName());
+        storeImageRepository.delete(storeImage);
+    }
 }
