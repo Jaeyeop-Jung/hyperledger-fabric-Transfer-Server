@@ -27,13 +27,19 @@ public class Store extends BaseEntity{
     @NotNull
     private String address;
 
-    private Store(String name, String phoneNumber, String address) {
+    @NotNull
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STOREIMAGE_ID")
+    private StoreImage storeImage;
+
+    private Store(String name, String phoneNumber, String address, StoreImage storeImage) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
+        this.storeImage = storeImage;
     }
 
-    public static Store of(String name, String phoneNumber, String address) {
-        return new Store(name, phoneNumber, address);
+    public static Store of(String name, String phoneNumber, String address, StoreImage storeImage) {
+        return new Store(name, phoneNumber, address, storeImage);
     }
 }

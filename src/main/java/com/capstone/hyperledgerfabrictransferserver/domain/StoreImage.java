@@ -19,16 +19,21 @@ public class StoreImage extends BaseEntity{
     private Long id;
 
     @NotNull
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "STORE_ID")
-    private Store store;
-
-    @NotNull
     private String name;
 
     @NotNull
     private Long size;
 
     @NotNull
-    private String extension;
+    private ImageFileExtension imageFileExtension;
+
+    public StoreImage(String name, Long size, ImageFileExtension imageFileExtension) {
+        this.name = name;
+        this.size = size;
+        this.imageFileExtension = imageFileExtension;
+    }
+
+    public static StoreImage of(String name, Long size, ImageFileExtension imageFileExtension) {
+        return new StoreImage(name, size, imageFileExtension);
+    }
 }
