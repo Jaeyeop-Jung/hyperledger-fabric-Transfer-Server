@@ -7,6 +7,7 @@ import com.capstone.hyperledgerfabrictransferserver.domain.Store;
 import com.capstone.hyperledgerfabrictransferserver.domain.StoreImage;
 import com.capstone.hyperledgerfabrictransferserver.dto.StoreCreateRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.StoreDeleteRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.StoreModifyRequest;
 import com.capstone.hyperledgerfabrictransferserver.repository.StoreRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +60,13 @@ public class StoreService {
 
         storeImageService.deleteStoreImageBy(findStore.getStoreImage());
         storeRepository.delete(findStore);
+    }
+
+    @Transactional
+    public void modifyStoreImageBy(StoreModifyRequest storeModifyRequest, MultipartFile multipartFile) {
+        Store findStore = storeRepository.findByNameAndPhoneNumber(storeModifyRequest.getName(), storeModifyRequest.getPhoneNumber())
+                .orElseThrow(() -> new NotExistsStoreImageException("존재하지 않은 스토어 이미지입니다"));
+        storeImageService.modifyStoreImage(findStore.getStoreImage(), multipartFile);
     }
 
 }

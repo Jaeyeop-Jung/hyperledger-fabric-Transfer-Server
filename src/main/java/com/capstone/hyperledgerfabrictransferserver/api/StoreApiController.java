@@ -3,6 +3,7 @@ package com.capstone.hyperledgerfabrictransferserver.api;
 
 import com.capstone.hyperledgerfabrictransferserver.dto.StoreCreateRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.StoreDeleteRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.StoreModifyRequest;
 import com.capstone.hyperledgerfabrictransferserver.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -29,6 +30,16 @@ public class StoreApiController {
     @DeleteMapping("/admin/store")
     public ResponseEntity<Void> delete(@RequestBody StoreDeleteRequest storeDeleteRequest) {
         storeService.deleteStore(storeDeleteRequest);
+        return ResponseEntity.ok(null);
+    }
+
+    @PatchMapping("/admin/storeimage")
+    public ResponseEntity<Void> modifyStoreImage(
+            @RequestPart MultipartFile multipartFile,
+            @RequestPart StoreModifyRequest storeModifyRequest
+    )
+    {
+        storeService.modifyStoreImageBy(storeModifyRequest, multipartFile);
         return ResponseEntity.ok(null);
     }
 }
