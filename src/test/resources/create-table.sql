@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS storeimage ;
 DROP TABLE IF EXISTS trade ;
 DROP TABLE IF EXISTS store ;
-DROP TABLE IF EXISTS ADMIN;
+DROP TABLE IF EXISTS admin;
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS coin;
 
@@ -26,7 +26,7 @@ CREATE TABLE user(
                      unique key (identifier)
 );
 
-CREATE TABLE ADMIN(
+CREATE TABLE admin(
                       admin_id BIGINT NOT NULL AUTO_INCREMENT,
                       email varchar(255) NOT NULL,
                       password varchar(255) not null,
@@ -42,9 +42,11 @@ CREATE TABLE store(
                       name VARCHAR(255) NOT NULL,
                       phone_number VARCHAR(255) NOT NULL,
                       address VARCHAR(255) NOT NULL,
+                      storeimage_id BIGINT,
                       date_created datetime not null,
                       last_updated datetime not null,
-                      PRIMARY KEY(store_id)
+                      PRIMARY KEY(store_id),
+                      foreign key(storeimage_id) references storeimage(storeimage_id)
 );
 
 CREATE TABLE trade(
@@ -65,12 +67,10 @@ CREATE TABLE trade(
 
 CREATE TABLE storeimage(
                            storeimage_id BIGINT NOT NULL AUTO_INCREMENT ,
-                           store_id BIGINT NOT NULL,
                            name VARCHAR(255) NOT NULL,
                            size BIGINT NOT NULL,
                            extension VARCHAR(255) NOT NULL,
                            date_created datetime not null,
                            last_updated datetime not null,
-                           PRIMARY KEY(storeimage_id),
-                           FOREIGN KEY(store_id) REFERENCES store(store_id)
+                           PRIMARY KEY(storeimage_id)
 );
