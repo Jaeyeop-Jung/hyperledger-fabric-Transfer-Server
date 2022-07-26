@@ -10,6 +10,13 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = {"NAME", "PHONE_NUMBER"}
+                )
+        }
+)
 public class Store extends BaseEntity{
 
     @Id
