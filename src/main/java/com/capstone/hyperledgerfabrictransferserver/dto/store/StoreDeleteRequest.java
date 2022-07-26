@@ -1,4 +1,4 @@
-package com.capstone.hyperledgerfabrictransferserver.dto;
+package com.capstone.hyperledgerfabrictransferserver.dto.store;
 
 import lombok.*;
 

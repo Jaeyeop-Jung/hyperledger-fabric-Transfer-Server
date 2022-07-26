@@ -2,7 +2,7 @@ package com.capstone.hyperledgerfabrictransferserver.service;
 
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.*;
 import com.capstone.hyperledgerfabrictransferserver.domain.*;
-import com.capstone.hyperledgerfabrictransferserver.dto.*;
+import com.capstone.hyperledgerfabrictransferserver.dto.user.*;
 import com.capstone.hyperledgerfabrictransferserver.filter.JwtTokenProvider;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;

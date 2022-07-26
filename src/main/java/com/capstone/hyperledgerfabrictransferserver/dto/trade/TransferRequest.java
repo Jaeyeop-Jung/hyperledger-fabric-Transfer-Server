@@ -1,4 +1,4 @@
-package com.capstone.hyperledgerfabrictransferserver.dto;
+package com.capstone.hyperledgerfabrictransferserver.dto.trade;
 
 import com.sun.istack.NotNull;
 import io.swagger.annotations.ApiParam;

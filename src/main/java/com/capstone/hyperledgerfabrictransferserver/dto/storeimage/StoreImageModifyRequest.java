@@ -1,17 +1,17 @@
-package com.capstone.hyperledgerfabrictransferserver.dto;
+package com.capstone.hyperledgerfabrictransferserver.dto.storeimage;
 
 import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class StoreModifyRequest {
+public class StoreImageModifyRequest {
 
     private String name;
     private String phoneNumber;
 
     @Builder
-    public StoreModifyRequest(String name, String phoneNumber) {
+    public StoreImageModifyRequest(String name, String phoneNumber) {
         this.name = name;
         this.phoneNumber = phoneNumber;
     }

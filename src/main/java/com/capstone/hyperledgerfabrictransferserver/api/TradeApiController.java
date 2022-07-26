@@ -1,8 +1,8 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
-import com.capstone.hyperledgerfabrictransferserver.dto.PagingTransferResponseDto;
-import com.capstone.hyperledgerfabrictransferserver.dto.TransferRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTransferResponseDto;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferResponse;
 import com.capstone.hyperledgerfabrictransferserver.service.TradeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

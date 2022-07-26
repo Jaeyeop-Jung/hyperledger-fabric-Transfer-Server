@@ -1,9 +1,9 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
-import com.capstone.hyperledgerfabrictransferserver.dto.AssetDto;
-import com.capstone.hyperledgerfabrictransferserver.dto.UserJoinRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.UserLoginResponse;
+import com.capstone.hyperledgerfabrictransferserver.dto.user.AssetDto;
+import com.capstone.hyperledgerfabrictransferserver.dto.user.UserJoinRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.user.UserLoginRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.user.UserLoginResponse;
 import com.capstone.hyperledgerfabrictransferserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

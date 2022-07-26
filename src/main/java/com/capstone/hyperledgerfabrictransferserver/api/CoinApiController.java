@@ -1,8 +1,8 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
-import com.capstone.hyperledgerfabrictransferserver.dto.CoinCreateRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.CoinModifyRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.UpdateAssetCoinRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.coin.CoinCreateRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.coin.CoinModifyRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.coin.UpdateAssetCoinRequest;
 import com.capstone.hyperledgerfabrictransferserver.service.CoinService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

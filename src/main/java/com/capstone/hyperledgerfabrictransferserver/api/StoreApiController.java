@@ -1,12 +1,11 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
 
-import com.capstone.hyperledgerfabrictransferserver.dto.StoreCreateRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.StoreDeleteRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.StoreModifyRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.store.StoreCreateRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.store.StoreDeleteRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.storeimage.StoreImageModifyRequest;
 import com.capstone.hyperledgerfabrictransferserver.service.StoreService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,10 +35,10 @@ public class StoreApiController {
     @PatchMapping("/admin/storeimage")
     public ResponseEntity<Void> modifyStoreImage(
             @RequestPart MultipartFile multipartFile,
-            @RequestPart StoreModifyRequest storeModifyRequest
+            @RequestPart StoreImageModifyRequest storeImageModifyRequest
     )
     {
-        storeService.modifyStoreImageBy(storeModifyRequest, multipartFile);
+        storeService.modifyStoreImageBy(storeImageModifyRequest, multipartFile);
         return ResponseEntity.ok(null);
     }
 }

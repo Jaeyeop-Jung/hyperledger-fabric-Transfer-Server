@@ -1,4 +1,4 @@
-package com.capstone.hyperledgerfabrictransferserver.dto;
+package com.capstone.hyperledgerfabrictransferserver.dto.user;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import lombok.*;

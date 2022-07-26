@@ -1,10 +1,8 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.*;
-import com.capstone.hyperledgerfabrictransferserver.dto.PagingTransferResponseDto;
-import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;import com.capstone.hyperledgerfabrictransferserver.dto.TransferRequest;
-import com.capstone.hyperledgerfabrictransferserver.repository.CoinRepository;
-import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTransferResponseDto;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferResponse;import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferRequest;
 import com.capstone.hyperledgerfabrictransferserver.repository.TradeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hyperledger.fabric.gateway.Gateway;
@@ -22,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;

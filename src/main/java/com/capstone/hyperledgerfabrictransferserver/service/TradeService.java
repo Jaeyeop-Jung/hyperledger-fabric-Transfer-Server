@@ -5,10 +5,10 @@ import com.capstone.hyperledgerfabrictransferserver.aop.customException.Incorrec
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.Trade;
-import com.capstone.hyperledgerfabrictransferserver.dto.RequestForGetTradeByDetails;
-import com.capstone.hyperledgerfabrictransferserver.dto.PagingTransferResponseDto;
-import com.capstone.hyperledgerfabrictransferserver.dto.TransferRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.TransferResponse;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.RequestForGetTradeByDetails;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTransferResponseDto;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferResponse;
 import com.capstone.hyperledgerfabrictransferserver.repository.TradeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;

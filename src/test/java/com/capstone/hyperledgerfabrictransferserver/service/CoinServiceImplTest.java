@@ -1,25 +1,20 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
-import com.capstone.hyperledgerfabrictransferserver.dto.CoinCreateRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.CoinModifyRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.coin.CoinCreateRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.coin.CoinModifyRequest;
 import com.capstone.hyperledgerfabrictransferserver.repository.CoinRepository;
-import org.assertj.core.api.Assertions;
-import org.hyperledger.fabric.gateway.ContractException;
 import org.hyperledger.fabric.gateway.Gateway;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

@@ -1,4 +1,4 @@
-package com.capstone.hyperledgerfabrictransferserver.dto;
+package com.capstone.hyperledgerfabrictransferserver.dto.trade;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.DateTimeRange;
 import lombok.*;
