@@ -22,7 +22,7 @@ public class ImageFileUtil {
         int start = fileName.lastIndexOf(".") + 1;
         int end = fileName.length();
 
-        return fileName.substring(start, end);
+        return fileName.substring(start, end).toUpperCase();
     }
 
     public boolean isEnableExtension(String fileName) {
@@ -30,13 +30,13 @@ public class ImageFileUtil {
                 || enableExtensionList.contains(getFileExtension(fileName).toUpperCase());
     }
 
-    public void saveImageFileByMultipartFile(MultipartFile multipartFile) throws IOException {
+    public void saveImageFileBy(MultipartFile multipartFile, String uuid) throws IOException {
         if (!isEnableExtension(multipartFile.getName())) {
             throw new IncompatibleExtensionException("호환하지 않는 이미지 파일 확장자입니다");
         }
 
         String imageFilePath = System.getenv("IMAGE_FILE_PATH");
-        File writtenFile = new File(imageFilePath + UUID.randomUUID() + "." + getFileExtension(multipartFile.getName()));
+        File writtenFile = new File(imageFilePath + uuid + "." + getFileExtension(multipartFile.getName()));
         InputStream inputStream = multipartFile.getInputStream();
         FileOutputStream fileOutputStream = new FileOutputStream(writtenFile);
 
