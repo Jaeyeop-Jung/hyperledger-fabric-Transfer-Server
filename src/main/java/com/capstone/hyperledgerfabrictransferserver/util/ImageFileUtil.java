@@ -47,4 +47,9 @@ public class ImageFileUtil {
         fileOutputStream.close();
     }
 
+    public void deleteImageFile(String fileName) {
+        File file = new File(System.getenv("IMAGE_FILE_PATH") + fileName);
+        file.deleteOnExit();
+    }
+
 }
