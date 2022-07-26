@@ -37,6 +37,16 @@ CREATE TABLE admin(
 
 );
 
+CREATE TABLE storeimage(
+                           storeimage_id BIGINT NOT NULL AUTO_INCREMENT ,
+                           name VARCHAR(255) NOT NULL,
+                           size BIGINT NOT NULL,
+                           extension VARCHAR(255) NOT NULL,
+                           date_created datetime not null,
+                           last_updated datetime not null,
+                           PRIMARY KEY(storeimage_id)
+);
+
 CREATE TABLE store(
                       store_id BIGINT NOT NULL AUTO_INCREMENT ,
                       name VARCHAR(255) NOT NULL,
@@ -64,13 +74,3 @@ CREATE TABLE trade(
                       FOREIGN KEY(coin_id) REFERENCES coin(coin_id)
 );
 
-
-CREATE TABLE storeimage(
-                           storeimage_id BIGINT NOT NULL AUTO_INCREMENT ,
-                           name VARCHAR(255) NOT NULL,
-                           size BIGINT NOT NULL,
-                           extension VARCHAR(255) NOT NULL,
-                           date_created datetime not null,
-                           last_updated datetime not null,
-                           PRIMARY KEY(storeimage_id)
-);

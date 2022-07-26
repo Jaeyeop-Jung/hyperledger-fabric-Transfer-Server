@@ -25,6 +25,8 @@ public class StoreImage extends BaseEntity{
     private Long size;
 
     @NotNull
+    @Column(name = "EXTENSION")
+    @Enumerated(EnumType.STRING)
     private ImageFileExtension imageFileExtension;
 
     public StoreImage(String name, Long size, ImageFileExtension imageFileExtension) {

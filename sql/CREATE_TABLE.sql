@@ -27,26 +27,36 @@ CREATE TABLE user(
 );
 
 CREATE TABLE admin(
-                    admin_id BIGINT NOT NULL AUTO_INCREMENT,
-                    email varchar(255) NOT NULL,
-                    password varchar(255) not null,
-                    date_created datetime not null,
-                    last_updated datetime not null,
-                    primary key (admin_id),
-                    unique key (email)
+                      admin_id BIGINT NOT NULL AUTO_INCREMENT,
+                      email varchar(255) NOT NULL,
+                      password varchar(255) not null,
+                      date_created datetime not null,
+                      last_updated datetime not null,
+                      primary key (admin_id),
+                      unique key (email)
 
 );
 
+CREATE TABLE storeimage(
+                           storeimage_id BIGINT NOT NULL AUTO_INCREMENT ,
+                           name VARCHAR(255) NOT NULL,
+                           size BIGINT NOT NULL,
+                           extension VARCHAR(255) NOT NULL,
+                           date_created datetime not null,
+                           last_updated datetime not null,
+                           PRIMARY KEY(storeimage_id)
+);
+
 CREATE TABLE store(
-                     store_id BIGINT NOT NULL AUTO_INCREMENT ,
-                     name VARCHAR(255) NOT NULL,
-                     phone_number VARCHAR(255) NOT NULL,
-                     address VARCHAR(255) NOT NULL,
-                     storeimage_id BIGINT,
-                     date_created datetime not null,
-                     last_updated datetime not null,
-                     PRIMARY KEY(store_id),
-                     foreign key(storeimage_id) references storeimage(storeimage_id)
+                      store_id BIGINT NOT NULL AUTO_INCREMENT ,
+                      name VARCHAR(255) NOT NULL,
+                      phone_number VARCHAR(255) NOT NULL,
+                      address VARCHAR(255) NOT NULL,
+                      storeimage_id BIGINT,
+                      date_created datetime not null,
+                      last_updated datetime not null,
+                      PRIMARY KEY(store_id),
+                      foreign key(storeimage_id) references storeimage(storeimage_id)
 );
 
 CREATE TABLE trade(
@@ -64,13 +74,3 @@ CREATE TABLE trade(
                       FOREIGN KEY(coin_id) REFERENCES coin(coin_id)
 );
 
-
-CREATE TABLE storeimage(
-                          storeimage_id BIGINT NOT NULL AUTO_INCREMENT ,
-                          name VARCHAR(255) NOT NULL,
-                          size BIGINT NOT NULL,
-                          extension VARCHAR(255) NOT NULL,
-                          date_created datetime not null,
-                          last_updated datetime not null,
-                          PRIMARY KEY(storeimage_id)
-);
