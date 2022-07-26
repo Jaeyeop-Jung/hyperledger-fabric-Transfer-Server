@@ -1,6 +1,7 @@
 package com.capstone.hyperledgerfabrictransferserver.aop;
 
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.FailToWriteImageFileException;
+import com.capstone.hyperledgerfabrictransferserver.aop.customException.NotExistsStoreImageException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,22 @@ public class StoreImageExcepionHandler {
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
         log.info("Advice : FailToWriteImageFileExceptionHandler");
+
+        Map<String, String> map = new HashMap<>();
+        map.put("error type", httpStatus.getReasonPhrase());
+        map.put("code", "400");
+        map.put("message", e.getMessage());
+
+        return new ResponseEntity<>(map, responseHeader, httpStatus);
+    }
+
+    @ExceptionHandler(NotExistsStoreImageException.class)
+    public ResponseEntity<Map<String, String>> NotExistsStoreImageExceptionHandler(Exception e){
+
+        HttpHeaders responseHeader = new HttpHeaders();
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+        log.info("Advice : NotExistsStoreImageExceptionHandler");
 
         Map<String, String> map = new HashMap<>();
         map.put("error type", httpStatus.getReasonPhrase());
