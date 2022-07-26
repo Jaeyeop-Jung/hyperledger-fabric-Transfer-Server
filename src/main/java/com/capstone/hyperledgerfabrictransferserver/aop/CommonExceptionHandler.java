@@ -1,5 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.aop;
 
+import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncompatibleExtensionException;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectIdException;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectIdentifierException;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ public class CommonExceptionHandler {
         HttpHeaders responseHeader = new HttpHeaders();
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
-        log.info("Advice : IncorrectIdExceptionHandler");
+        log.error("Advice : IncorrectIdExceptionHandler");
 
         Map<String, String> map = new HashMap<>();
         map.put("error type", httpStatus.getReasonPhrase());
@@ -38,7 +39,23 @@ public class CommonExceptionHandler {
         HttpHeaders responseHeader = new HttpHeaders();
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
-        log.info("Advice : IncorrectUniqueNumberExceptionHandler");
+        log.error("Advice : IncorrectUniqueNumberExceptionHandler");
+
+        Map<String, String> map = new HashMap<>();
+        map.put("error type", httpStatus.getReasonPhrase());
+        map.put("code", "400");
+        map.put("message", e.getMessage());
+
+        return new ResponseEntity<>(map, responseHeader, httpStatus);
+    }
+
+    @ExceptionHandler(IncompatibleExtensionException.class)
+    public ResponseEntity<Map<String, String>> IncompatibleExtensionExceptionHandler(Exception e){
+
+        HttpHeaders responseHeader = new HttpHeaders();
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+        log.error("Advice : IncompatibleExtensionException");
 
         Map<String, String> map = new HashMap<>();
         map.put("error type", httpStatus.getReasonPhrase());
