@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS storeimage ;
 DROP TABLE IF EXISTS trade ;
 DROP TABLE IF EXISTS store ;
+DROP TABLE IF EXISTS storeimage ;
 DROP TABLE IF EXISTS admin;
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS coin;
@@ -56,7 +56,8 @@ CREATE TABLE store(
                       date_created datetime not null,
                       last_updated datetime not null,
                       PRIMARY KEY(store_id),
-                      foreign key(storeimage_id) references storeimage(storeimage_id)
+                      foreign key(storeimage_id) references storeimage(storeimage_id),
+                      unique key (name, phone_number)
 );
 
 CREATE TABLE trade(
