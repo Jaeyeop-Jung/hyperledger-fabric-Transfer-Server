@@ -38,4 +38,12 @@ public class StoreImage extends BaseEntity{
     public static StoreImage of(String name, Long size, ImageFileExtension imageFileExtension) {
         return new StoreImage(name, size, imageFileExtension);
     }
+
+    public void modifyName(String name) {
+        this.name = name;
+    }
+
+    public void modifySize(Long size) {
+        this.size = size;
+    }
 }
