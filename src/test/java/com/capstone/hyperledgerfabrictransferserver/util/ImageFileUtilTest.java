@@ -1,13 +1,18 @@
 package com.capstone.hyperledgerfabrictransferserver.util;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.ImageFileExtension;
+import org.aspectj.lang.annotation.After;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -28,6 +33,15 @@ import static org.assertj.core.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ImageFileUtilTest {
+
+    @AfterAll
+    public static void after() {
+        String testImageFilePath = System.getenv("TEST_IMAGE_FILE_PATH");
+        File directory = new File(testImageFilePath);
+        for (File file : directory.listFiles()) {
+            file.deleteOnExit();
+        }
+    }
 
     @Test
     @DisplayName("파일 확장자 얻기 테스트")
@@ -85,7 +99,7 @@ public class ImageFileUtilTest {
     @DisplayName("이미지 파일 저장 테스트")
     void 이미지_파일_저장_을_테스트한다() throws Exception{
         // given
-        String imageFilePath = System.getenv("IMAGE_FILE_PATH");
+        String imageFilePath = System.getenv("TEST_IMAGE_FILE_PATH");
         ClassPathResource resource = new ClassPathResource("testimage.png");
         File writtenFile = new File(imageFilePath + UUID.randomUUID() + "." + ImageFileExtension.PNG);
         FileInputStream fileInputStream = new FileInputStream(resource.getFile());
