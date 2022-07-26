@@ -4,14 +4,16 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 public class StoreTest {
 
     @Test
@@ -19,18 +21,21 @@ public class StoreTest {
     void Store_객체_생성_을_테스트한다() {
 
         // given
+        StoreImage mockStoreImage = mock(StoreImage.class);
 
         // when
         Store store1 = Store.of(
                 "test",
                 "01000000000",
-                "test"
+                "test",
+                mockStoreImage
         );
 
         Store store2 = Store.of(
                 "test2",
                 "01000000001",
-                "test2"
+                "test2",
+                mockStoreImage
         );
 
         // then
