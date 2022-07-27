@@ -37,7 +37,7 @@ public class TransferResponse {
         this.dateCreated = dateCreated;
     }
 
-    public static TransferResponse toDto(Trade trade) {
+    public static TransferResponse from(Trade trade) {
         return TransferResponse.builder()
                 .transactionId(trade.getTransactionId())
                 .senderIdentifier(trade.getSender().getIdentifier())

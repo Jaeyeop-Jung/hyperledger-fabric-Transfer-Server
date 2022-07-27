@@ -1,6 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
-import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTransferResponseDto;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTradeResponseDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.RequestForGetTradeByDetails;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferResponse;
 import com.capstone.hyperledgerfabrictransferserver.dto.user.PagingUserDto;
@@ -37,7 +37,7 @@ public class AdminApiController {
     }
 
     @GetMapping("/trade")
-    public ResponseEntity<PagingTransferResponseDto> getAllTradeByDetails(
+    public ResponseEntity<PagingTradeResponseDto> getAllTradeByDetails(
             @RequestParam(defaultValue = "1") int page,
             @ModelAttribute RequestForGetTradeByDetails requestForGetTradeByDetails
     ) {

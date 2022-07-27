@@ -15,23 +15,26 @@ public class UserDto {
 
     private String identifier;
 
-    private String password;
-
     private String name;
-
-    private HashMap<String, String> coin;
 
     private LocalDateTime dateCreated;
 
     private LocalDateTime lastUpdated;
 
     @Builder
-    public UserDto(String identifier, String password, String name, HashMap<String, String> coin, LocalDateTime dateCreated, LocalDateTime lastUpdated) {
+    public UserDto(String identifier, String name, LocalDateTime dateCreated, LocalDateTime lastUpdated) {
         this.identifier = identifier;
-        this.password = password;
         this.name = name;
-        this.coin = coin;
         this.dateCreated = dateCreated;
         this.lastUpdated = lastUpdated;
+    }
+
+    public static UserDto from(User user) {
+        return UserDto.builder()
+                .identifier(user.getIdentifier())
+                .name(user.getName())
+                .dateCreated(user.getDateCreated())
+                .lastUpdated(user.getLastUpdated())
+                .build();
     }
 }

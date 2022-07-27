@@ -161,13 +161,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public PagingUserDto getAllUser(int page) {
-
         Page<User> findAllUser = userRepository.findAll(PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
-
-        return PagingUserDto.builder()
-                .userDtoList(findAllUser.getContent())
-                .totalUserNumber(findAllUser.getTotalElements())
-                .totalPage(findAllUser.getTotalPages())
-                .build();
+        return PagingUserDto.from(findAllUser);
     }
 }

@@ -1,8 +1,8 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.*;
-import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTransferResponseDto;
-import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferResponse;import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTradeResponseDto;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferResponse;import com.capstone.hyperledgerfabrictransferserver.dto.trade.TradeRequest;
 import com.capstone.hyperledgerfabrictransferserver.repository.TradeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hyperledger.fabric.gateway.Gateway;
@@ -49,7 +49,7 @@ class TradeServiceImplTest {
     @DisplayName("유저간 송금 테스트")
     void transfer_을_테스트한다() throws Exception{
         //given
-        TransferRequest transferRequest = TransferRequest.builder()
+        TradeRequest tradeRequest = TradeRequest.builder()
                 .receiverIdentifier("2")
                 .coinName("test")
                 .amount(100L)
@@ -104,7 +104,7 @@ class TradeServiceImplTest {
                 .thenReturn(submitTransactionResponse);
 
         //when
-        TransferResponse transferResponse = tradeService.transfer(httpServletRequest, transferRequest);
+        TransferResponse transferResponse = tradeService.transfer(httpServletRequest, tradeRequest);
 
         //then
         assertThat(transferResponse.getAmount()).isEqualTo(100L);
@@ -151,7 +151,7 @@ class TradeServiceImplTest {
                 .thenReturn(new PageImpl<>(tradeList));
 
         //when
-        PagingTransferResponseDto response = tradeService.getAllTradeRelatedToIdentifier(httpServletRequest, 1);
+        PagingTradeResponseDto response = tradeService.getAllTradeRelatedToIdentifier(httpServletRequest, 1);
 
         //then
         verify(userService).getUserByHttpServletRequest(any());

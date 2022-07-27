@@ -5,14 +5,16 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class StoreDeleteRequest {
+public class CreateStoreRequest {
 
-    private String name;
+    private String storeName;
     private String phoneNumber;
+    private String address;
 
     @Builder
-    public StoreDeleteRequest(String name, String phoneNumber) {
-        this.name = name;
+    public CreateStoreRequest(String storeName, String phoneNumber, String address) {
+        this.storeName = storeName;
         this.phoneNumber = phoneNumber;
+        this.address = address;
     }
 }

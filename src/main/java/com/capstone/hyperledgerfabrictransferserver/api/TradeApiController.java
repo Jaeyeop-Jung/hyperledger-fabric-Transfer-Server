@@ -1,9 +1,10 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
-import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTransferResponseDto;
-import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTradeResponseDto;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.TradeRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferResponse;
 import com.capstone.hyperledgerfabrictransferserver.service.TradeService;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,14 +23,14 @@ public class TradeApiController {
     @PostMapping("/trade")
     public ResponseEntity<TransferResponse> transfer(
             HttpServletRequest httpServletRequest,
-            @RequestBody TransferRequest transferRequest
+            @RequestBody TradeRequest tradeRequest
     )
     {
-        return ResponseEntity.ok(tradeService.transfer(httpServletRequest, transferRequest));
+        return ResponseEntity.ok(tradeService.transfer(httpServletRequest, tradeRequest));
     }
 
     @GetMapping("/trade")
-    public ResponseEntity<PagingTransferResponseDto> enquireTrade(HttpServletRequest httpServletRequest, int page) {
+    public ResponseEntity<PagingTradeResponseDto> enquireTrade(HttpServletRequest httpServletRequest, @ApiParam(defaultValue = "1") int page) {
         return ResponseEntity.ok(tradeService.getAllTradeRelatedToIdentifier(httpServletRequest, page));
     }
 

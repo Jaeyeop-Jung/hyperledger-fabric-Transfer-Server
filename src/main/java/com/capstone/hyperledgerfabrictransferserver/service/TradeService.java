@@ -6,8 +6,8 @@ import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.Trade;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.RequestForGetTradeByDetails;
-import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTransferResponseDto;
-import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTradeResponseDto;
+import com.capstone.hyperledgerfabrictransferserver.dto.trade.TradeRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferResponse;
 import com.capstone.hyperledgerfabrictransferserver.repository.TradeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,11 +37,11 @@ public class TradeService {
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public TransferResponse transfer(HttpServletRequest httpServletRequest, TransferRequest transferRequest) {
+    public TransferResponse transfer(HttpServletRequest httpServletRequest, TradeRequest tradeRequest) {
 
-        Coin requestedCoin = coinService.getByCoinName(transferRequest.getCoinName());
+        Coin requestedCoin = coinService.getByCoinName(tradeRequest.getCoinName());
         User sender = userService.getUserByHttpServletRequest(httpServletRequest);
-        User receiver = userService.getUserByIdentifier(transferRequest.getReceiverIdentifier());
+        User receiver = userService.getUserByIdentifier(tradeRequest.getReceiverIdentifier());
 
         String fabricResponse;
         TransferResponse transferResponse;
@@ -53,7 +53,7 @@ public class TradeService {
                     "asset" + sender.getId(),
                     "asset" + receiver.getId(),
                     requestedCoin.getName(),
-                    String.valueOf(transferRequest.getAmount()));
+                    String.valueOf(tradeRequest.getAmount()));
             fabricService.close(gateway);
 
             transferResponse = objectMapper.readValue(fabricResponse, TransferResponse.class);
@@ -67,30 +67,23 @@ public class TradeService {
                         sender,
                         receiver,
                         requestedCoin,
-                        transferRequest.getAmount()
+                        tradeRequest.getAmount()
                 )
         );
 
-        return TransferResponse.toDto(savedTrade);
+        return TransferResponse.from(savedTrade);
     }
 
     @Transactional(readOnly = true)
-    public PagingTransferResponseDto getAllTradeRelatedToIdentifier(HttpServletRequest httpServletRequest, int page) {
+    public PagingTradeResponseDto getAllTradeRelatedToIdentifier(HttpServletRequest httpServletRequest, int page) {
 
         User findUser = userService.getUserByHttpServletRequest(httpServletRequest);
         Page<Trade> findTradeList = tradeRepository.findAllBySenderOrReceiver(findUser, findUser, PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
-
-        return PagingTransferResponseDto.builder()
-                .totalTradeNumber(findTradeList.getTotalElements())
-                .totalPage(Long.valueOf(findTradeList.getTotalPages()))
-                .transferResponseList(findTradeList.getContent().stream()
-                        .map(trade -> TransferResponse.toDto(trade))
-                        .collect(Collectors.toList())
-                ).build();
+        return PagingTradeResponseDto.from(findTradeList);
     }
 
     @Transactional(readOnly = true)
-    public PagingTransferResponseDto getAllTradeByDetails(
+    public PagingTradeResponseDto getAllTradeByDetails(
             int page,
             @NonNull RequestForGetTradeByDetails requestForGetTradeByDetails
     )  {
@@ -105,18 +98,12 @@ public class TradeService {
                 PageRequest.of(page - 1, 10, Sort.Direction.DESC, "dateCreated")
         );
 
-        return PagingTransferResponseDto.builder()
-                .totalTradeNumber(findTradeList.getTotalElements())
-                .totalPage(Long.valueOf(findTradeList.getTotalPages()))
-                .transferResponseList(findTradeList.getContent().stream()
-                        .map(trade -> TransferResponse.toDto(trade))
-                        .collect(Collectors.toList())
-                ).build();
+        return PagingTradeResponseDto.from(findTradeList);
     }
 
     public TransferResponse getTradeByTransactionId(String transactionId) {
         Trade findTrade = tradeRepository.findByTransactionId(transactionId)
                 .orElseThrow(() -> new IncorrectTransactionIdException("조회하려고 하는 TransactionID가 없거나 잘못되었습니다"));
-        return TransferResponse.toDto(findTrade);
+        return TransferResponse.from(findTrade);
     }
 }
