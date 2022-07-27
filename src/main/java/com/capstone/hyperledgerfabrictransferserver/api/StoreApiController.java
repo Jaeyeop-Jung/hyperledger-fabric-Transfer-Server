@@ -1,14 +1,19 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
 
-import com.capstone.hyperledgerfabrictransferserver.dto.store.StoreCreateRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.store.StoreDeleteRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.store.CreateStoreRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.store.DeleteStoreRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.store.GetStoreResponse;
+import com.capstone.hyperledgerfabrictransferserver.dto.store.PagingStoreDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.storeimage.StoreImageModifyRequest;
 import com.capstone.hyperledgerfabrictransferserver.service.StoreService;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,19 +21,33 @@ public class StoreApiController {
 
     private final StoreService storeService;
 
+    @GetMapping("/user/store")
+    public ResponseEntity<GetStoreResponse> getStore(
+            @RequestParam String name,
+            @RequestParam String phoneNumber
+    )
+    {
+        return ResponseEntity.ok(storeService.getStore(name, phoneNumber));
+    }
+
+    @GetMapping("/user/stores")
+    public ResponseEntity<PagingStoreDto> getAllStore(@ApiParam(defaultValue = "1") int page) {
+        return ResponseEntity.ok(storeService.getAllStore(page));
+    }
+
     @PostMapping( "/admin/store")
     public ResponseEntity<Void> create(
             @RequestPart MultipartFile multipartFile,
-            @RequestPart StoreCreateRequest storeCreateRequest
+            @RequestPart CreateStoreRequest createStoreRequest
     )
     {
-        storeService.createStore(storeCreateRequest, multipartFile);
+        storeService.createStore(createStoreRequest, multipartFile);
         return ResponseEntity.ok(null);
     }
 
     @DeleteMapping("/admin/store")
-    public ResponseEntity<Void> delete(@RequestBody StoreDeleteRequest storeDeleteRequest) {
-        storeService.deleteStore(storeDeleteRequest);
+    public ResponseEntity<Void> delete(@RequestBody DeleteStoreRequest deleteStoreRequest) {
+        storeService.deleteStore(deleteStoreRequest);
         return ResponseEntity.ok(null);
     }
 

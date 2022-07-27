@@ -5,16 +5,23 @@ import com.capstone.hyperledgerfabrictransferserver.aop.customException.NotExist
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.NotFoundStoreException;
 import com.capstone.hyperledgerfabrictransferserver.domain.Store;
 import com.capstone.hyperledgerfabrictransferserver.domain.StoreImage;
-import com.capstone.hyperledgerfabrictransferserver.dto.store.StoreCreateRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.store.StoreDeleteRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.store.CreateStoreRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.store.DeleteStoreRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.store.GetStoreResponse;
+import com.capstone.hyperledgerfabrictransferserver.dto.store.PagingStoreDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.storeimage.StoreImageModifyRequest;
 import com.capstone.hyperledgerfabrictransferserver.repository.StoreRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +31,23 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final StoreImageService storeImageService;
 
+
+    @Transactional(readOnly = true)
+    public GetStoreResponse getStore(@NonNull String name, @NonNull String phoneNumber) {
+        Store findStore = storeRepository.findByNameAndPhoneNumber(name, phoneNumber)
+                .orElseThrow(() -> new NotFoundStoreException("스토어를 찾지 못했습니다"));
+        return GetStoreResponse.from(findStore);
+    }
+
+    @Transactional(readOnly = true)
+    public PagingStoreDto getAllStore(@NonNull int page) {
+        Page<Store> findStore = storeRepository.findAllBy(PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
+        return PagingStoreDto.from(findStore);
+    }
+
     @Transactional
-    public void createStore(@NonNull StoreCreateRequest storeCreateRequest, MultipartFile multipartFile) {
-        if (storeRepository.existsByNameAndPhoneNumber(storeCreateRequest.getStoreName(), storeCreateRequest.getPhoneNumber())) {
+    public void createStore(@NonNull CreateStoreRequest createStoreRequest, MultipartFile multipartFile) {
+        if (storeRepository.existsByNameAndPhoneNumber(createStoreRequest.getStoreName(), createStoreRequest.getPhoneNumber())) {
             throw new AlreadyExistsStoreException("이미 존재하는 스토어입니다");
         }
 
@@ -37,21 +58,21 @@ public class StoreService {
 
         storeRepository.save(
                 Store.of(
-                        storeCreateRequest.getStoreName(),
-                        storeCreateRequest.getPhoneNumber(),
-                        storeCreateRequest.getAddress(),
+                        createStoreRequest.getStoreName(),
+                        createStoreRequest.getPhoneNumber(),
+                        createStoreRequest.getAddress(),
                         storeImage
                 )
         );
     }
 
     @Transactional
-    public void deleteStore(@NonNull StoreDeleteRequest storeDeleteRequest) {
-        if (!storeRepository.existsByNameAndPhoneNumber(storeDeleteRequest.getName(), storeDeleteRequest.getPhoneNumber())) {
+    public void deleteStore(@NonNull DeleteStoreRequest deleteStoreRequest) {
+        if (!storeRepository.existsByNameAndPhoneNumber(deleteStoreRequest.getName(), deleteStoreRequest.getPhoneNumber())) {
             throw new NotFoundStoreException("존재하지 않은 스토어입니다");
         }
 
-        Store findStore = storeRepository.findByNameAndPhoneNumber(storeDeleteRequest.getName(), storeDeleteRequest.getPhoneNumber())
+        Store findStore = storeRepository.findByNameAndPhoneNumber(deleteStoreRequest.getName(), deleteStoreRequest.getPhoneNumber())
                 .get();
 
         if (findStore.getStoreImage() == null) {
