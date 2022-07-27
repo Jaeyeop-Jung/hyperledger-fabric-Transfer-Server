@@ -49,7 +49,9 @@ public class ImageFileUtil {
 
     public void deleteImageFile(String fileName) {
         File file = new File(System.getenv("IMAGE_FILE_PATH") + fileName);
-        file.delete();
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
 }
