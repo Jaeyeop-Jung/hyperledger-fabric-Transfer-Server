@@ -56,7 +56,7 @@ public class UserApiController {
      * @return the password
      */
     @PatchMapping("/user")
-    public ResponseEntity<Void> changePassword(HttpServletRequest httpServletRequest, String newPassword) {
+    public ResponseEntity<Void> changePassword(HttpServletRequest httpServletRequest, @RequestParam String newPassword) {
 
         userService.changePassword(httpServletRequest, newPassword);
 
