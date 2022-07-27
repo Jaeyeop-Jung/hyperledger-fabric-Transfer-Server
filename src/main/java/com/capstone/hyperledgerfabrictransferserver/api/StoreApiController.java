@@ -8,11 +8,13 @@ import com.capstone.hyperledgerfabrictransferserver.dto.store.PagingStoreDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.storeimage.StoreImageModifyRequest;
 import com.capstone.hyperledgerfabrictransferserver.service.StoreService;
 import io.swagger.annotations.ApiParam;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 @RestController
@@ -23,15 +25,15 @@ public class StoreApiController {
 
     @GetMapping("/user/store")
     public ResponseEntity<GetStoreResponse> getStore(
-            @RequestParam String name,
-            @RequestParam String phoneNumber
+            @RequestParam @NonNull String name,
+            @RequestParam @NonNull String phoneNumber
     )
     {
         return ResponseEntity.ok(storeService.getStore(name, phoneNumber));
     }
 
     @GetMapping("/user/stores")
-    public ResponseEntity<PagingStoreDto> getAllStore(@ApiParam(defaultValue = "1") int page) {
+    public ResponseEntity<PagingStoreDto> getAllStore(@RequestParam(defaultValue = "1") @ApiParam(defaultValue = "1") int page) {
         return ResponseEntity.ok(storeService.getAllStore(page));
     }
 
@@ -53,7 +55,7 @@ public class StoreApiController {
 
     @PatchMapping("/admin/storeimage")
     public ResponseEntity<Void> modifyStoreImage(
-            @RequestPart MultipartFile multipartFile,
+            @RequestPart @Nullable MultipartFile multipartFile,
             @RequestPart StoreImageModifyRequest storeImageModifyRequest
     )
     {

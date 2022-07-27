@@ -33,15 +33,15 @@ public class StoreService {
 
 
     @Transactional(readOnly = true)
-    public GetStoreResponse getStore(@NonNull String name, @NonNull String phoneNumber) {
+    public GetStoreResponse getStore(String name, String phoneNumber) {
         Store findStore = storeRepository.findByNameAndPhoneNumber(name, phoneNumber)
                 .orElseThrow(() -> new NotFoundStoreException("스토어를 찾지 못했습니다"));
         return GetStoreResponse.from(findStore);
     }
 
     @Transactional(readOnly = true)
-    public PagingStoreDto getAllStore(@NonNull int page) {
-        Page<Store> findStore = storeRepository.findAllBy(PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
+    public PagingStoreDto getAllStore(int page) {
+        Page<Store> findStore = storeRepository.findAllBy(PageRequest.of(page - 1, 20, Sort.Direction.ASC, "name"));
         return PagingStoreDto.from(findStore);
     }
 

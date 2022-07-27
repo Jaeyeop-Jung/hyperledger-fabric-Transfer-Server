@@ -1,5 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.service;
 
+import com.capstone.hyperledgerfabrictransferserver.aop.customException.FailToReadImageFileException;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.FailToWriteImageFileException;
 import com.capstone.hyperledgerfabrictransferserver.domain.ImageFileExtension;
 import com.capstone.hyperledgerfabrictransferserver.domain.Store;
@@ -23,6 +24,16 @@ public class StoreImageService {
 
     private final StoreImageRepository storeImageRepository;
     private final ImageFileUtil imageFileUtil;
+
+
+    @Transactional(readOnly = true)
+    public byte[] getStoreImage(String fileName) {
+        try {
+            return imageFileUtil.getImageFile(fileName);
+        } catch (IOException e) {
+            throw new FailToReadImageFileException("이미지 파일 읽기에 실패했습니다");
+        }
+    }
 
     @Transactional
     public StoreImage createStoreImageBy(MultipartFile multipartFile) {
@@ -59,6 +70,5 @@ public class StoreImageService {
         }
         storeImage.modifyName(uuid + "." + imageFileUtil.getFileExtension(multipartFile.getOriginalFilename()));
         storeImage.modifySize(multipartFile.getSize());
-
     }
 }

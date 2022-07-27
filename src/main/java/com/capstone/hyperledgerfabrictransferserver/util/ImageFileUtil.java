@@ -14,6 +14,8 @@ import java.util.stream.Stream;
 @Component
 public class ImageFileUtil {
 
+    private static final String imageFilePath = System.getenv("IMAGE_FILE_PATH");
+
     private static final List<String> enableExtensionList = Stream.of(ImageFileExtension.values())
             .map(extension -> extension.name())
             .collect(Collectors.toList());
@@ -30,12 +32,20 @@ public class ImageFileUtil {
                 || enableExtensionList.contains(getFileExtension(fileName).toUpperCase());
     }
 
+    public byte[] getImageFile(String fileName) throws IOException{
+        if (!isEnableExtension(fileName)) {
+            throw new IncompatibleExtensionException("호환하지 않는 이미지 파일 확장자입니다");
+        }
+
+        FileInputStream fileInputStream = new FileInputStream(imageFilePath + fileName);
+        return fileInputStream.readAllBytes();
+    }
+
     public void saveImageFileBy(MultipartFile multipartFile, String uuid) throws IOException {
         if (!isEnableExtension(multipartFile.getOriginalFilename())) {
             throw new IncompatibleExtensionException("호환하지 않는 이미지 파일 확장자입니다");
         }
 
-        String imageFilePath = System.getenv("IMAGE_FILE_PATH");
         File writtenFile = new File(imageFilePath + uuid + "." + getFileExtension(multipartFile.getOriginalFilename()));
         InputStream inputStream = multipartFile.getInputStream();
         FileOutputStream fileOutputStream = new FileOutputStream(writtenFile);
