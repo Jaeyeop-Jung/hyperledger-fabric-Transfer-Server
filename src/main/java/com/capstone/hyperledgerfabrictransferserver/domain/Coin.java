@@ -41,4 +41,8 @@ public class Coin {
         this.name = name + id;
         this.deleted = true;
     }
+
+    public void modifyIssuance(Long issuance){
+        this.issuance = issuance;
+    }
 }

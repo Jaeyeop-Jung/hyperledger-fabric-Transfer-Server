@@ -31,6 +31,11 @@ public class UserService {
     private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
+    public Long getNumberOfUserByUserRole(UserRole userRole) {
+        return userRepository.countAllByUserRoleIs(userRole);
+    }
+
+    @Transactional(readOnly = true)
     public User getUserByIdentifier(@NonNull String identifier) {
         return userRepository.findByIdentifier(identifier)
                 .orElseThrow(() -> new IncorrectIdentifierException("잘못된 식별 번호로 요청했습니다"));
@@ -70,7 +75,7 @@ public class UserService {
 
         try {
             Gateway gateway = fabricService.getGateway();
-            fabricService.submitTransaction(gateway, "CreateAsset", "asset" + savedUser.getId(), savedUser.getIdentifier(), savedUser.getName());
+            fabricService.submitTransaction(gateway, "CreateAsset", "asset" + savedUser.getId(), savedUser.getIdentifier(), savedUser.getName(), savedUser.getUserRole().name());
             fabricService.close(gateway);
         } catch (Exception e){
             throw new IncorrectContractException("CreateAsset 체인코드 실행 중 오류가 발생했습니다");

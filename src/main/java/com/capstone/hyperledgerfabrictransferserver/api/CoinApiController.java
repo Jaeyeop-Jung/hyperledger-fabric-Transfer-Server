@@ -2,6 +2,7 @@ package com.capstone.hyperledgerfabrictransferserver.api;
 
 import com.capstone.hyperledgerfabrictransferserver.dto.coin.CoinCreateRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.coin.CoinModifyRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.coin.UpdateAllAssetCoinRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.coin.UpdateAssetCoinRequest;
 import com.capstone.hyperledgerfabrictransferserver.service.CoinService;
 import lombok.RequiredArgsConstructor;
@@ -30,16 +31,16 @@ public class CoinApiController {
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("/coin/update/all")
+    @PostMapping("/coin/update/assets")
     public ResponseEntity<Void> UpdateAllAssetCoin(
-            @RequestBody UpdateAssetCoinRequest updateAssetCoinRequest
+            @RequestBody UpdateAllAssetCoinRequest updateAllAssetCoinRequest
     )
     {
-        coinService.updateAllAssetCoin(updateAssetCoinRequest);
+        coinService.updateAllAssetCoin(updateAllAssetCoinRequest);
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("/coin/update")
+    @PostMapping("/coin/update/asset")
     public ResponseEntity<Void> updateAssetCoin(
             @RequestBody UpdateAssetCoinRequest updateAssetCoinRequest
     )
@@ -47,4 +48,5 @@ public class CoinApiController {
         coinService.updateAssetCoin(updateAssetCoinRequest);
         return ResponseEntity.ok(null);
     }
+
 }
