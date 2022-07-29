@@ -7,6 +7,7 @@ import com.capstone.hyperledgerfabrictransferserver.dto.store.GetStoreResponse;
 import com.capstone.hyperledgerfabrictransferserver.dto.store.PagingStoreDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.storeimage.StoreImageModifyRequest;
 import com.capstone.hyperledgerfabrictransferserver.service.StoreService;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiParam;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,12 @@ public class StoreApiController {
         storeService.deleteStore(deleteStoreRequest);
         return ResponseEntity.ok(null);
     }
+
+//    @PatchMapping("/admin/store/name")
+//    public ResponseEntity<Void> modify(@RequestParam String name) {
+//        System.out.println("name = " + name);
+//        return null;
+//    }
 
     @PatchMapping("/admin/storeimage")
     public ResponseEntity<Void> modifyStoreImage(
