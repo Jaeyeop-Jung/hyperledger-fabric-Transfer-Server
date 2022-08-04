@@ -122,7 +122,7 @@ public class UserService {
 
         User findUser = getUserByHttpServletRequest(httpServletRequest);
 
-        findUser.changePassword(bCryptPasswordEncoder.encode(newPassword));
+        findUser.modifyPassword(bCryptPasswordEncoder.encode(newPassword));
     }
 
     /**
@@ -168,5 +168,30 @@ public class UserService {
     public PagingUserDto getAllUser(int page) {
         Page<User> findAllUser = userRepository.findAll(PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
         return PagingUserDto.from(findAllUser);
+    }
+
+    @Transactional
+    public void modifyUserInfo(UserModifyRequest userModifyRequest) {
+        User findUser = userRepository.findByIdentifier(userModifyRequest.getRequestedIdentifier())
+                .orElseThrow(() -> new IncorrectIdentifierException("존재하지 않은 사용자입니다"));
+
+        if (!userModifyRequest.getRequestedIdentifier().equals(userModifyRequest.getWantToChangeIdentifier())) {
+            if (userRepository.existsByIdentifier(userModifyRequest.getWantToChangeIdentifier())) {
+                throw new IncorrectIdentifierException("이미 존재하는 Identifier입니다");
+            }
+            findUser.modifyIdentifier(userModifyRequest.getWantToChangeIdentifier());
+        }
+
+        if (!findUser.getUserRole().equals(userModifyRequest.getWantToChangeUserRole())) {
+            findUser.changeUserRole(userModifyRequest.getWantToChangeUserRole());
+        }
+
+        if (!findUser.getName().equals(userModifyRequest.getWantToChangeName())) {
+            findUser.modifyName(userModifyRequest.getWantToChangeName());
+        }
+
+        if (!findUser.getPassword().equals(userModifyRequest.getWantToChangePlainPassword())) {
+            findUser.modifyPassword(bCryptPasswordEncoder.encode(userModifyRequest.getWantToChangePlainPassword()));
+        }
     }
 }

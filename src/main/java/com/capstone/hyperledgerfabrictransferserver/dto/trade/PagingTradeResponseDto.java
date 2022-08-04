@@ -19,7 +19,7 @@ public class PagingTradeResponseDto {
     private List<TransferResponse> transferResponseList;
 
     @Builder
-    private PagingTradeResponseDto(Long totalTradeNumber, int totalPage, List<TransferResponse> transferResponseList) {
+private PagingTradeResponseDto(Long totalTradeNumber, int totalPage, List<TransferResponse> transferResponseList) {
         this.totalTradeNumber = totalTradeNumber;
         this.totalPage = totalPage;
         this.transferResponseList = transferResponseList;

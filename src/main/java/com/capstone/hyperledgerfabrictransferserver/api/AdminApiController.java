@@ -6,6 +6,7 @@ import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferResponse;
 import com.capstone.hyperledgerfabrictransferserver.dto.user.PagingUserDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.user.UserLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.user.UserLoginResponse;
+import com.capstone.hyperledgerfabrictransferserver.dto.user.UserModifyRequest;
 import com.capstone.hyperledgerfabrictransferserver.service.TradeService;
 import com.capstone.hyperledgerfabrictransferserver.service.UserService;
 import lombok.NonNull;
@@ -34,6 +35,12 @@ public class AdminApiController {
             @RequestParam(required = false, defaultValue = "1") int page
     ) {
         return ResponseEntity.ok(userService.getAllUser(page));
+    }
+
+    @PutMapping("/user")
+    public ResponseEntity<Void> modifyUserInfo(@RequestBody UserModifyRequest userModifyRequest) {
+        userService.modifyUserInfo(userModifyRequest);
+        return ResponseEntity.ok(null);
     }
 
     @GetMapping("/trade")

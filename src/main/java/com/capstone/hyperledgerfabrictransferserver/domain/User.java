@@ -1,5 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.domain;
 
+import com.capstone.hyperledgerfabrictransferserver.dto.user.UserModifyRequest;
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -42,7 +43,13 @@ public class User extends BaseEntity{
         return new User(identifier, password, userRole, name);
     }
 
-    public void changePassword(String password){
+    public void modifyPassword(String password){
         this.password = password;
     }
+
+    public void modifyIdentifier(String identifier) {this.identifier = identifier;}
+
+    public void changeUserRole(UserRole userRole) {this.userRole = userRole;}
+
+    public void modifyName(String name) {this.name = name;}
 }
