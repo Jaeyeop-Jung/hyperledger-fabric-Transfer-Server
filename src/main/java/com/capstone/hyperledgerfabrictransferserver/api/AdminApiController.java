@@ -1,5 +1,7 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
+import com.capstone.hyperledgerfabrictransferserver.dto.admin.AdminLoginRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.admin.AdminLoginResponse;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTradeResponseDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.RequestForGetTradeByDetails;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferResponse;
@@ -7,6 +9,7 @@ import com.capstone.hyperledgerfabrictransferserver.dto.user.PagingUserDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.user.UserLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.user.UserLoginResponse;
 import com.capstone.hyperledgerfabrictransferserver.dto.user.UserModifyRequest;
+import com.capstone.hyperledgerfabrictransferserver.service.AdminService;
 import com.capstone.hyperledgerfabrictransferserver.service.TradeService;
 import com.capstone.hyperledgerfabrictransferserver.service.UserService;
 import lombok.NonNull;
@@ -20,14 +23,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin")
 public class AdminApiController {
 
+    private final AdminService adminService;
     private final UserService userService;
     private final TradeService tradeService;
 
     @GetMapping("/login")
-    public ResponseEntity<UserLoginResponse> login(
-        @ModelAttribute UserLoginRequest userLoginRequest
+    public ResponseEntity<AdminLoginResponse> login(
+        @ModelAttribute AdminLoginRequest adminLoginRequest
     ){
-        return ResponseEntity.ok(userService.login(userLoginRequest));
+        return ResponseEntity.ok(adminService.login(adminLoginRequest));
     }
 
     @GetMapping("/users")
