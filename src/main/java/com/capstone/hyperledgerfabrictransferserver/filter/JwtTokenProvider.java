@@ -2,6 +2,7 @@ package com.capstone.hyperledgerfabrictransferserver.filter;
 
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.EmptyTokenException;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectTokenException;
+import com.capstone.hyperledgerfabrictransferserver.domain.Admin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,19 @@ public class JwtTokenProvider {
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
                 .claim("role", user.getUserRole().toString())
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+
+    public String generateJwtToken(Admin admin) {
+        Date now = new Date();
+
+        return Jwts.builder()
+                .setHeaderParam("typ", "ACCESS_TOKEN")
+                .setHeaderParam("alg", "HS256")
+                .setSubject(admin.getEmail())
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
