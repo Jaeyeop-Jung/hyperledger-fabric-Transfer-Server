@@ -1,10 +1,8 @@
 package com.capstone.hyperledgerfabrictransferserver.api;
 
-import com.capstone.hyperledgerfabrictransferserver.dto.coin.CoinCreateRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.coin.CoinModifyRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.coin.UpdateAllAssetCoinRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.coin.UpdateAssetCoinRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.coin.*;
 import com.capstone.hyperledgerfabrictransferserver.service.CoinService;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +13,11 @@ import org.springframework.web.bind.annotation.*;
 public class CoinApiController {
 
     private final CoinService coinService;
+
+    @GetMapping("/coins")
+    public ResponseEntity<PagingCoinDto> getAllCoin(@ApiParam(defaultValue = "1") @RequestParam(defaultValue = "1") int page) {
+        return ResponseEntity.ok(coinService.getAllCoin(page));
+    }
 
     @PostMapping("/coin")
     public ResponseEntity<Void> create(@RequestBody CoinCreateRequest coinCreateRequest) {

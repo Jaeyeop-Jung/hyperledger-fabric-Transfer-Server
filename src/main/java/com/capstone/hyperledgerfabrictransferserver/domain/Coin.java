@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Where(clause = "delete is not true")
+@Where(clause = "deleted != true")
 public class Coin {
 
     @Id

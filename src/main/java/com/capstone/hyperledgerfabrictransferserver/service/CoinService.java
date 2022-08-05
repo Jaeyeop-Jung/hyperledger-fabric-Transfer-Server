@@ -3,15 +3,15 @@ package com.capstone.hyperledgerfabrictransferserver.service;
 import com.capstone.hyperledgerfabrictransferserver.aop.customException.*;
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
-import com.capstone.hyperledgerfabrictransferserver.dto.coin.CoinCreateRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.coin.CoinModifyRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.coin.UpdateAllAssetCoinRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.coin.UpdateAssetCoinRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.coin.*;
 import com.capstone.hyperledgerfabrictransferserver.repository.CoinRepository;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Gateway;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +28,12 @@ public class CoinService {
     public Coin getByCoinName(String coinName) {
         return coinRepository.findByName(coinName)
                 .orElseThrow(() -> new NotExistsCoinException("존재하지 않은 코인입니다"));
+    }
+
+    @Transactional(readOnly = true)
+    public PagingCoinDto getAllCoin(int page) {
+        Page<Coin> findAllCoin = coinRepository.findAll(PageRequest.of(page - 1, 20, Sort.Direction.ASC, "name"));
+        return PagingCoinDto.from(findAllCoin);
     }
 
     @Transactional
