@@ -83,7 +83,7 @@ class UserServiceImplTest {
                 .thenReturn(false);
         when(bCryptPasswordEncoder.encode(any()))
                 .thenReturn("test");
-        when(jwtTokenProvider.generateJwtToken(any()))
+        when(jwtTokenProvider.generateJwtToken(any(User.class)))
                 .thenReturn("test");
         when(userRepository.save(any()))
                 .thenReturn(User.of("20170001", "test", UserRole.ROLE_STUDENT, "test"));
@@ -98,7 +98,7 @@ class UserServiceImplTest {
         //then
         verify(userRepository).save(any());
         verify(bCryptPasswordEncoder).encode(any());
-        verify(jwtTokenProvider).generateJwtToken(any());
+        verify(jwtTokenProvider).generateJwtToken(any(User.class));
         verify(fabricService).getGateway();
         verify(fabricService).submitTransaction(any(), any(), any());
         assertThat(response.getAccessToken()).isEqualTo("Bearer test");
@@ -119,7 +119,7 @@ class UserServiceImplTest {
                 .thenReturn(Optional.of(User.of("20170001", "test", UserRole.ROLE_STUDENT, "test")));
         when(bCryptPasswordEncoder.matches(any(), any()))
                 .thenReturn(true);
-        when(jwtTokenProvider.generateJwtToken(any()))
+        when(jwtTokenProvider.generateJwtToken(any(User.class)))
                 .thenReturn("test");
 
         //when
