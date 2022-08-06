@@ -89,12 +89,9 @@ public class TradeService {
             int page,
             @NonNull RequestForGetTradeByDetails requestForGetTradeByDetails
     )  {
-        User sender = userService.getUserByIdentifier(requestForGetTradeByDetails.getSenderIdentifier());
-        User receiver = userService.getUserByIdentifier(requestForGetTradeByDetails.getReceiverIdentifier());
-
         Page<Trade> findTradeList = tradeRepository.findAllBySenderOrReceiverAndDateCreatedBetween(
-                sender,
-                receiver,
+                requestForGetTradeByDetails.getSenderIdentifier(),
+                requestForGetTradeByDetails.getReceiverIdentifier(),
                 requestForGetTradeByDetails.getFromLocalDateTime(),
                 requestForGetTradeByDetails.getUntilLocalDateTime(),
                 PageRequest.of(page - 1, 10, Sort.Direction.DESC, "dateCreated")

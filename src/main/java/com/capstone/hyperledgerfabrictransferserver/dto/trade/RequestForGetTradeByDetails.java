@@ -2,8 +2,10 @@ package com.capstone.hyperledgerfabrictransferserver.dto.trade;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.DateTimeRange;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.Calendar;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
@@ -16,146 +18,46 @@ public class RequestForGetTradeByDetails {
 
     @Getter
     private DateTimeRange dateTimeRange;
-
-    private Integer year;
-
-    private Integer month;
-
-    private Integer day;
-
-    private Integer hour;
-
-    private Integer minute;
-
-    private Integer second;
-
     @Getter
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime fromLocalDateTime;
 
     @Getter
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime untilLocalDateTime;
 
     @Builder
-    public RequestForGetTradeByDetails(String senderIdentifier, String receiverIdentifier, DateTimeRange dateTimeRange, Integer year, Integer month, Integer day, Integer hour, Integer minute, Integer second) {
+    public RequestForGetTradeByDetails(String senderIdentifier, String receiverIdentifier, DateTimeRange dateTimeRange, LocalDateTime fromLocalDateTime, LocalDateTime untilLocalDateTime) {
         this.senderIdentifier = senderIdentifier;
         this.receiverIdentifier = receiverIdentifier;
         this.dateTimeRange = dateTimeRange;
-        this.year = year;
-        this.month = month;
-        this.day = day;
-        this.hour = hour;
-        this.minute = minute;
-        this.second = second;
         switch (dateTimeRange) {
             case YEAR:
-                fromLocalDateTime = LocalDateTime.of(
-                        year,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0
-                );
-                untilLocalDateTime = LocalDateTime.of(
-                        year + 1,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0
-                );
+                this.fromLocalDateTime = LocalDateTime.of(fromLocalDateTime.getYear(), 1,1,0,0,0);
+                this.untilLocalDateTime = LocalDateTime.of(untilLocalDateTime.getYear(),12,31,23,59,59);
                 break;
             case MONTH:
-                fromLocalDateTime = LocalDateTime.of(
-                        year,
-                        month,
-                        1,
-                        0,
-                        0,
-                        0
-                );
-                untilLocalDateTime = LocalDateTime.of(
-                        year,
-                        month + 1,
-                        1,
-                        0,
-                        0,
-                        0
-                );
+                this.fromLocalDateTime = LocalDateTime.of(fromLocalDateTime.getYear(), fromLocalDateTime.getMonthValue(), 1,0,0,0);
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.MONTH, untilLocalDateTime.getMonthValue() - 1);
+                this.untilLocalDateTime = LocalDateTime.of(untilLocalDateTime.getYear(), untilLocalDateTime.getMonthValue(), calendar.getActualMaximum(Calendar.DAY_OF_MONTH), 23,59,59);
                 break;
             case DAY:
-                fromLocalDateTime = LocalDateTime.of(
-                        year,
-                        month,
-                        day,
-                        0,
-                        0,
-                        0
-                );
-                untilLocalDateTime = LocalDateTime.of(
-                        year,
-                        month,
-                        day + 1,
-                        0,
-                        0,
-                        0
-                );
+                this.fromLocalDateTime = LocalDateTime.of(fromLocalDateTime.getYear(), fromLocalDateTime.getMonthValue(), fromLocalDateTime.getDayOfMonth(), 0,0,0);
+                this.untilLocalDateTime = LocalDateTime.of(untilLocalDateTime.getYear(), untilLocalDateTime.getMonthValue(), untilLocalDateTime.getDayOfMonth(), 23,59,59);
                 break;
             case HOUR:
-                fromLocalDateTime = LocalDateTime.of(
-                        year,
-                        month,
-                        day,
-                        hour,
-                        0,
-                        0
-                );
-                untilLocalDateTime = LocalDateTime.of(
-                        year,
-                        month,
-                        day,
-                        hour + 1,
-                        0,
-                        0
-                );
+                this.fromLocalDateTime = LocalDateTime.of(fromLocalDateTime.getYear(), fromLocalDateTime.getMonthValue(), fromLocalDateTime.getDayOfMonth(), fromLocalDateTime.getHour(), 0, 0);
+                this.untilLocalDateTime = LocalDateTime.of(untilLocalDateTime.getYear(), untilLocalDateTime.getMonthValue(), untilLocalDateTime.getDayOfMonth(), untilLocalDateTime.getHour(), 59, 9);
                 break;
             case MINUTE:
-                fromLocalDateTime = LocalDateTime.of(
-                        year,
-                        month,
-                        day,
-                        hour,
-                        minute,
-                        0
-                );
-                untilLocalDateTime = LocalDateTime.of(
-                        year,
-                        month,
-                        day,
-                        hour,
-                        minute + 1,
-                        0
-                );
+                this.fromLocalDateTime = LocalDateTime.of(fromLocalDateTime.getYear(), fromLocalDateTime.getMonthValue(), fromLocalDateTime.getDayOfMonth(), fromLocalDateTime.getHour(), fromLocalDateTime.getMinute(), 0);
+                this.untilLocalDateTime = LocalDateTime.of(untilLocalDateTime.getYear(), untilLocalDateTime.getMonthValue(), untilLocalDateTime.getDayOfMonth(), untilLocalDateTime.getHour(), untilLocalDateTime.getMinute(), 59);
                 break;
             case SECOND:
-                fromLocalDateTime = LocalDateTime.of(
-                        year,
-                        month,
-                        day,
-                        hour,
-                        minute,
-                        second
-                );
-                untilLocalDateTime = LocalDateTime.of(
-                        year,
-                        month,
-                        day,
-                        hour,
-                        minute,
-                        second + 1
-                );
+                this.fromLocalDateTime = fromLocalDateTime;
+                this.untilLocalDateTime = untilLocalDateTime;
                 break;
         }
-
     }
 }

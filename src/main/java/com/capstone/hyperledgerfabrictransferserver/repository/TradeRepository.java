@@ -16,9 +16,16 @@ import java.util.Optional;
 public interface TradeRepository extends JpaRepository<Trade, Long> {
 
     Page<Trade> findAllBySenderOrReceiver(User sender, User receiver, Pageable pageable);
+
+
+    @Query(value = "select t " +
+                    "from Trade t " +
+                    "where (t.sender.identifier = :senderIdentifier or :senderIdentifier is null) " +
+                    "and (t.receiver.identifier = :receiverIdentifier or :receiverIdentifier is null) " +
+                    "and t.dateCreated between :fromDateCreated and :untilDateCreated ")
     Page<Trade> findAllBySenderOrReceiverAndDateCreatedBetween(
-            User sender,
-            User receiver,
+            String senderIdentifier,
+            String receiverIdentifier,
             LocalDateTime fromDateCreated,
             LocalDateTime untilDateCreated,
             Pageable pageable
