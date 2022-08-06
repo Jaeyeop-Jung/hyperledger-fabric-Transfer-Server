@@ -27,7 +27,7 @@ public class AdminService {
          Admin findAdmin = adminRepository.findByEmailAndPassword(
                  adminLoginRequest.getEmail(),
                  Sha256Util.digest(adminLoginRequest.getPassword())
-                 ).orElseThrow(() -> new NotExistsAdminException("존재하지 않은 관리자입니다"));
+         ).orElseThrow(() -> new NotExistsAdminException("존재하지 않은 관리자입니다"));
 
          return AdminLoginResponse.builder()
                  .accessToken(jwtTokenProvider.generateJwtToken(findAdmin))
