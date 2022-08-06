@@ -27,7 +27,7 @@ public class UserApiController {
      * @return Jwt토큰
      */
     @PostMapping("/user")
-    public ResponseEntity<UserLoginResponse> join(@RequestBody @Valid UserJoinRequest userJoinRequest) {
+    public ResponseEntity<UserLoginResponse> join(@RequestBody UserJoinRequest userJoinRequest) { // TODO 마지막에 @Valid 추가
         return ResponseEntity.ok(userService.join(userJoinRequest));
     }
 
