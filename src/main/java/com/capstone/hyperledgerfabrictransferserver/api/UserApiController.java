@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class UserApiController {
      * @return Jwt토큰
      */
     @PostMapping("/user")
-    public ResponseEntity<UserLoginResponse> join(@RequestBody UserJoinRequest userJoinRequest) {
+    public ResponseEntity<UserLoginResponse> join(@RequestBody @Valid UserJoinRequest userJoinRequest) {
         return ResponseEntity.ok(userService.join(userJoinRequest));
     }
 

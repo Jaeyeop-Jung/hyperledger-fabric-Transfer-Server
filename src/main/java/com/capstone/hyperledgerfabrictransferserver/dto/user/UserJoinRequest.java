@@ -5,6 +5,8 @@ import com.sun.istack.NotNull;
 import io.swagger.annotations.ApiParam;
 import lombok.*;
 
+import javax.validation.constraints.Pattern;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
@@ -12,6 +14,7 @@ public class UserJoinRequest {
 
     @ApiParam(required = true)
     @NotNull
+    @Pattern(regexp = "(^2\\d{7})|(01\\d\\d{3,4}\\d{4})")
     private String identifier;
 
     @ApiParam(required = true)
