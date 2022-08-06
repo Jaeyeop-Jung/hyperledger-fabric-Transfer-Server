@@ -2,6 +2,7 @@ package com.capstone.hyperledgerfabrictransferserver.api;
 
 import com.capstone.hyperledgerfabrictransferserver.dto.admin.AdminLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.admin.AdminLoginResponse;
+import com.capstone.hyperledgerfabrictransferserver.dto.coin.DailyCoinTradingVolume;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTradeResponseDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.RequestForGetTradeByDetails;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferResponse;
@@ -14,8 +15,12 @@ import com.capstone.hyperledgerfabrictransferserver.service.TradeService;
 import com.capstone.hyperledgerfabrictransferserver.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 
 @RestController
@@ -59,5 +64,14 @@ public class AdminApiController {
     @GetMapping("/trade/{transactionId}")
     public ResponseEntity<TransferResponse> getTradeByTransactionId(@PathVariable @NonNull String transactionId) {
         return ResponseEntity.ok(tradeService.getTradeByTransactionId(transactionId));
+    }
+
+    @GetMapping("/trades/coin")
+    public ResponseEntity<List<DailyCoinTradingVolume>> getDailyCoinTradingVolume(
+            @RequestParam String coinName,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromLocalDateTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toLocalDateTime
+            ) {
+        return ResponseEntity.ok(tradeService.getDailyCoinTradingVolume(coinName, fromLocalDateTime, toLocalDateTime));
     }
 }

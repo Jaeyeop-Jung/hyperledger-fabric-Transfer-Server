@@ -5,6 +5,7 @@ import com.capstone.hyperledgerfabrictransferserver.aop.customException.Incorrec
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.Trade;
+import com.capstone.hyperledgerfabrictransferserver.dto.coin.DailyCoinTradingVolume;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.RequestForGetTradeByDetails;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTradeResponseDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.TradeRequest;
@@ -22,7 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -101,9 +103,16 @@ public class TradeService {
         return PagingTradeResponseDto.from(findTradeList);
     }
 
+    @Transactional(readOnly = true)
     public TransferResponse getTradeByTransactionId(String transactionId) {
         Trade findTrade = tradeRepository.findByTransactionId(transactionId)
                 .orElseThrow(() -> new IncorrectTransactionIdException("조회하려고 하는 TransactionID가 없거나 잘못되었습니다"));
         return TransferResponse.from(findTrade);
+    }
+
+    @Transactional(readOnly = true)
+    public List<DailyCoinTradingVolume> getDailyCoinTradingVolume(String coinName, LocalDateTime fromLocalDateTime, LocalDateTime toLocalDateTime) {
+        Coin findCoin = coinService.getByCoinName(coinName);
+        return tradeRepository.countDailyTradeByCoinBetween(findCoin, fromLocalDateTime, toLocalDateTime);
     }
 }
