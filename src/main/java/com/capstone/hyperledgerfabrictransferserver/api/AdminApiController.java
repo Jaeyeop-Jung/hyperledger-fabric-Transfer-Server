@@ -57,7 +57,6 @@ public class AdminApiController {
             @RequestParam(defaultValue = "1") int page,
             @ModelAttribute RequestForGetTradeByDetails requestForGetTradeByDetails
     ) {
-        System.out.println("requestForGetTradeByDetails = " + requestForGetTradeByDetails);
         return ResponseEntity.ok(tradeService.getAllTradeByDetails(page, requestForGetTradeByDetails));
     }
 
