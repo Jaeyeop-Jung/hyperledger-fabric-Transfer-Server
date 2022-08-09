@@ -147,6 +147,13 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public void delete(ForceDeleteUserRequest forceDeleteUserRequest) {
+        User findUser = userRepository.findByIdentifier(forceDeleteUserRequest.getIdentifier())
+                .orElseThrow(() -> new IncorrectIdentifierException("잘못된 Identifier입니다"));
+        userRepository.delete(findUser);
+    }
+
     @Transactional(readOnly = true)
     public AssetDto getAsset(HttpServletRequest httpServletRequest) {
 

@@ -6,10 +6,7 @@ import com.capstone.hyperledgerfabrictransferserver.dto.coin.DailyCoinTradingVol
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTradeResponseDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.RequestForGetTradeByDetails;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.TransferResponse;
-import com.capstone.hyperledgerfabrictransferserver.dto.user.PagingUserDto;
-import com.capstone.hyperledgerfabrictransferserver.dto.user.UserLoginRequest;
-import com.capstone.hyperledgerfabrictransferserver.dto.user.UserLoginResponse;
-import com.capstone.hyperledgerfabrictransferserver.dto.user.UserModifyRequest;
+import com.capstone.hyperledgerfabrictransferserver.dto.user.*;
 import com.capstone.hyperledgerfabrictransferserver.service.AdminService;
 import com.capstone.hyperledgerfabrictransferserver.service.TradeService;
 import com.capstone.hyperledgerfabrictransferserver.service.UserService;
@@ -49,6 +46,12 @@ public class AdminApiController {
     @PutMapping("/user")
     public ResponseEntity<Void> modifyUserInfo(@RequestBody UserModifyRequest userModifyRequest) {
         userService.modifyUserInfo(userModifyRequest);
+        return ResponseEntity.ok(null);
+    }
+
+    @DeleteMapping("/user")
+    public ResponseEntity<Void> forceDeleteUser(@RequestBody ForceDeleteUserRequest forceDeleteUserRequest) {
+        userService.delete(forceDeleteUserRequest);
         return ResponseEntity.ok(null);
     }
 
