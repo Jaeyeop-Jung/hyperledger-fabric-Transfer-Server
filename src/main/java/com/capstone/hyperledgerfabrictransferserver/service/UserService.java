@@ -198,7 +198,9 @@ public class UserService {
         }
 
         if (!findUser.getPassword().equals(userModifyRequest.getWantToChangePlainPassword())) {
-            findUser.modifyPassword(bCryptPasswordEncoder.encode(userModifyRequest.getWantToChangePlainPassword()));
+            if(userModifyRequest.getWantToChangePlainPassword() != null) {
+                findUser.modifyPassword(bCryptPasswordEncoder.encode(userModifyRequest.getWantToChangePlainPassword()));
+            }
         }
     }
 }
