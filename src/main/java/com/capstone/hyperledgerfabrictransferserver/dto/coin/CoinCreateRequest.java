@@ -9,11 +9,8 @@ public class CoinCreateRequest {
 
     private String coinName;
 
-    private Long issuance;
-
     @Builder
-    public CoinCreateRequest(String coinName, Long issuance) {
+    public CoinCreateRequest(String coinName) {
         this.coinName = coinName;
-        this.issuance = issuance;
     }
 }

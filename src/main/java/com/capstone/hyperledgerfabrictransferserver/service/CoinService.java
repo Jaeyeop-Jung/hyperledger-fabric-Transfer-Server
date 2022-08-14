@@ -46,13 +46,13 @@ public class CoinService {
         coinRepository.save(
                 Coin.of(
                         coinCreateRequest.getCoinName(),
-                        coinCreateRequest.getIssuance()
+                        0L
                 )
         );
 
         try {
             Gateway gateway = fabricService.getGateway();
-            fabricService.submitTransaction(gateway, "CreateCoin", coinCreateRequest.getCoinName(), String.valueOf(coinCreateRequest.getIssuance()));
+            fabricService.submitTransaction(gateway, "CreateCoin", coinCreateRequest.getCoinName());
             fabricService.close(gateway);
         } catch (Exception e){
             throw new IncorrectContractException("CreateAsset 체인코드 실행 중 오류가 발생했습니다");

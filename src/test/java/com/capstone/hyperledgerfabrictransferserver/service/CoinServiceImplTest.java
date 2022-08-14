@@ -35,7 +35,6 @@ class CoinServiceImplTest {
         //given
         CoinCreateRequest coinCreateRequest = CoinCreateRequest.builder()
                 .coinName("test")
-                .issuance(1000L)
                 .build();
         Gateway gateway = mock(Gateway.class);
 
