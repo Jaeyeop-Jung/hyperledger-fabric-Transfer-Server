@@ -182,6 +182,22 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public AssetDto getAsset(@NonNull String identifier) {
+
+        User findUser = getUserByIdentifier(identifier);
+        try {
+            Gateway gateway = fabricService.getGateway();
+            String response = fabricService.submitTransaction(
+                    gateway, "GetAsset", "asset" + findUser.getId()
+            );
+            fabricService.close(gateway);
+            return objectMapper.readValue(response, AssetDto.class);
+        } catch (Exception e){
+            throw new IncorrectContractException("GetAsset 체인코드 실행 중 오류가 발생했습니다");
+        }
+    }
+
+    @Transactional(readOnly = true)
     public PagingUserDto getAllUser(int page) {
         Page<User> findAllUser = userRepository.findAll(PageRequest.of(page - 1, 20, Sort.Direction.DESC, "dateCreated"));
         return PagingUserDto.from(findAllUser);

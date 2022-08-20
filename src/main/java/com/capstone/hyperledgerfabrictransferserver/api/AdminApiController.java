@@ -43,6 +43,11 @@ public class AdminApiController {
         return ResponseEntity.ok(userService.getAllUser(page));
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<AssetDto> getUser(@RequestParam String identifier) {
+        return ResponseEntity.ok(userService.getAsset(identifier));
+    }
+
     @PutMapping("/user")
     public ResponseEntity<Void> modifyUserInfo(@RequestBody UserModifyRequest userModifyRequest) {
         userService.modifyUserInfo(userModifyRequest);
