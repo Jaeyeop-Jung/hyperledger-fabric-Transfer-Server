@@ -1,6 +1,7 @@
 package com.capstone.hyperledgerfabrictransferserver.dto.trade;
 
 import com.capstone.hyperledgerfabrictransferserver.domain.DateTimeRange;
+import com.capstone.hyperledgerfabrictransferserver.domain.UserRole;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -26,11 +27,19 @@ public class RequestForGetTradeByDetails {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime untilLocalDateTime;
 
+    @Getter
+    private UserRole senderUserRole;
+
+    @Getter
+    private UserRole receiverUserRole;
+
     @Builder
-    public RequestForGetTradeByDetails(String senderIdentifier, String receiverIdentifier, DateTimeRange dateTimeRange, LocalDateTime fromLocalDateTime, LocalDateTime untilLocalDateTime) {
+    public RequestForGetTradeByDetails(String senderIdentifier, String receiverIdentifier, DateTimeRange dateTimeRange, LocalDateTime fromLocalDateTime, LocalDateTime untilLocalDateTime, UserRole senderUserRole, UserRole receiverUserRole) {
         this.senderIdentifier = senderIdentifier;
         this.receiverIdentifier = receiverIdentifier;
         this.dateTimeRange = dateTimeRange;
+        this.senderUserRole = senderUserRole;
+        this.receiverUserRole = receiverUserRole;
         switch (dateTimeRange) {
             case YEAR:
                 this.fromLocalDateTime = LocalDateTime.of(fromLocalDateTime.getYear(), 1,1,0,0,0);

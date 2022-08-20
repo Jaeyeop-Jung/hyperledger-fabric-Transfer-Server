@@ -3,6 +3,7 @@ package com.capstone.hyperledgerfabrictransferserver.repository;
 import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.domain.Trade;
+import com.capstone.hyperledgerfabrictransferserver.domain.UserRole;
 import com.capstone.hyperledgerfabrictransferserver.dto.coin.DailyCoinTradingVolume;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,12 +23,16 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
                     "from Trade t " +
                     "where (t.sender.identifier = :senderIdentifier or :senderIdentifier is null) " +
                     "and (t.receiver.identifier = :receiverIdentifier or :receiverIdentifier is null) " +
+                    "and (t.sender.userRole = :senderUserRole or :senderUserRole is null) " +
+                    "and (t.receiver.userRole = :receiverUserRole or :receiverUserRole is null) " +
                     "and t.dateCreated between :fromDateCreated and :untilDateCreated ")
     Page<Trade> findAllBySenderOrReceiverAndDateCreatedBetween(
             String senderIdentifier,
             String receiverIdentifier,
             LocalDateTime fromDateCreated,
             LocalDateTime untilDateCreated,
+            UserRole senderUserRole,
+            UserRole receiverUserRole,
             Pageable pageable
     );
 

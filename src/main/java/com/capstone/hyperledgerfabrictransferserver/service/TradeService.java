@@ -94,6 +94,8 @@ public class TradeService {
                 requestForGetTradeByDetails.getReceiverIdentifier(),
                 requestForGetTradeByDetails.getFromLocalDateTime(),
                 requestForGetTradeByDetails.getUntilLocalDateTime(),
+                requestForGetTradeByDetails.getSenderUserRole(),
+                requestForGetTradeByDetails.getReceiverUserRole(),
                 PageRequest.of(page - 1, 10, Sort.Direction.DESC, "dateCreated")
         );
 
