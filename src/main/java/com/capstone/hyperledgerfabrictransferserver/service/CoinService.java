@@ -5,7 +5,6 @@ import com.capstone.hyperledgerfabrictransferserver.domain.Coin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import com.capstone.hyperledgerfabrictransferserver.dto.coin.*;
 import com.capstone.hyperledgerfabrictransferserver.repository.CoinRepository;
-import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Gateway;
@@ -14,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
@@ -61,18 +62,19 @@ public class CoinService {
 
     @Transactional
     public void delete(CoinModifyRequest coinModifyRequest) {
+        Gateway gateway = fabricService.getGateway();
+        for (String coinName : coinModifyRequest.getCoinNameList()) {
+            Coin findCoin = coinRepository.findByName(coinName)
+                    .orElseThrow(() -> new NotExistsCoinException("존재하지 않은 코인입니다"));
+            findCoin.setDeleted();
 
-        Coin findCoin = coinRepository.findByName(coinModifyRequest.getCoinName())
-                .orElseThrow(() -> new NotExistsCoinException("존재하지 않은 코인입니다"));
-        findCoin.setDeleted();
-
-        try {
-            Gateway gateway = fabricService.getGateway();
-            fabricService.submitTransaction(gateway, "DeleteCoin", coinModifyRequest.getCoinName());
-            fabricService.close(gateway);
-        } catch (Exception e){
-            throw new IncorrectContractException("DeleteCoin 체인코드 실행 중 오류가 발생했습니다");
+            try {
+                fabricService.submitTransaction(gateway, "DeleteCoin", coinName);
+            } catch (Exception e){
+                throw new IncorrectContractException("DeleteCoin 체인코드 실행 중 오류가 발생했습니다");
+            }
         }
+        fabricService.close(gateway);
     }
 
     @Transactional
@@ -100,19 +102,22 @@ public class CoinService {
         if (!coinRepository.existsByName(updateAssetCoinRequest.getCoinName())) {
             throw new NotExistsCoinException("존재하지 않은 코인입니다.");
         }
+        Gateway gateway = fabricService.getGateway();
 
-        User findUser = userService.getUserByIdentifier(updateAssetCoinRequest.getIdentifier());
+        for (String identifier : updateAssetCoinRequest.getIdentifier()) {
+            User findUser = userService.getUserByIdentifier(identifier);
 
-        try {
-            Gateway gateway = fabricService.getGateway();
-            fabricService.submitTransaction(gateway, "UpdateAssetCoin", "asset" + findUser.getIdentifier(), updateAssetCoinRequest.getCoinName(), updateAssetCoinRequest.getCoinValue());
-            fabricService.close(gateway);
-        } catch (Exception e) {
-            throw new IncorrectContractException("UpdateAssetCoin 체인코드 실행 중 오류가 발생했습니다");
+            try {
+                fabricService.submitTransaction(gateway, "UpdateAssetCoin", "asset" + findUser.getIdentifier(), updateAssetCoinRequest.getCoinName(), updateAssetCoinRequest.getCoinValue());
+            } catch (Exception e) {
+                throw new IncorrectContractException("UpdateAssetCoin 체인코드 실행 중 오류가 발생했습니다");
+            }
         }
 
         Coin coin = coinRepository.findByName(updateAssetCoinRequest.getCoinName()).get();
-        coin.modifyIssuance(coin.getIssuance() + Long.valueOf(updateAssetCoinRequest.getCoinValue()));
+        coin.modifyIssuance(coin.getIssuance() + Long.valueOf(updateAssetCoinRequest.getCoinValue()) * updateAssetCoinRequest.getIdentifier().size());
+
+        fabricService.close(gateway);
     }
 
 }

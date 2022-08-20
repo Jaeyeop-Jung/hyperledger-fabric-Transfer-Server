@@ -149,9 +149,19 @@ public class UserService {
 
     @Transactional
     public void delete(ForceDeleteUserRequest forceDeleteUserRequest) {
-        User findUser = userRepository.findByIdentifier(forceDeleteUserRequest.getIdentifier())
-                .orElseThrow(() -> new IncorrectIdentifierException("잘못된 Identifier입니다"));
-        userRepository.delete(findUser);
+        Gateway gateway = fabricService.getGateway();
+
+        for (String identifier : forceDeleteUserRequest.getIdentifier()) {
+            User findUser = userRepository.findByIdentifier(identifier)
+                    .orElseThrow(() -> new IncorrectIdentifierException("잘못된 Identifier입니다"));
+            userRepository.delete(findUser);
+            try {
+                fabricService.submitTransaction(gateway, "DeleteAsset", "asset" + findUser.getId());
+            } catch (Exception e){
+                throw new IncorrectContractException("DeleteAsset 체인코드 실행 중 오류가 발생했습니다");
+            }
+        }
+        fabricService.close(gateway);
     }
 
     @Transactional(readOnly = true)

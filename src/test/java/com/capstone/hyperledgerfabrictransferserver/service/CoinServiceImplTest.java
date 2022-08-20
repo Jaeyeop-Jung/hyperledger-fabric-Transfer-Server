@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,7 +60,7 @@ class CoinServiceImplTest {
     void delete_를_테스트한다() throws Exception{
         //given
         CoinModifyRequest coinModifyRequest = CoinModifyRequest.builder()
-                .coinName("test")
+                .coinNameList(Arrays.asList("test"))
                 .build();
         Coin coin = Coin.of("test", 1000L);
         Gateway gateway = mock(Gateway.class);
