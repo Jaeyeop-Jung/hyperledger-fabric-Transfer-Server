@@ -60,6 +60,10 @@ public class AdminApiController {
             @RequestParam(defaultValue = "1") int page,
             @ModelAttribute RequestForGetTradeByDetails requestForGetTradeByDetails
     ) {
+        System.out.println("requestForGetTradeByDetails = " + requestForGetTradeByDetails.getSenderIdentifier());
+        System.out.println("requestForGetTradeByDetails = " + requestForGetTradeByDetails.getReceiverIdentifier());
+        System.out.println("requestForGetTradeByDetails = " + requestForGetTradeByDetails.getSenderUserRole());
+        System.out.println("requestForGetTradeByDetails = " + requestForGetTradeByDetails.getReceiverUserRole());
         return ResponseEntity.ok(tradeService.getAllTradeByDetails(page, requestForGetTradeByDetails));
     }
 
