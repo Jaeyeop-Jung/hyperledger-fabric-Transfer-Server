@@ -1,5 +1,6 @@
 package com.capstone.hyperledgerfabrictransferserver.domain;
 
+import com.capstone.hyperledgerfabrictransferserver.util.RandomGenerateUtil;
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,11 +9,13 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.security.SecureRandom;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "deleted != true")
+@SQLDelete(sql = "update Coin set DELETED = true, name = name + id")
 public class Coin {
 
     @Id
@@ -21,6 +24,7 @@ public class Coin {
     private Long id;
 
     @NotNull
+    @Column(unique = true)
     private String name;
 
     @NotNull
@@ -41,7 +45,7 @@ public class Coin {
     }
 
     public void setDeleted(){
-        this.name = name + id;
+        this.name = name + "#" + RandomGenerateUtil.generate(4);
         this.deleted = true;
     }
 
