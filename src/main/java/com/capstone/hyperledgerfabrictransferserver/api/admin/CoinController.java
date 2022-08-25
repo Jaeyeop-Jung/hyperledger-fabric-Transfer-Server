@@ -1,4 +1,4 @@
-package com.capstone.hyperledgerfabrictransferserver.api;
+package com.capstone.hyperledgerfabrictransferserver.api.admin;
 
 import com.capstone.hyperledgerfabrictransferserver.dto.coin.*;
 import com.capstone.hyperledgerfabrictransferserver.service.CoinService;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
-public class CoinApiController {
+public class CoinController {
 
     private final CoinService coinService;
 

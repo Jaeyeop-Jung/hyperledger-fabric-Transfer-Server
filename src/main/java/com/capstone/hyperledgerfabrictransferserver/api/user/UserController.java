@@ -1,4 +1,4 @@
-package com.capstone.hyperledgerfabrictransferserver.api;
+package com.capstone.hyperledgerfabrictransferserver.api.user;
 
 import com.capstone.hyperledgerfabrictransferserver.dto.user.AssetDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.user.UserJoinRequest;
@@ -10,11 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-public class UserApiController {
+@RequestMapping("/user")
+public class UserController {
 
     private final UserService userService;
 

@@ -1,4 +1,4 @@
-package com.capstone.hyperledgerfabrictransferserver.api;
+package com.capstone.hyperledgerfabrictransferserver.api.user;
 
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.PagingTradeResponseDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.trade.TradeRequest;
@@ -7,16 +7,14 @@ import com.capstone.hyperledgerfabrictransferserver.service.TradeService;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
-public class TradeApiController {
+@RequestMapping("/user")
+public class TradeController {
 
     private final TradeService tradeService;
 
