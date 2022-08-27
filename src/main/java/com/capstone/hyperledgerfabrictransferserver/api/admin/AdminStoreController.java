@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/adin")
+@RequestMapping("/admin")
 public class AdminStoreController {
 
     private final StoreService storeService;
