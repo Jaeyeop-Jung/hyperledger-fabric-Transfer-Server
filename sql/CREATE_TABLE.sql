@@ -63,15 +63,15 @@ CREATE TABLE store(
 CREATE TABLE trade(
                       trade_id BIGINT NOT NULL AUTO_INCREMENT,
                       TRANSACTION_ID VARCHAR(255) NOT NULL ,
-                      sender_id BIGINT NOT NULL,
-                      receiver_id BIGINT NOT NULL ,
+                      sender_id BIGINT,
+                      receiver_id BIGINT,
                       coin_id BIGINT NOT NULL,
                       amount BIGINT NOT NULL,
                       date_created datetime not null,
                       last_updated datetime not null,
                       PRIMARY KEY(trade_id),
-                      FOREIGN KEY(sender_id) REFERENCES user(user_id),
-                      FOREIGN KEY(receiver_id) REFERENCES user(user_id),
+                      FOREIGN KEY(sender_id) REFERENCES user(user_id) on delete set null ,
+                      FOREIGN KEY(receiver_id) REFERENCES user(user_id) on delete set null ,
                       FOREIGN KEY(coin_id) REFERENCES coin(coin_id)
 );
 
