@@ -8,13 +8,11 @@ import com.capstone.hyperledgerfabrictransferserver.repository.CoinRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Gateway;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,9 +30,9 @@ public class CoinService {
     }
 
     @Transactional(readOnly = true)
-    public PagingCoinDto getAllCoin(int page) {
-        Page<Coin> findAllCoin = coinRepository.findAll(PageRequest.of(page - 1, 20, Sort.Direction.ASC, "name"));
-        return PagingCoinDto.from(findAllCoin);
+    public getAllCoinDto getAllCoin() {
+        List<Coin> coinList = coinRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+        return getAllCoinDto.from(coinList);
     }
 
     @Transactional
