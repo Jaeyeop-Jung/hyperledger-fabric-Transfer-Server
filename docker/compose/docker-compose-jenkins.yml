@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  jenkins:
+    container_name: jenkins
+    build:
+      context: ../dockerfile
+      dockerfile: jenkins.Dockerfile
+    user: root
+    ports:
+      - 8001:8080
+      - 50000:50000
+    volumes:
+      - /root/jenkins:/var/jenkins_home
+      - /root/testimagefile:/var/testimagefile
+      - /root/imagefile:/var/imagefile
