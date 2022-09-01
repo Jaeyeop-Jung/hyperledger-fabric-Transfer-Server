@@ -50,9 +50,10 @@ dependencies {
 	testImplementation 'com.h2database:h2:1.4.200'
 
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {
-//	environment "Dspring.profiles.active", "test"
 	useJUnitPlatform()
 }
