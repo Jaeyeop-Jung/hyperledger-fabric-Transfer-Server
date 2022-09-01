@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    group:
+      "local": "local, port8080"
+      "home": "home"
+      "real": "real"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: port8080
+server:
+  port: 8080
+---
+spring:
+  config:
+    activate:
+      on-profile: port8081
+server:
+  port: 8081
+---
+spring:
+  config:
+    activate:
+      on-profile: port8082
+server:
+  port: 8082

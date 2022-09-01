@@ -1,0 +1,42 @@
+
+spring:
+  config:
+    activate:
+      on-profile: "home"
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DATASOURCE_HOST:localhost}:3306/hyperledgerfabrictransfer?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    username: ${DATASOURCE_USERNAME:root}
+    password: ${DATASOURCE_PASSWORD:}
+    hikari:
+      maximum-pool-size: 6
+      connection-timeout: 600000
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+      format_sql: true
+    #      naming:
+    #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    generate-ddl: true
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+
+Jwt:
+  secret: ${JWT_SECRET:}
+
+logging:
+  config: classpath:log4j2.xml
+
+
+hyperledger:
+  CustomFabricGateway: /root/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.yaml
+  EnrollAdmin: /root/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
+  RegisterUser: /root/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem

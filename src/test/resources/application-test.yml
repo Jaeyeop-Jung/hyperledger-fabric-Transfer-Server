@@ -1,0 +1,42 @@
+spring:
+  config:
+    activate:
+      on-profile: "test"
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    generate-ddl: true
+    database-platform: com.capstone.hyperledgerfabrictransferserver.util.CustomH2Dialect
+
+  sql:
+    init:
+      mode: embedded
+      continue-on-error: true
+      schema-locations: classpath:create-table.sql
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+Jwt:
+  secret: ${JWT_SECRET:}
+
+logging:
+  config: classpath:log4j2.xml
+
+hyperledger:
+  CustomFabricGateway: /Users/jeongjaeyeob/go/src/github.com/Jaeyeop-Jung/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.yaml
+  EnrollAdmin: /Users/jeongjaeyeob/go/src/github.com/Jaeyeop-Jung/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
+  RegisterUser: /Users/jeongjaeyeob/go/src/github.com/Jaeyeop-Jung/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem

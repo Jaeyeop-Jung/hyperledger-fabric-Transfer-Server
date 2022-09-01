@@ -1,0 +1,38 @@
+
+spring:
+  config:
+    activate:
+      on-profile: "local"
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hyperledgerfabrictransfer?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    username: root
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+      format_sql: true
+    #      naming:
+    #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    generate-ddl: true
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+
+Jwt:
+  secret: ${JWT_SECRET:}
+
+logging:
+  config: classpath:log4j2.xml
+
+hyperledger:
+  CustomFabricGateway: /Users/jeongjaeyeob/Downloads/connection-org1.yaml
+  EnrollAdmin: /Users/jeongjaeyeob/Downloads/tlsca.org1.example.com-cert.pem
+  RegisterUser: /Users/jeongjaeyeob/Downloads/tlsca.org1.example.com-cert.pem
