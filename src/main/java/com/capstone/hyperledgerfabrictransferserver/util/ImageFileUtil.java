@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -14,7 +15,7 @@ import java.util.stream.Stream;
 @Component
 public class ImageFileUtil {
 
-    private static final String imageFilePath = System.getenv("IMAGE_FILE_PATH");
+    private static final String imageFilePath = Objects.requireNonNull(System.getenv("IMAGE_FILE_PATH"));
 
     private static final List<String> enableExtensionList = Stream.of(ImageFileExtension.values())
             .map(extension -> extension.name())
