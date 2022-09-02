@@ -24,7 +24,7 @@ public class AuthFilter implements Filter {
      * author : Jaeyeop Jung
      * description :
      *
-     * step0. /user, /admin이 아닌 경우 인증&인가 없이 진행
+     * step0. /user/*, /admin/*이 아닌 경우 인증&인가 없이 진행 (로그인, 회원가입, /actuator)
      * step1. request에서 Token 빼내기
      * step2. token 인증
      * step3. token 권한별 인가
