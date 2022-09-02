@@ -46,8 +46,8 @@ public class JwtTokenProvider {
                 .setSubject(user.getIdentifier())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
-                .claim("role", user.getUserRole().toString())
                 .signWith(SignatureAlgorithm.HS256, secretKey)
+                .claim("UserRole", user.getUserRole().toString())
                 .compact();
     }
 
@@ -61,6 +61,7 @@ public class JwtTokenProvider {
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
+                .claim("UserRole", "ROLE_ADMIN")
                 .compact();
     }
 
@@ -87,6 +88,14 @@ public class JwtTokenProvider {
                 .getBody();
 
         return claims.getSubject();
+    }
+
+    public String findUserRoleByToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("UserRole").toString();
     }
 
     /**
