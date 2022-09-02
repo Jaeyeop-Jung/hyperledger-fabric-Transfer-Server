@@ -1,7 +1,5 @@
-package com.capstone.hyperledgerfabrictransferserver.filter;
+package com.capstone.hyperledgerfabrictransferserver.auth;
 
-import com.capstone.hyperledgerfabrictransferserver.aop.customException.EmptyTokenException;
-import com.capstone.hyperledgerfabrictransferserver.aop.customException.IncorrectTokenException;
 import com.capstone.hyperledgerfabrictransferserver.domain.Admin;
 import com.capstone.hyperledgerfabrictransferserver.domain.User;
 import io.jsonwebtoken.*;

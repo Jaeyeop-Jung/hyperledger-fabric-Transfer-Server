@@ -6,7 +6,7 @@ import com.capstone.hyperledgerfabrictransferserver.dto.user.AssetDto;
 import com.capstone.hyperledgerfabrictransferserver.dto.user.UserJoinRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.user.UserLoginRequest;
 import com.capstone.hyperledgerfabrictransferserver.dto.user.UserLoginResponse;
-import com.capstone.hyperledgerfabrictransferserver.filter.JwtTokenProvider;
+import com.capstone.hyperledgerfabrictransferserver.auth.JwtTokenProvider;
 import com.capstone.hyperledgerfabrictransferserver.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hyperledger.fabric.gateway.Gateway;
