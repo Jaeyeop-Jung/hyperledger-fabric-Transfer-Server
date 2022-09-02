@@ -9,7 +9,6 @@ import com.capstone.hyperledgerfabrictransferserver.repository.AdminRepository;
 import com.capstone.hyperledgerfabrictransferserver.util.Sha256Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;

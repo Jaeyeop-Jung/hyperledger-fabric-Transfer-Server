@@ -8,10 +8,6 @@ import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +23,6 @@ public class JwtTokenProvider {
 
     private final Long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 1000L;
 
-    private final UserDetailsService userDetailsService;
 
     /**
      * methodName : generateJwtToken
@@ -126,20 +121,4 @@ public class JwtTokenProvider {
         return false;
     }
 
-    /**
-     * methodName : getAuthentication
-     * author : Jaeyeop Jung
-     * description : SecurityContextHolder에 담을 Authentication 객체를 가져옴
-     *
-     * @param identifier identifier
-     * @return the authentication
-     */
-    public Authentication getAuthenticationByIdentifier(String identifier){
-        UserDetails userDetails = userDetailsService.loadUserByUsername(identifier);
-//        if(userDetails != null) {
-            return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-//        } else {
-//            return null;
-//        }
-    }
 }

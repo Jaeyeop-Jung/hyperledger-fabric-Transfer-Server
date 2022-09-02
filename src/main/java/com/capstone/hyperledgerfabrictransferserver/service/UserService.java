@@ -9,11 +9,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.crypto.generators.OpenBSDBCrypt;
 import org.hyperledger.fabric.gateway.Gateway;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 public class UserService {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final FabricService fabricService;
     private final ObjectMapper objectMapper;
@@ -67,7 +67,7 @@ public class UserService {
         User savedUser = userRepository.save(
                 User.of(
                         userJoinRequest.getIdentifier(),
-                        bCryptPasswordEncoder.encode(userJoinRequest.getPassword()),
+                        BCrypt.hashpw(userJoinRequest.getPassword(), BCrypt.gensalt()),
                         userJoinRequest.getUserRole(),
                         userJoinRequest.getName()
                 )
@@ -100,7 +100,7 @@ public class UserService {
         User findUser = userRepository.findByIdentifier(userLoginRequest.getIdentifier())
                 .orElseThrow(() -> new IncorrectIdentifierException("가입하지 않거나 잘못된 식별 번호입니다"));
 
-        if(!bCryptPasswordEncoder.matches(userLoginRequest.getPassword(), findUser.getPassword())){
+        if(!BCrypt.checkpw(userLoginRequest.getPassword(), findUser.getPassword())){
             throw new IncorrectPasswordException("잘못된 비밀번호 입니다");
         }
 
@@ -122,7 +122,7 @@ public class UserService {
 
         User findUser = getUserByHttpServletRequest(httpServletRequest);
 
-        findUser.modifyPassword(bCryptPasswordEncoder.encode(newPassword));
+        findUser.modifyPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
     }
 
     /**
@@ -225,7 +225,7 @@ public class UserService {
 
         if (!findUser.getPassword().equals(userModifyRequest.getWantToChangePlainPassword())) {
             if(userModifyRequest.getWantToChangePlainPassword() != null) {
-                findUser.modifyPassword(bCryptPasswordEncoder.encode(userModifyRequest.getWantToChangePlainPassword()));
+                findUser.modifyPassword(BCrypt.hashpw(userModifyRequest.getWantToChangePlainPassword(), BCrypt.gensalt()));
             }
         }
     }

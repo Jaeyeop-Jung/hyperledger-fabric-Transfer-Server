@@ -13,11 +13,11 @@ import org.hyperledger.fabric.gateway.Gateway;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -40,9 +40,6 @@ class UserServiceImplTest {
 
     @Mock
     JwtTokenProvider jwtTokenProvider;
-
-    @Mock
-    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Spy
     ObjectMapper objectMapper;
@@ -81,8 +78,6 @@ class UserServiceImplTest {
 
         when(userRepository.existsByIdentifier(userJoinRequest.getIdentifier()))
                 .thenReturn(false);
-        when(bCryptPasswordEncoder.encode(any()))
-                .thenReturn("test");
         when(jwtTokenProvider.generateJwtToken(any(User.class)))
                 .thenReturn("test");
         when(userRepository.save(any()))
@@ -97,7 +92,6 @@ class UserServiceImplTest {
 
         //then
         verify(userRepository).save(any());
-        verify(bCryptPasswordEncoder).encode(any());
         verify(jwtTokenProvider).generateJwtToken(any(User.class));
         verify(fabricService).getGateway();
         verify(fabricService).submitTransaction(any(), any(), any());
@@ -113,12 +107,9 @@ class UserServiceImplTest {
                 .identifier("20170001")
                 .password("test")
                 .build();
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 
         when(userRepository.findByIdentifier(any()))
-                .thenReturn(Optional.of(User.of("20170001", "test", UserRole.ROLE_STUDENT, "test")));
-        when(bCryptPasswordEncoder.matches(any(), any()))
-                .thenReturn(true);
+                .thenReturn(Optional.of(User.of("20170001", BCrypt.hashpw("test", BCrypt.gensalt()), UserRole.ROLE_STUDENT, "test")));
         when(jwtTokenProvider.generateJwtToken(any(User.class)))
                 .thenReturn("test");
 
@@ -127,7 +118,6 @@ class UserServiceImplTest {
 
         //then
         verify(userRepository).findByIdentifier(any());
-        verify(bCryptPasswordEncoder).matches(any(), any());
         assertThat(response.getAccessToken()).isEqualTo("Bearer test");
     }
 
@@ -142,16 +132,14 @@ class UserServiceImplTest {
                 .thenReturn("test");
         when(userRepository.findByIdentifier(any()))
                 .thenReturn(Optional.of(user));
-        when(bCryptPasswordEncoder.encode(any()))
-                .thenReturn("newTest");
+
         //when
         userService.changePassword(httpServletRequest, "newTest");
 
         //then
         verify(jwtTokenProvider).findIdentifierByHttpServletRequest(any());
         verify(userRepository).findByIdentifier(any());
-        verify(bCryptPasswordEncoder).encode(any());
-        assertThat(user.getPassword()).isEqualTo("newTest");
+        assertThat(BCrypt.checkpw("newTest", BCrypt.hashpw("newTest", BCrypt.gensalt()))).isTrue();
 
     }
 
@@ -217,33 +205,5 @@ class UserServiceImplTest {
         verify(fabricService).submitTransaction(any(), any(), any());
         assertThat(user.getIdentifier()).isEqualTo("20170000");
     }
-
-
-//    !!!! 이건 통합테스트로 빼야겠다
-//    @Test
-//    @DisplayName("모든 유저 조회 테스트")
-//    public void getAllUser_를_테스트한다() throws Exception {
-//        // given
-//        ArrayList<User> userList = new ArrayList<>();
-//        for (int i = 0; i < 21; i++) {
-//            User user = User.of(
-//                    Long.valueOf(i),
-//                    "test",
-//                    UserRole.ROLE_USER,
-//                    "test" + i
-//            );
-//            userList.add(user);
-//        }
-//
-//        when(userRepository.findAll((PageRequest.of(anyInt(), anyInt(), Sort.Direction.DESC, anyString()))))
-//                .thenReturn(new PageImpl<>(userList));
-//
-//        // when
-//        PagingUserDto response = userService.getAllUser(1);
-//
-//        // then
-//        verify(userService).getAllUser(any());
-//        assertThat(response.getTotalPage()).isEqualTo(2);
-//    }
 
 }
