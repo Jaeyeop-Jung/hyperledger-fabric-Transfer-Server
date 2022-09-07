@@ -106,7 +106,7 @@ public class CoinService {
             User findUser = userService.getUserByIdentifier(identifier);
 
             try {
-                fabricService.submitTransaction(gateway, "UpdateAssetCoin", "asset" + findUser.getIdentifier(), updateAssetCoinRequest.getCoinName(), updateAssetCoinRequest.getCoinValue());
+                fabricService.submitTransaction(gateway, "UpdateAssetCoin", "asset" + findUser.getId(), updateAssetCoinRequest.getCoinName(), updateAssetCoinRequest.getCoinValue());
             } catch (Exception e) {
                 throw new IncorrectContractException("UpdateAssetCoin 체인코드 실행 중 오류가 발생했습니다");
             }
